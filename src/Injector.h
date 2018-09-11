@@ -1,14 +1,17 @@
-#ifndef INJECTOR_H_INCLUDED
-#define INJECTOR_H_INCLUDED
+#pragma once
+
+#ifndef __INJECTOR_H_INCLUDED__
+#define __INJECTOR_H_INCLUDED__
 
 #include <Windows.h>
 
-static const size_t PATH_LENGTH = 255;
+#define PATH_LENGTH         256
+#define SMALL_BUFFER_LENGTH PATH_LENGTH
 
-DWORD GetProcessID(const char *process_name);
-BOOL FileExist(const char *filename);
-BOOL InjectByName(const char *process, const char *dll);
-BOOL Inject(DWORD process_id, const char *path);
+DWORD GetProcessID(const PTCHAR process_name);
+BOOL FileExist(const PTCHAR filename);
+BOOL InjectByName(const PTCHAR process, const PTCHAR dll);
+BOOL Inject(DWORD process_id, const PTCHAR path);
 
 BOOL GetProcessList();
 BOOL ListProcessModules(DWORD process_id);
@@ -16,4 +19,6 @@ BOOL ListProcessThreads(DWORD owner_process_id);
 
 BOOL TraverseHeapList();
 
-#endif /* INJECTOR_H_INCLUDED */
+VOID PrintError(const PTCHAR msg);
+
+#endif /* __INJECTOR_H_INCLUDED__ */

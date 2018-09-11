@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\Trojan.h" />
     <ClInclude Include="..\..\src\Injector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Injector.c" />
+    <ClCompile Include="..\..\src\main.c" />
     <ClCompile Include="..\..\src\Trojan.c" />
   </ItemGroup>
   <ItemGroup>

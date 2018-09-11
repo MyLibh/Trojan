@@ -5,14 +5,14 @@
 #include <stdio.h>    // printf
 #include <io.h>       // _access
 
-DWORD GetProcessID(const char *process_name)
+DWORD GetProcessID(const PTCHAR process_name)
 {
 	DWORD process_id = 0;
 
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, process_id);
 	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
-		printf("Cannot open handle, error: %lu.\n", GetLastError());
+		PrintError("CreateToolhelp32Snapshot");
 
 		return 0;
 	}
@@ -20,13 +20,10 @@ DWORD GetProcessID(const char *process_name)
 	PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
 	if (!Process32First(hSnapshot, &pe32))
 	{
-		if (GetLastError() == ERROR_NO_MORE_FILES)
-			printf("No processes exist or the snapshot does not contain process information.\n");
-		else
-			printf("Cannot copy entry of the process list to the buffer, error: %lu.\n", GetLastError());
+		PrintError("Process32First");
 
 		if (!CloseHandle(hSnapshot))
-			printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return 0;
 	}
@@ -42,12 +39,12 @@ DWORD GetProcessID(const char *process_name)
 	} while (Process32Next(hSnapshot, &pe32));
 		
 	if(!CloseHandle(hSnapshot))
-		printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return process_id;
 }
 
-BOOL FileExist(const char *filename)
+BOOL FileExist(const PTCHAR filename)
 {
 	int code = _access(filename, 0); // Checks for existence only - (mode = 0)
 	if (code == 0)
@@ -76,12 +73,12 @@ BOOL FileExist(const char *filename)
 	return FALSE;
 }
 
-BOOL InjectByName(const char *process, const char *dll)
+BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 {
 	DWORD process_id = 0;
 	while (!(process_id = GetProcessID(process)));
 
-	char *path = (char*)malloc(PATH_LENGTH);
+	PTCHAR path = (PTCHAR)malloc(PATH_LENGTH);
 	if (!path)
 	{
 		printf("Cannot allocate memory for dll path.\n");
@@ -92,27 +89,9 @@ BOOL InjectByName(const char *process, const char *dll)
 	DWORD path_length = GetFullPathName(dll, PATH_LENGTH, path, NULL);
 	if (!path_length)
 	{
-		printf("Cannot get dll path, error: %lu.\n", GetLastError());
-		free(path);
+		PrintError("GetFullPathName");
 
 		return FALSE;
-	}
-	else if (path_length > PATH_LENGTH)
-	{
-		free(path);
-
-		size_t new_path_length = path_length;
-		path = (char*)malloc(new_path_length);
-
-		path_length = GetFullPathName(dll, PATH_LENGTH, path, NULL);
-		if (!path_length || path_length > new_path_length)
-		{
-			printf("Cannot get dll path, error: %lu.\n", GetLastError());
-			free(path);
-
-			return FALSE;
-		}
-
 	}
 	
 	if (!FileExist(path))
@@ -135,7 +114,7 @@ BOOL InjectByName(const char *process, const char *dll)
 	return TRUE;
 }
 
-BOOL Inject(DWORD process_id, const char *path)
+BOOL Inject(DWORD process_id, const PTCHAR path)
 {
 	if (!process_id)
 	{
@@ -147,7 +126,7 @@ BOOL Inject(DWORD process_id, const char *path)
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_id);
 	if (!hProcess)
 	{
-		printf("Cannot open process handle, error: %lu.\n", GetLastError());
+		PrintError("OpenProcess");
 
 		return FALSE;
 	}
@@ -156,18 +135,18 @@ BOOL Inject(DWORD process_id, const char *path)
 	LPVOID remote_string = (LPVOID)VirtualAllocEx(hProcess, NULL, path_length, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	if (!remote_string)
 	{
-		printf("Cannot allocated region of pages, error: %lu.\n", GetLastError());
+		PrintError("VirtualAllocEx");
 		if (!CloseHandle(hProcess))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
 
 	if (!WriteProcessMemory(hProcess, remote_string, path, path_length, NULL))
 	{
-		printf("The requested write operation crosses into an area of the process that is inaccessible, error: %lu.\n", GetLastError());
+		PrintError("WriteProcessMemory");
 		if (!CloseHandle(hProcess))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
@@ -175,24 +154,24 @@ BOOL Inject(DWORD process_id, const char *path)
 	FARPROC load_lib_add = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 	if (!load_lib_add)
 	{
-		printf("Cannot export function, error: %lu.\n", GetLastError());
+		PrintError("GetProcAddress");
 		if (!CloseHandle(hProcess))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
 
 	if (!CreateRemoteThread(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, 0ul, 0ul))
 	{
-		printf("Cannot create remote thread, error: %lu.\n", GetLastError());
+		PrintError("CreateRemoteThread");
 		if (!CloseHandle(hProcess))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
 
 	if (!CloseHandle(hProcess))
-		printf("Cannot close the process, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return TRUE;
 }
@@ -202,7 +181,7 @@ BOOL GetProcessList()
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
-		printf("Cannot open handle, error: %lu.\n", GetLastError());
+		PrintError("CreateToolhelp32Snapshot");
 
 		return FALSE;
 	}
@@ -210,13 +189,9 @@ BOOL GetProcessList()
 	PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
 	if (!Process32First(hSnapshot, &pe32))
 	{
-		if (GetLastError() == ERROR_NO_MORE_FILES)
-			printf("No processes exist or the snapshot does not contain process information.\n");
-		else
-			printf("Cannot copy entry of the process list to the buffer, error: %lu.\n", GetLastError());
-
+		PrintError("Process32First");
 		if (!CloseHandle(hSnapshot))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
@@ -230,7 +205,7 @@ BOOL GetProcessList()
 		hSnapshot = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
 		if (!hSnapshot)
 		{
-			printf("Cannot open process handle, error: %lu.\n", GetLastError());
+			PrintError("OpenProcess");
 
 			return FALSE;
 		}
@@ -238,9 +213,9 @@ BOOL GetProcessList()
 		DWORD priority_class = GetPriorityClass(hSnapshot);
 		if (!priority_class)
 		{
-			printf("Cannot get priority class, error: %lu.\n", GetLastError());
+			PrintError("GetPriorityClass");
 			if (!CloseHandle(hSnapshot))
-				printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+				PrintError("CloseHandle");
 
 			return FALSE;
 		}
@@ -257,7 +232,7 @@ BOOL GetProcessList()
 	} while (Process32Next(hSnapshot, &pe32));
 
 	if (!CloseHandle(hSnapshot))
-		printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return(TRUE);
 }
@@ -267,7 +242,7 @@ BOOL ListProcessModules(DWORD process_id)
 	HANDLE hModule_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process_id);
 	if (hModule_snapshot == INVALID_HANDLE_VALUE)
 	{
-		printf("Cannot open handle, error: %lu.\n", GetLastError());
+		PrintError("CreateToolhelp32Snapshot");
 
 		return FALSE;
 	}
@@ -275,13 +250,10 @@ BOOL ListProcessModules(DWORD process_id)
 	MODULEENTRY32 me32 = { sizeof(MODULEENTRY32) };
 	if (!Module32First(hModule_snapshot, &me32))
 	{
-		if (GetLastError() == ERROR_NO_MORE_FILES)
-			printf("No modules exist or the snapshot does not contain module information.\n");
-		else
-			printf("Cannot copy entry of the module list to the buffer, error: %lu.\n", GetLastError());
+		PrintError("Module32First");
 
 		if (!CloseHandle(hModule_snapshot))
-			printf("Cannot close the process, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
@@ -299,7 +271,7 @@ BOOL ListProcessModules(DWORD process_id)
 	} while (Module32Next(hModule_snapshot, &me32));
 
 	if (!CloseHandle(hModule_snapshot))
-		printf("Cannot close the process, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return TRUE;
 }
@@ -309,7 +281,7 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	HANDLE hThread_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	if (hThread_snapshot == INVALID_HANDLE_VALUE)
 	{
-		printf("Cannot open handle, error: %lu.\n", GetLastError());
+		PrintError("CreateToolhelp32Snapshot");
 
 		return FALSE;
 	}
@@ -317,13 +289,10 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	THREADENTRY32 te32 = { sizeof(THREADENTRY32) };
 	if (!Thread32First(hThread_snapshot, &te32))
 	{
-		if (GetLastError() == ERROR_NO_MORE_FILES)
-			printf("No threads exist or the snapshot does not contain thread information.\n");
-		else
-			printf("Cannot copy entry of the thread list to the buffer, error: %lu.\n", GetLastError());
+		PrintError("Thread32First");
 
 		if (!CloseHandle(hThread_snapshot))
-			printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+			PrintError("CloseHandle");
 
 		return FALSE;
 	}
@@ -339,7 +308,7 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	} while (Thread32Next(hThread_snapshot, &te32));
 
 	if (!CloseHandle(hThread_snapshot))
-		printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return TRUE;
 }
@@ -355,32 +324,58 @@ BOOL TraverseHeapList()
 	}
 
 	HEAPLIST32 heap_list = { sizeof(HEAPLIST32) };
-	if (Heap32ListFirst(hHeap_snapshot, &heap_list))
+	if (!Heap32ListFirst(hHeap_snapshot, &heap_list))
 	{
-		do
-		{
-			HEAPENTRY32 heap_entry = { sizeof(HEAPENTRY32) };
+		PrintError("Heap32ListFirst");
+		if (!CloseHandle(hHeap_snapshot))
+			PrintError("CloseHandle");
 
-			if (Heap32First(&heap_entry, GetCurrentProcessId(), heap_list.th32HeapID))
-			{
-				printf("Heap ID: %d\n", heap_list.th32HeapID);
-				do
-				{
-					printf("\tBlock size: %d\n", heap_entry.dwBlockSize);
-
-					heap_entry.dwSize = sizeof(HEAPENTRY32);
-				} while (Heap32Next(&heap_entry));
-			}
-
-			heap_list.dwSize = sizeof(HEAPLIST32);
-		} while (Heap32ListNext(hHeap_snapshot, &heap_list));
+		return FALSE;
 	}
-	else
-		printf("Cannot list first heap, error: %lu.\n", GetLastError());
 
+	do
+	{
+		HEAPENTRY32 heap_entry = { sizeof(HEAPENTRY32) };
+
+		if (Heap32First(&heap_entry, GetCurrentProcessId(), heap_list.th32HeapID))
+		{
+			printf("Heap ID: %d\n", heap_list.th32HeapID);
+			do
+			{
+				printf("\tBlock size: %d\n", heap_entry.dwBlockSize);
+
+				heap_entry.dwSize = sizeof(HEAPENTRY32);
+			} while (Heap32Next(&heap_entry));
+		}
+
+		heap_list.dwSize = sizeof(HEAPLIST32);
+	} while (Heap32ListNext(hHeap_snapshot, &heap_list));
 
 	if (!CloseHandle(hHeap_snapshot))
-		printf("Cannot close the heap snapshot, error: %lu.\n", GetLastError());
+		PrintError("CloseHandle");
 
 	return TRUE;
+}
+
+VOID PrintError(const PTCHAR msg)
+{
+	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = "";
+	DWORD error = GetLastError();
+	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
+	{
+		printf("[ERROR]: FormatMessage failed with 0x%x\n", GetLastError());
+
+		return;
+	}
+
+	PTCHAR p = sysmsg;
+	while ((*p > 31) || (*p == 9))
+		++p;
+
+	do
+	{
+		*p-- = 0;
+	} while (p >= sysmsg && (*p == '.' || *p < 33));
+
+	printf("[ERROR]: \'%s\' failed with error %lu (%s)\n", msg, error, sysmsg);
 }
