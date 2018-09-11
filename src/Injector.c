@@ -130,7 +130,7 @@ BOOL InjectByName(const char *process, const char *dll)
 
 		return FALSE;
 	}
-        free(path);
+	free(path);
 	
 	return TRUE;
 }
