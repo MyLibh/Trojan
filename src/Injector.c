@@ -1,7 +1,9 @@
 #include "Injector.h"
 
-#include <tlhelp32.h>
-#include <stdlib.h> // malloc, free
+#include <tlhelp32.h> 
+#include <stdlib.h>   // malloc, free
+#include <stdio.h>    // printf
+#include <io.h>       // _access
 
 DWORD GetProcessID(const char *process_name)
 {
@@ -12,7 +14,7 @@ DWORD GetProcessID(const char *process_name)
 	{
 		printf("Cannot open handle, error: %lu.\n", GetLastError());
 
-		return NULL;
+		return 0;
 	}
 
 	PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
@@ -26,12 +28,12 @@ DWORD GetProcessID(const char *process_name)
 		if (!CloseHandle(hSnapshot))
 			printf("Cannot close the snapshot, error: %lu.\n", GetLastError());
 
-		return NULL;
+		return 0;
 	}
 
 	do
 	{
-		if (stricmp(pe32.szExeFile, process_name) == 0)
+		if (_stricmp(pe32.szExeFile, process_name) == 0)
 		{
 			process_id = pe32.th32ProcessID;
 
@@ -74,7 +76,7 @@ BOOL FileExist(const char *filename)
 	return FALSE;
 }
 
-BOOL Inject(const char *process, const char *dll)
+BOOL InjectByName(const char *process, const char *dll)
 {
 	DWORD process_id = 0;
 	while (!(process_id = GetProcessID(process)));
@@ -169,7 +171,7 @@ BOOL Inject(DWORD process_id, const char *path)
 		return FALSE;
 	}
 
-	LPVOID load_lib_add = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), LoadLibraryA);
+	FARPROC load_lib_add = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 	if (!load_lib_add)
 	{
 		printf("Cannot export function, error: %lu.\n", GetLastError());
@@ -179,7 +181,7 @@ BOOL Inject(DWORD process_id, const char *path)
 		return FALSE;
 	}
 
-	if (!CreateRemoteThread(hProcess, NULL, NULL, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, NULL, NULL))
+	if (!CreateRemoteThread(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, 0ul, 0ul))
 	{
 		printf("Cannot create remote thread, error: %lu.\n", GetLastError());
 		if (!CloseHandle(hProcess))
@@ -220,11 +222,10 @@ BOOL GetProcessList()
 
 	do
 	{
-		printf("\n\n=====================================================");
-		tprintf("\nPROCESS NAME: %s", pe32.szExeFile);
-		tprintf("\n-------------------------------------------------------");
+		printf("=====================================================\n");
+		printf("PROCESS NAME: %s\n", pe32.szExeFile);
+		printf("=====================================================\n");
 
-		DWORD priority_class = 0;
 		hSnapshot = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
 		if (!hSnapshot)
 		{
@@ -233,7 +234,7 @@ BOOL GetProcessList()
 			return FALSE;
 		}
 	
-		priority_class = GetPriorityClass(hSnapshot);
+		DWORD priority_class = GetPriorityClass(hSnapshot);
 		if (!priority_class)
 		{
 			printf("Cannot get priority class, error: %lu.\n", GetLastError());
@@ -331,8 +332,8 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 		if (te32.th32OwnerProcessID == owner_process_id)
 		{
 			printf("THREAD ID      = 0x%08X\n", te32.th32ThreadID);
-			printf("Base priority  = %l\n", te32.tpBasePri);
-			printf("Delta priority = %l\n", te32.tpDeltaPri);
+			printf("Base priority  = %ld\n", te32.tpBasePri);
+			printf("Delta priority = %ld\n", te32.tpDeltaPri);
 		}
 	} while (Thread32Next(hThread_snapshot, &te32));
 
