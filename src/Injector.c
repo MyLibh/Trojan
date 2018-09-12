@@ -1,6 +1,6 @@
 #include "Injector.h"
 
-#include <tlhelp32.h> 
+#include <TlHelp32.h> //
 #include <stdlib.h>   // malloc, free
 #include <stdio.h>    // printf
 #include <io.h>       // _access
@@ -12,7 +12,7 @@ DWORD GetProcessID(const PTCHAR process_name)
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, process_id);
 	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
-		PrintError("CreateToolhelp32Snapshot");
+		PrintError(TEXT("CreateToolhelp32Snapshot"));
 
 		return 0;
 	}
@@ -20,10 +20,10 @@ DWORD GetProcessID(const PTCHAR process_name)
 	PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
 	if (!Process32First(hSnapshot, &pe32))
 	{
-		PrintError("Process32First");
+		PrintError(TEXT("Process32First"));
 
 		if (!CloseHandle(hSnapshot))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return 0;
 	}
@@ -39,14 +39,14 @@ DWORD GetProcessID(const PTCHAR process_name)
 	} while (Process32Next(hSnapshot, &pe32));
 		
 	if(!CloseHandle(hSnapshot))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return process_id;
 }
 
 BOOL FileExist(const PTCHAR filename)
 {
-	int code = _access(filename, 0); // Checks for existence only - (mode = 0)
+	int code = _waccess(filename, 0); // Checks for existence only - (mode = 0)
 	if (code == 0)
 		return TRUE;
 	else
@@ -89,7 +89,7 @@ BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 	DWORD path_length = GetFullPathName(dll, PATH_LENGTH, path, NULL);
 	if (!path_length)
 	{
-		PrintError("GetFullPathName");
+		PrintError(TEXT("GetFullPathName"));
 
 		return FALSE;
 	}
@@ -126,7 +126,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_id);
 	if (!hProcess)
 	{
-		PrintError("OpenProcess");
+		PrintError(TEXT("OpenProcess"));
 
 		return FALSE;
 	}
@@ -135,18 +135,18 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 	LPVOID remote_string = (LPVOID)VirtualAllocEx(hProcess, NULL, path_length, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	if (!remote_string)
 	{
-		PrintError("VirtualAllocEx");
+		PrintError(TEXT("VirtualAllocEx"));
 		if (!CloseHandle(hProcess))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
 
 	if (!WriteProcessMemory(hProcess, remote_string, path, path_length, NULL))
 	{
-		PrintError("WriteProcessMemory");
+		PrintError(TEXT("WriteProcessMemory"));
 		if (!CloseHandle(hProcess))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
@@ -154,24 +154,24 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 	FARPROC load_lib_add = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 	if (!load_lib_add)
 	{
-		PrintError("GetProcAddress");
+		PrintError(TEXT("GetProcAddress"));
 		if (!CloseHandle(hProcess))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
 
 	if (!CreateRemoteThread(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, 0ul, 0ul))
 	{
-		PrintError("CreateRemoteThread");
+		PrintError(TEXT("CreateRemoteThread"));
 		if (!CloseHandle(hProcess))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
 
 	if (!CloseHandle(hProcess))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return TRUE;
 }
@@ -181,7 +181,7 @@ BOOL GetProcessList()
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
-		PrintError("CreateToolhelp32Snapshot");
+		PrintError(TEXT("CreateToolhelp32Snapshot"));
 
 		return FALSE;
 	}
@@ -189,9 +189,9 @@ BOOL GetProcessList()
 	PROCESSENTRY32 pe32 = { sizeof(PROCESSENTRY32) };
 	if (!Process32First(hSnapshot, &pe32))
 	{
-		PrintError("Process32First");
+		PrintError(TEXT("Process32First"));
 		if (!CloseHandle(hSnapshot))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
@@ -205,7 +205,7 @@ BOOL GetProcessList()
 		hSnapshot = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
 		if (!hSnapshot)
 		{
-			PrintError("OpenProcess");
+			PrintError(TEXT("OpenProcess"));
 
 			return FALSE;
 		}
@@ -213,9 +213,9 @@ BOOL GetProcessList()
 		DWORD priority_class = GetPriorityClass(hSnapshot);
 		if (!priority_class)
 		{
-			PrintError("GetPriorityClass");
+			PrintError(TEXT("GetPriorityClass"));
 			if (!CloseHandle(hSnapshot))
-				PrintError("CloseHandle");
+				PrintError(TEXT("CloseHandle"));
 
 			return FALSE;
 		}
@@ -232,7 +232,7 @@ BOOL GetProcessList()
 	} while (Process32Next(hSnapshot, &pe32));
 
 	if (!CloseHandle(hSnapshot))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return(TRUE);
 }
@@ -250,10 +250,10 @@ BOOL ListProcessModules(DWORD process_id)
 	MODULEENTRY32 me32 = { sizeof(MODULEENTRY32) };
 	if (!Module32First(hModule_snapshot, &me32))
 	{
-		PrintError("Module32First");
+		PrintError(TEXT("Module32First"));
 
 		if (!CloseHandle(hModule_snapshot))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
@@ -271,7 +271,7 @@ BOOL ListProcessModules(DWORD process_id)
 	} while (Module32Next(hModule_snapshot, &me32));
 
 	if (!CloseHandle(hModule_snapshot))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return TRUE;
 }
@@ -281,7 +281,7 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	HANDLE hThread_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	if (hThread_snapshot == INVALID_HANDLE_VALUE)
 	{
-		PrintError("CreateToolhelp32Snapshot");
+		PrintError(TEXT("CreateToolhelp32Snapshot"));
 
 		return FALSE;
 	}
@@ -289,10 +289,10 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	THREADENTRY32 te32 = { sizeof(THREADENTRY32) };
 	if (!Thread32First(hThread_snapshot, &te32))
 	{
-		PrintError("Thread32First");
+		PrintError(TEXT("Thread32First"));
 
 		if (!CloseHandle(hThread_snapshot))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
@@ -308,7 +308,7 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	} while (Thread32Next(hThread_snapshot, &te32));
 
 	if (!CloseHandle(hThread_snapshot))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return TRUE;
 }
@@ -326,9 +326,9 @@ BOOL TraverseHeapList()
 	HEAPLIST32 heap_list = { sizeof(HEAPLIST32) };
 	if (!Heap32ListFirst(hHeap_snapshot, &heap_list))
 	{
-		PrintError("Heap32ListFirst");
+		PrintError(TEXT("Heap32ListFirst"));
 		if (!CloseHandle(hHeap_snapshot))
-			PrintError("CloseHandle");
+			PrintError(TEXT("CloseHandle"));
 
 		return FALSE;
 	}
@@ -352,7 +352,7 @@ BOOL TraverseHeapList()
 	} while (Heap32ListNext(hHeap_snapshot, &heap_list));
 
 	if (!CloseHandle(hHeap_snapshot))
-		PrintError("CloseHandle");
+		PrintError(TEXT("CloseHandle"));
 
 	return TRUE;
 }
