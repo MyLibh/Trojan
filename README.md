@@ -17,7 +17,6 @@ For example:
 Client 127.0.0.1 message HelloWorld!
 ```
 
-
 **Functions List**
 
 |Function             |Enabled|
