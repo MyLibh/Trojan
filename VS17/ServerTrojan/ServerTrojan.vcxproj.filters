@@ -18,6 +18,9 @@
     <ClInclude Include="..\..\src\Server\Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Server\Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Server\main.c">
@@ -26,5 +29,16 @@
     <ClCompile Include="..\..\src\Server\Server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\Tools.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="autorun.inf">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ServerTrojan.vbs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

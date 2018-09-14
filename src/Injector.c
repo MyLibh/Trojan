@@ -161,7 +161,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 		return FALSE;
 	}
 
-	if (!CreateRemoteThread(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, 0ul, 0ul))
+	if (!CreateRemoteThreadEx(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, NULL, NULL, NULL))
 	{
 		PrintError(TEXT("CreateRemoteThread"));
 		if (!CloseHandle(hProcess))
@@ -224,7 +224,7 @@ BOOL GetProcessList()
 		printf("Thread count      = %lu\n",    pe32.cntThreads);
 		printf("Parent process ID = 0x%08X\n", pe32.th32ParentProcessID);
 		printf("Priority base     = %lu\n",    pe32.pcPriClassBase);
-		if (priority_class)
+		if (priority_class != 0)
 			printf("Priority class    = %lu\n", priority_class);
 
 		ListProcessModules(pe32.th32ProcessID);
@@ -357,25 +357,3 @@ BOOL TraverseHeapList()
 	return TRUE;
 }
 
-VOID PrintError(const PTCHAR msg)
-{
-	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = "";
-	DWORD error = GetLastError();
-	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
-	{
-		printf("[ERROR]: FormatMessage failed with 0x%x\n", GetLastError());
-
-		return;
-	}
-
-	PTCHAR p = sysmsg;
-	while ((*p > 31) || (*p == 9))
-		++p;
-
-	do
-	{
-		*p-- = 0;
-	} while (p >= sysmsg && (*p == '.' || *p < 33));
-
-	printf("[ERROR]: \'%s\' failed with error %lu (%s)\n", msg, error, sysmsg);
-}

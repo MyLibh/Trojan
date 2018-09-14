@@ -9,11 +9,7 @@
 #define CMD_LENGTH        2
 #define ARGS_LENGTH       126
 
-typedef struct Server
-{
-	SOCKET      listen_sock;
-	SOCKADDR_IN addr_sock;
-} SERVER, *PSERVER;
+#define DEFAULT_PORT      "27015"
 
 typedef enum  
 {
@@ -21,7 +17,7 @@ typedef enum
 	EXECUTE = 'e'
 } Commands;
 
-BOOL InitServer(PSERVER server);
-VOID RunServer(PSERVER server);
+SOCKET InitServer();
+VOID RunServer(SOCKET listen_sock);
 
 #endif /* __SERVER_H_INCLUDED__ */

