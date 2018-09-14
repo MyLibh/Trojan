@@ -18,6 +18,6 @@ typedef enum
 } Commands;
 
 SOCKET InitServer();
-VOID RunServer(SOCKET listen_sock);
+VOID RunServer( );
 
 #endif /* __SERVER_H_INCLUDED__ */

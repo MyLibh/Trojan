@@ -21,7 +21,8 @@ BOOL Copy2Sysdir()
 
 		return FALSE;
 	}
-	_tprintf("filepath:%s, sysdir:%s\n", filepath, sysdir); 
+
+	_tprintf(TEXT("filepath:%s, sysdir:%s\n"), filepath, sysdir);
 	if (!CopyFile(filepath, sysdir, TRUE))
 	{
 		PrintError(TEXT("CopyFile"), FALSE);
@@ -34,12 +35,13 @@ BOOL Copy2Sysdir()
 
 VOID PrintError(const PTCHAR msg, INT error)
 {
-	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = "";
 	if(!error)
 		error = GetLastError();
+
+	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
 	{
-		printf("[ERROR]: FormatMessage failed with 0x%x\n", GetLastError());
+		_tprintf(TEXT("[ERROR]: FormatMessage failed with 0x%x\n"), GetLastError());
 
 		return;
 	}
@@ -53,5 +55,5 @@ VOID PrintError(const PTCHAR msg, INT error)
 		*p-- = 0;
 	} while (p >= sysmsg && (*p == '.' || *p < 33));
 
-	printf("[ERROR]: \'%s\' failed with error %lu (%s)\n", msg, error, sysmsg);
+	_tprintf(TEXT("[ERROR]: \'%s\' failed with error %lu (%s)\n"), msg, error, sysmsg);
 }

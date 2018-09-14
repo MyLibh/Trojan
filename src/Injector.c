@@ -2,7 +2,7 @@
 
 #include <TlHelp32.h> //
 #include <stdlib.h>   // malloc, free
-#include <stdio.h>    // printf
+#include <tchar.h>    // _tprintf
 #include <io.h>       // _access
 
 DWORD GetProcessID(const PTCHAR process_name)
@@ -30,7 +30,7 @@ DWORD GetProcessID(const PTCHAR process_name)
 
 	do
 	{
-		if (_stricmp(pe32.szExeFile, process_name) == 0)
+		if (_tcscmp(pe32.szExeFile, process_name) == 0)
 		{
 			process_id = pe32.th32ProcessID;
 
@@ -46,26 +46,26 @@ DWORD GetProcessID(const PTCHAR process_name)
 
 BOOL FileExist(const PTCHAR filename)
 {
-	int code = _waccess(filename, 0); // Checks for existence only - (mode = 0)
+	int code = _taccess(filename, 0); // Checks for existence only - (mode = 0)
 	if (code == 0)
 		return TRUE;
 	else
 		switch (errno)
 		{
 		case EACCES:
-			printf("Access denied: the file's permission setting does not allow specified access.\n");
+			_tprintf(TEXT("Access denied: the file's permission setting does not allow specified access.\n"));
 			break;
 
 		case ENOENT: 
-			printf("File name or path not found.\n"); 
+			_tprintf(TEXT("File name or path not found.\n"));
 			break;
 
 		case EINVAL: 
-			printf("Invalid parameter.\n"); 
+			_tprintf(TEXT("Invalid parameter.\n"));
 			break;
 
 		default:
-			printf("Unknown error.\n");
+			_tprintf(TEXT("Unknown error.\n"));
 			break;
 		}
 	
@@ -81,7 +81,7 @@ BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 	PTCHAR path = (PTCHAR)malloc(PATH_LENGTH);
 	if (!path)
 	{
-		printf("Cannot allocate memory for dll path.\n");
+		_tprintf(TEXT("Cannot allocate memory for dll path.\n"));
 
 		return FALSE;
 	}
@@ -96,7 +96,7 @@ BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 	
 	if (!FileExist(path))
 	{
-		printf("Cannot find dll \'%s\'.\n", dll);
+		_tprintf(TEXT("Cannot find dll \'%s\'.\n"), dll);
 		free(path);
 
 		return FALSE;
@@ -104,7 +104,7 @@ BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 
 	if (!Inject(process_id, path))
 	{
-		printf("Cannot inject dll \'%s\'.\n", path);
+		_tprintf(TEXT("Cannot inject dll \'%s\'.\n"), path);
 		free(path);
 
 		return FALSE;
@@ -118,7 +118,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 {
 	if (!process_id)
 	{
-		printf("Invalid process id: %lu.\n", process_id);
+		_tprintf(TEXT("Invalid process id: %lu.\n"), process_id);
 
 		return FALSE;
 	}
@@ -131,7 +131,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 		return FALSE;
 	}
 
-	size_t path_length   = strlen(path);
+	size_t path_length   = _tcslen(path);
 	LPVOID remote_string = (LPVOID)VirtualAllocEx(hProcess, NULL, path_length, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	if (!remote_string)
 	{
@@ -151,7 +151,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 		return FALSE;
 	}
 
-	FARPROC load_lib_add = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
+	FARPROC load_lib_add = GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "LoadLibraryA");
 	if (!load_lib_add)
 	{
 		PrintError(TEXT("GetProcAddress"));
@@ -161,7 +161,7 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 		return FALSE;
 	}
 
-	if (!CreateRemoteThreadEx(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, NULL, NULL, NULL))
+	if (!CreateRemoteThreadEx(hProcess, NULL, 0ul, (LPTHREAD_START_ROUTINE)load_lib_add, remote_string, 0ul, NULL, NULL))
 	{
 		PrintError(TEXT("CreateRemoteThread"));
 		if (!CloseHandle(hProcess))
@@ -198,9 +198,9 @@ BOOL GetProcessList()
 
 	do
 	{
-		printf("=====================================================\n");
-		printf("PROCESS NAME: %s\n", pe32.szExeFile);
-		printf("=====================================================\n");
+		_tprintf(TEXT("=====================================================\n"));
+		_tprintf(TEXT("PROCESS NAME: %s\n"), pe32.szExeFile);
+		_tprintf(TEXT("=====================================================\n"));
 
 		hSnapshot = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
 		if (!hSnapshot)
@@ -220,12 +220,12 @@ BOOL GetProcessList()
 			return FALSE;
 		}
 
-		printf("Process ID        = 0x%08X\n", pe32.th32ProcessID);
-		printf("Thread count      = %lu\n",    pe32.cntThreads);
-		printf("Parent process ID = 0x%08X\n", pe32.th32ParentProcessID);
-		printf("Priority base     = %lu\n",    pe32.pcPriClassBase);
+		_tprintf(TEXT("Process ID        = 0x%08X\n"), pe32.th32ProcessID);
+		_tprintf(TEXT("Thread count      = %lu\n"),    pe32.cntThreads);
+		_tprintf(TEXT("Parent process ID = 0x%08X\n"), pe32.th32ParentProcessID);
+		_tprintf(TEXT("Priority base     = %lu\n"),    pe32.pcPriClassBase);
 		if (priority_class != 0)
-			printf("Priority class    = %lu\n", priority_class);
+			_tprintf(TEXT("Priority class    = %lu\n"), priority_class);
 
 		ListProcessModules(pe32.th32ProcessID);
 		ListProcessThreads(pe32.th32ProcessID);
@@ -242,7 +242,7 @@ BOOL ListProcessModules(DWORD process_id)
 	HANDLE hModule_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process_id);
 	if (hModule_snapshot == INVALID_HANDLE_VALUE)
 	{
-		PrintError("CreateToolhelp32Snapshot");
+		PrintError(TEXT("CreateToolhelp32Snapshot"));
 
 		return FALSE;
 	}
@@ -260,13 +260,13 @@ BOOL ListProcessModules(DWORD process_id)
 
 	do
 	{
-		printf("MODULE NAME:     %s",     me32.szModule);
-		printf("Executable     = %s",     me32.szExePath);
-		printf("Process ID     = 0x%08X", me32.th32ProcessID);
-		printf("Ref count (g)  = 0x%04X", me32.GlblcntUsage);
-		printf("Ref count (p)  = 0x%04X", me32.ProccntUsage);
-		printf("Base address   = 0x%08X", (DWORD)me32.modBaseAddr);
-		printf("Base size      = %lu",    me32.modBaseSize);
+		_tprintf(TEXT("MODULE NAME:     %s"),     me32.szModule);
+		_tprintf(TEXT("Executable     = %s"),     me32.szExePath);
+		_tprintf(TEXT("Process ID     = 0x%08X"), me32.th32ProcessID);
+		_tprintf(TEXT("Ref count (g)  = 0x%04X"), me32.GlblcntUsage);
+		_tprintf(TEXT("Ref count (p)  = 0x%04X"), me32.ProccntUsage);
+		_tprintf(TEXT("Base address   = 0x%08X"), (DWORD)me32.modBaseAddr);
+		_tprintf(TEXT("Base size      = %lu"),    me32.modBaseSize);
 
 	} while (Module32Next(hModule_snapshot, &me32));
 
@@ -301,9 +301,9 @@ BOOL ListProcessThreads(DWORD owner_process_id)
 	{
 		if (te32.th32OwnerProcessID == owner_process_id)
 		{
-			printf("THREAD ID      = 0x%08X\n", te32.th32ThreadID);
-			printf("Base priority  = %ld\n", te32.tpBasePri);
-			printf("Delta priority = %ld\n", te32.tpDeltaPri);
+			_tprintf(TEXT("THREAD ID      = 0x%08X\n"), te32.th32ThreadID);
+			_tprintf(TEXT("Base priority  = %ld\n"), te32.tpBasePri);
+			_tprintf(TEXT("Delta priority = %ld\n"), te32.tpDeltaPri);
 		}
 	} while (Thread32Next(hThread_snapshot, &te32));
 
@@ -318,7 +318,7 @@ BOOL TraverseHeapList()
 	HANDLE hHeap_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPHEAPLIST, GetCurrentProcessId());
 	if (hHeap_snapshot == INVALID_HANDLE_VALUE)
 	{
-		printf("Cannot open handle, error: %lu.\n", GetLastError());
+		_tprintf(TEXT("Cannot open handle, error: %lu.\n"), GetLastError());
 
 		return FALSE;
 	}
@@ -339,10 +339,10 @@ BOOL TraverseHeapList()
 
 		if (Heap32First(&heap_entry, GetCurrentProcessId(), heap_list.th32HeapID))
 		{
-			printf("Heap ID: %d\n", heap_list.th32HeapID);
+			_tprintf(TEXT("Heap ID: %llu\n"), heap_list.th32HeapID);
 			do
 			{
-				printf("\tBlock size: %d\n", heap_entry.dwBlockSize);
+				_tprintf(TEXT("\tBlock size: %llu\n"), heap_entry.dwBlockSize);
 
 				heap_entry.dwSize = sizeof(HEAPENTRY32);
 			} while (Heap32Next(&heap_entry));
