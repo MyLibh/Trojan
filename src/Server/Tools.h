@@ -10,5 +10,6 @@ BOOL Copy2Sysdir();
 
 VOID PrintError(const PTCHAR msg, INT error);
 //inline VOID PrintError(const PTCHAR msg) { PrintError(msg, 0); }
+VOID ClearConsole();
 
 #endif /* __TOOLS_H_INCLUDED__ */

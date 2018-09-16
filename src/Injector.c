@@ -7,9 +7,8 @@
 
 DWORD GetProcessID(const PTCHAR process_name)
 {
-	DWORD process_id = 0;
-
-	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, process_id);
+	DWORD  process_id = 0ul;
+	HANDLE  hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, process_id);
 	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
 		PrintError(TEXT("CreateToolhelp32Snapshot"));
@@ -223,12 +222,11 @@ BOOL GetProcessList()
 		_tprintf(TEXT("Process ID        = 0x%08X\n"), pe32.th32ProcessID);
 		_tprintf(TEXT("Thread count      = %lu\n"),    pe32.cntThreads);
 		_tprintf(TEXT("Parent process ID = 0x%08X\n"), pe32.th32ParentProcessID);
-		_tprintf(TEXT("Priority base     = %lu\n"),    pe32.pcPriClassBase);
-		if (priority_class != 0)
-			_tprintf(TEXT("Priority class    = %lu\n"), priority_class);
+		_tprintf(TEXT("Priority base     = %ld\n"),    pe32.pcPriClassBase);
+		_tprintf(TEXT("Priority class    = %lu\n"),    priority_class);
 
 		ListProcessModules(pe32.th32ProcessID);
-		ListProcessThreads(pe32.th32ProcessID);
+		ListProcessThreads(pe32.th32ProcessID);            
 	} while (Process32Next(hSnapshot, &pe32));
 
 	if (!CloseHandle(hSnapshot))
@@ -265,7 +263,7 @@ BOOL ListProcessModules(DWORD process_id)
 		_tprintf(TEXT("Process ID     = 0x%08X"), me32.th32ProcessID);
 		_tprintf(TEXT("Ref count (g)  = 0x%04X"), me32.GlblcntUsage);
 		_tprintf(TEXT("Ref count (p)  = 0x%04X"), me32.ProccntUsage);
-		_tprintf(TEXT("Base address   = 0x%08X"), (DWORD)me32.modBaseAddr);
+		_tprintf(TEXT("Base address   = 0x%08X"), (DWORD)*me32.modBaseAddr);
 		_tprintf(TEXT("Base size      = %lu"),    me32.modBaseSize);
 
 	} while (Module32Next(hModule_snapshot, &me32));

@@ -57,3 +57,19 @@ VOID PrintError(const PTCHAR msg, INT error)
 
 	_tprintf(TEXT("[ERROR]: \'%s\' failed with error %lu (%s)\n"), msg, error, sysmsg);
 }
+
+VOID ClearConsole()
+{
+	HANDLE                     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO     csbi = { 0 };
+	COORD                      position = { 0,0 };
+	if (GetConsoleScreenBufferInfo(hConsole, &csbi))
+	{
+		DWORD chars_num = csbi.dwSize.X * csbi.dwSize.Y,
+			    written = 0ul;
+		FillConsoleOutputCharacter(hConsole, ' ', chars_num, position, &written);
+		FillConsoleOutputAttribute(hConsole, csbi.wAttributes, chars_num, position, &written);
+	}
+
+	SetConsoleCursorPosition(hConsole, position);
+}

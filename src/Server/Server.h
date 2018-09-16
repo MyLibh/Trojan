@@ -5,11 +5,10 @@
 
 #include <WinSock2.h>
 
-#define MAX_BUFFER_LENGTH 4096
-#define CMD_LENGTH        2
-#define ARGS_LENGTH       126
+#define CMD_LENGTH   2
+#define ARGS_LENGTH  126
 
-#define DEFAULT_PORT      "27015"
+#define DEFAULT_PORT 20000
 
 typedef enum  
 {
@@ -18,6 +17,6 @@ typedef enum
 } Commands;
 
 SOCKET InitServer();
-VOID RunServer( );
+VOID RunServer(SOCKET listen_sock);
 
 #endif /* __SERVER_H_INCLUDED__ */
