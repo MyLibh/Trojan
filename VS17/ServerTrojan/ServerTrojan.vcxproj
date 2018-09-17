@@ -155,10 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\Server\Commands.h" />
     <ClInclude Include="..\..\src\Server\Server.h" />
     <ClInclude Include="..\..\src\Server\Tools.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Server\Commands.c" />
     <ClCompile Include="..\..\src\Server\main.c" />
     <ClCompile Include="..\..\src\Server\Server.c" />
     <ClCompile Include="..\..\src\Server\Tools.c" />
