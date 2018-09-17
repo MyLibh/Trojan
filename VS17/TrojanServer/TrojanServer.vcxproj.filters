@@ -15,25 +15,43 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Injector.h">
+    <ClInclude Include="..\..\src\Server\Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Trojan.h">
+    <ClInclude Include="..\..\src\Server\Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\Commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Debugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Injector.c">
+    <ClCompile Include="..\..\src\Server\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Trojan.c">
+    <ClCompile Include="..\..\src\Server\Server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main.c">
+    <ClCompile Include="..\..\src\Server\Tools.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\Commands.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Debugger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="autorun.inf">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ServerTrojan.vbs">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="..\..\.gitignore">
       <Filter>Resource Files</Filter>
     </None>

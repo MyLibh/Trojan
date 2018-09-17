@@ -17,16 +17,18 @@ For example:
 Client 127.0.0.1 message HelloWorld!
 ```
 
-**Functions List**
+## Functions List
 
 |Function             |Enabled|
 |---------------------|-------|
-|RemoteDesctopView    |      -|
+|MessageBox           |      +|
+|RemoteDesktopView    |      -|
+|ViewWebcam           |      -|
 |RemoteKeyboardControl|      -|
 |RemoteMouseControl   |      -|
 |RemoteCmdLineAccess  |      -|
-|MessageBox           |      +|
 |FileEncryption       |      -|
-|CopyingFiles         |      -|
+|ImportingFiles       |      -|
+|ExportingFiles       |      -|
 |InputBlocking        |      -|
 |SoundPlaying         |      -|

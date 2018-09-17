@@ -1,11 +1,10 @@
 #include "Injector.h"
 
-#include <TlHelp32.h> //
+#include <TlHelp32.h> 
 #include <stdlib.h>   // malloc, free
-#include <tchar.h>    // _tprintf
-#include <io.h>       // _access
+#include <tchar.h>    // _taccess, _tprintfá _tcscmp
 
-DWORD GetProcessID(const PTCHAR process_name)
+DWORD GetProcessID(const PTCHAR process_name) //-V2009
 {
 	DWORD  process_id = 0ul;
 	HANDLE  hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, process_id);
@@ -43,7 +42,7 @@ DWORD GetProcessID(const PTCHAR process_name)
 	return process_id;
 }
 
-BOOL FileExist(const PTCHAR filename)
+BOOL FileExist(const PTCHAR filename) //-V2009
 {
 	int code = _taccess(filename, 0); // Checks for existence only - (mode = 0)
 	if (code == 0)
@@ -74,10 +73,10 @@ BOOL FileExist(const PTCHAR filename)
 
 BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 {
-	DWORD process_id = 0;
+	DWORD process_id = 0ul;
 	while (!(process_id = GetProcessID(process)));
 
-	PTCHAR path = (PTCHAR)malloc(PATH_LENGTH);
+	PTCHAR path = (PTCHAR)malloc((size_t)PATH_LENGTH);
 	if (!path)
 	{
 		_tprintf(TEXT("Cannot allocate memory for dll path.\n"));
@@ -108,12 +107,13 @@ BOOL InjectByName(const PTCHAR process, const PTCHAR dll)
 
 		return FALSE;
 	}
+
 	free(path);
 	
 	return TRUE;
 }
 
-BOOL Inject(DWORD process_id, const PTCHAR path)
+BOOL Inject(DWORD process_id, const PTCHAR path) //-V2009
 {
 	if (!process_id)
 	{
@@ -150,7 +150,15 @@ BOOL Inject(DWORD process_id, const PTCHAR path)
 		return FALSE;
 	}
 
-	FARPROC load_lib_add = GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "LoadLibraryA");
+	HMODULE hModule = NULL;
+	if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, TEXT("kernel32.dll"), &hModule))
+	{
+		PrintError(TEXT("GetModuleHandleEx"));
+
+		return FALSE;
+	}
+
+	FARPROC load_lib_add = GetProcAddress(hModule, "LoadLibraryA");
 	if (!load_lib_add)
 	{
 		PrintError(TEXT("GetProcAddress"));
@@ -353,5 +361,29 @@ BOOL TraverseHeapList()
 		PrintError(TEXT("CloseHandle"));
 
 	return TRUE;
+}
+
+VOID PrintError(const PTCHAR msg)
+{
+	DWORD error = GetLastError();
+
+	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
+	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
+	{
+		_tprintf(TEXT("[ERROR]: FormatMessage failed with 0x%x\n"), GetLastError());
+
+		return;
+	}
+
+	PTCHAR p = sysmsg;
+	while ((*p > 31) || (*p == 9))
+		++p;
+
+	do
+	{
+		*p-- = 0;
+	} while (p >= sysmsg && (*p == '.' || *p < 33));
+
+	_tprintf(TEXT("[ERROR]: \'%s\' failed with error %lu (%s)\n"), msg, error, sysmsg);
 }
 

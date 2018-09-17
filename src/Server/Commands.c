@@ -23,6 +23,7 @@ VOID _on_task_MOUSECTRL(CONST PTCHAR args, PTCHAR result)
 // ShellExecuteEx(&shell);
 // WaitForSingleObject(shell.hProcess, INFINITE);
 //ShellExecuteEx(NULL, TEXT("open"), TEXT("cmd.exe"), TEXT("ipconfig > a.out"), NULL, SW_HIDE);
+
 INT cmd2code(CONST PTCHAR cmd)
 {
 	for (size_t i = 0ul; i < NUMBER_OF_COMMANDS; ++i)
@@ -33,7 +34,7 @@ INT cmd2code(CONST PTCHAR cmd)
 }
 
 CONST PTCHAR code2cmd(INT code)
-{
+{ 
 	for (size_t i = 0ul; i < NUMBER_OF_COMMANDS; ++i)
 		if (MAP_COMMANDS[i].pair.code == code)
 			return MAP_COMMANDS[i].pair.name;

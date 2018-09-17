@@ -8,17 +8,20 @@
 
 #define NUMBER_OF_COMMANDS 2
 
-#define TASK_SUCCESSP   TEXT("Success")
-#define TASK_SUCCESSW   L"Success"
-#define TASK_SUCCESSA   "Success"
+#define TASK_SUCCESSP       TEXT("Success")
+#define TASK_SUCCESSW       L"Success"
+#define TASK_SUCCESSA        "Success"
+#define TASK_SUCCESS_LENGTH 7
 
-#define TASK_FAILUREP   TEXT("Failure")
-#define TASK_FAILUREW   L"Failure"
-#define TASK_FAILUREA   "Failure"
+#define TASK_FAILUREP       TEXT("Failure")
+#define TASK_FAILUREW       L"Failure"
+#define TASK_FAILUREA        "Failure"
+#define TASK_FAILURE_LENGTH 7
 
-#define UNDEFINEDP      TEXT("Undefined")
-#define UNDEFINEDW      L"Undefined"
-#define UNDEFINEDA      "Undefined"
+#define UNDEFINEDP       TEXT("Undefined")
+#define UNDEFINEDW       L"Undefined"
+#define UNDEFINEDA        "Undefined"
+#define UNDEFINED_LENGTH 9
 
 #define RESULT_LENGTH  256
 
