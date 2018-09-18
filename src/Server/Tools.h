@@ -12,7 +12,4 @@ BOOL FileExist(CONST PTCHAR filename);
 BOOL Copy2Sysdir(CONST PTCHAR appname);
 BOOL SaveInReg(CONST PTCHAR appname);
 
-VOID PrintError(CONST PTCHAR msg, INT error);
-VOID ClearConsole();
-
 #endif /* __TOOLS_H_INCLUDED__ */

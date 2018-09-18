@@ -30,10 +30,17 @@ typedef enum
 WORD GetConsoleColor();
 WORD SetConsoleColor(WORD color);
 
-#define $i { WORD old = SetConsoleColor(LightBlue); _tprintf(TEXT("[I] ")); SetConsoleColor(old); }
-#define $e { WORD old = SetConsoleColor(      Red); _tprintf(TEXT("[E] ")); SetConsoleColor(old); }
+VOID DebugInfo(CONST PTCHAR info);
+VOID DebugError(CONST PTCHAR error);
 
-#define $info  { WORD old = SetConsoleColor(LightBlue); _tprintf(TEXT("[INFO] ")); SetConsoleColor(old); }
-#define $error { WORD old = SetConsoleColor(      Red); _tprintf(TEXT("[ERROR] ")); SetConsoleColor(old); }
+VOID PrintError(CONST PTCHAR msg, INT error);
+
+VOID ClearConsole();
+
+#define $i  DebugInfo(TEXT("[I]: ")); 
+#define $e  DebugError(TEXT("[E]: "));
+
+#define $info  DebugInfo(TEXT("[INFO]: ")); 
+#define $error DebugError(TEXT("[ERROR]: "));
 
 #endif /* __DEBUGGER_H_INCLUDED__ */

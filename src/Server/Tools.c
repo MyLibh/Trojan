@@ -1,6 +1,7 @@
 #include <tchar.h> // _taccess, _tprintf, _tcscat_s, _tcslen
 
 #include "Tools.h"
+#include "..\Debugger.h"
 
 BOOL FileExist(CONST PTCHAR filename)
 {
@@ -140,40 +141,3 @@ BOOL SaveInReg(CONST PTCHAR appname)
 	return TRUE;
 }
 
-VOID PrintError(CONST PTCHAR msg, INT error)
-{
-	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
-	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
-	{
-		_tprintf(TEXT("[ERROR]: FormatMessage failed with 0x%x\n"), GetLastError());
-
-		return;
-	}
-
-	PTCHAR p = sysmsg;
-	while ((*p > 31) || (*p == 9))
-		++p;
-
-	do
-	{
-		*p-- = 0;
-	} while (p >= sysmsg && (*p == '.' || *p < 33));
-
-	_tprintf(TEXT("[ERROR]: \'%s\' failed with error %lu (%s)\n"), msg, error, sysmsg);
-}
-
-VOID ClearConsole()
-{
-	HANDLE                       hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFOEX   csbiex = { 0 };
-	COORD                        position = { 0,0 };
-	if (GetConsoleScreenBufferInfoEx(hConsole, &csbiex))
-	{
-		DWORD chars_num = csbiex.dwSize.X * csbiex.dwSize.Y,
-			    written = 0ul;
-		FillConsoleOutputCharacter(hConsole, ' ', chars_num, position, &written);
-		FillConsoleOutputAttribute(hConsole, csbiex.wAttributes, chars_num, position, &written);
-	}
-
-	SetConsoleCursorPosition(hConsole, position);
-}

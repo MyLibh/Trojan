@@ -4,7 +4,6 @@
 #define __COMMANDS_H_INCLUDED__
 
 #include <Windows.h>
-#include <tchar.h>
 
 #define NUMBER_OF_COMMANDS 2
 
@@ -60,11 +59,12 @@ typedef struct
 
 VOID _on_task_MESSAGEBOX(CONST PTCHAR args, PTCHAR result);
 VOID _on_task_MOUSECTRL(CONST PTCHAR args, PTCHAR result);
+VOID _on_task_EXECUTECMD(CONST PTCHAR args, PTCHAR result);
 
 static CONST MAP MAP_COMMANDS[NUMBER_OF_COMMANDS] =
 {
 	{ { TEXT("message"), MESSAGEBOX }, _on_task_MESSAGEBOX },
-	{ { TEXT("mouse"),    MOUSECTRL }, _on_task_MOUSECTRL  }
+	{ { TEXT("execute"), EXECUTECMD }, _on_task_EXECUTECMD }
 };
 
 INT          cmd2code(CONST PTCHAR cmd);

