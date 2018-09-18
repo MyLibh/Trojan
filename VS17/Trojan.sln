@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrojanServer", "TrojanServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Injector.vcxproj", "{4BED0A64-BE5D-48EC-84B4-B128EAC7C730}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Keylogger", "Keylogger\Keylogger.vcxproj", "{E35185BC-9B47-4C55-BF89-71094E41935E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{4BED0A64-BE5D-48EC-84B4-B128EAC7C730}.Release|x64.Build.0 = Release|x64
 		{4BED0A64-BE5D-48EC-84B4-B128EAC7C730}.Release|x86.ActiveCfg = Release|Win32
 		{4BED0A64-BE5D-48EC-84B4-B128EAC7C730}.Release|x86.Build.0 = Release|Win32
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Debug|x64.ActiveCfg = Debug|x64
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Debug|x64.Build.0 = Debug|x64
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Debug|x86.ActiveCfg = Debug|Win32
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Debug|x86.Build.0 = Debug|Win32
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Release|x64.ActiveCfg = Release|x64
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Release|x64.Build.0 = Release|x64
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Release|x86.ActiveCfg = Release|Win32
+		{E35185BC-9B47-4C55-BF89-71094E41935E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

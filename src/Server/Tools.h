@@ -5,14 +5,14 @@
 
 #include <Windows.h>
 
-#define APP_NAME        TEXT("Trojan")
-#define APP_NAME4FOLDER TEXT("\\Trojan.exe")
+#define APP_NAME TEXT("Trojan")
+#define SMALL_BUFFER_LENGTH 256
 
-BOOL   FileExist(const PTCHAR filename);
-BOOL   Copy2Sysdir();
-BOOL   SaveInReg();
+BOOL FileExist(CONST PTCHAR filename);
+BOOL Copy2Sysdir(CONST PTCHAR appname);
+BOOL SaveInReg(CONST PTCHAR appname);
 
-VOID PrintError(const PTCHAR msg, INT error);
+VOID PrintError(CONST PTCHAR msg, INT error);
 VOID ClearConsole();
 
 #endif /* __TOOLS_H_INCLUDED__ */

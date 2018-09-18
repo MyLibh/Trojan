@@ -2,11 +2,9 @@
 
 #include "Tools.h"
 
-#define SMALL_BUFFER_LENGTH 256
-
-BOOL FileExist(const PTCHAR filename)
+BOOL FileExist(CONST PTCHAR filename)
 {
-	int code = _taccess(filename, 0); // Checks for existence only - (mode = 0)
+	INT code = _taccess(filename, 0); // Checks for existence only - (mode = 0)
 	if (code == 0)
 		return TRUE;
 	else
@@ -33,7 +31,7 @@ BOOL FileExist(const PTCHAR filename)
 	return FALSE;
 }
 
-BOOL Copy2Sysdir()
+BOOL Copy2Sysdir(CONST PTCHAR appname)
 {
 	HMODULE hModule = NULL;
 	if(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, NULL, &hModule))
@@ -51,6 +49,15 @@ BOOL Copy2Sysdir()
 		return FALSE;
 	}
 
+	TCHAR filename[SMALL_BUFFER_LENGTH] = TEXT("\\");
+	errno_t code = _tcscat_s(filename, SMALL_BUFFER_LENGTH, appname);
+	if (code != 0)
+	{
+		_tprintf(TEXT("Cannot construct filename, error: %d"), code);
+
+		return FALSE;
+	}
+
 	TCHAR sysdir[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!GetSystemDirectory(sysdir, SMALL_BUFFER_LENGTH))
 	{
@@ -59,7 +66,7 @@ BOOL Copy2Sysdir()
 		return FALSE;
 	}
 
-	errno_t code = _tcscat_s(sysdir, SMALL_BUFFER_LENGTH, APP_NAME4FOLDER);
+	code = _tcscat_s(sysdir, SMALL_BUFFER_LENGTH, filename);
 	if (code != 0)
 	{
 		_tprintf(TEXT("Cannot construct sysdir path, error: %d"), code);
@@ -79,8 +86,17 @@ BOOL Copy2Sysdir()
 	return TRUE;
 }
 
-BOOL SaveInReg()
+BOOL SaveInReg(CONST PTCHAR appname)
 {
+	TCHAR filename[SMALL_BUFFER_LENGTH] = TEXT("\\");
+	errno_t code = _tcscat_s(filename, SMALL_BUFFER_LENGTH, appname);
+	if (code != 0)
+	{
+		_tprintf(TEXT("Cannot construct filename, error: %d"), code);
+
+		return FALSE;
+	}
+
 	TCHAR sysdir[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!GetSystemDirectory(sysdir, SMALL_BUFFER_LENGTH))
 	{
@@ -89,7 +105,7 @@ BOOL SaveInReg()
 		return FALSE;
 	}
 
-	errno_t code = _tcscat_s(sysdir, SMALL_BUFFER_LENGTH, APP_NAME4FOLDER);
+	code = _tcscat_s(sysdir, SMALL_BUFFER_LENGTH, filename);
 	if (code != 0)
 	{
 		_tprintf(TEXT("Cannot construct sysdir path, error: %d"), code);
@@ -105,7 +121,7 @@ BOOL SaveInReg()
 		return FALSE;
 	}
 
-	if (RegSetValueEx(hKey, APP_NAME, 0ul, REG_EXPAND_SZ, (BYTE*)sysdir, SMALL_BUFFER_LENGTH) != ERROR_SUCCESS)
+	if (RegSetValueEx(hKey, appname, 0ul, REG_EXPAND_SZ, (BYTE*)sysdir, SMALL_BUFFER_LENGTH) != ERROR_SUCCESS)
 	{
 		PrintError(TEXT("RegSetValueEx"), GetLastError());
 		if (RegCloseKey(hKey) != ERROR_SUCCESS)
@@ -124,7 +140,7 @@ BOOL SaveInReg()
 	return TRUE;
 }
 
-VOID PrintError(const PTCHAR msg, INT error)
+VOID PrintError(CONST PTCHAR msg, INT error)
 {
 	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
