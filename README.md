@@ -4,6 +4,8 @@ A simple virus(Trojan) aka client-server application written in C for Windows.
 ## Server(victim)
   * Copies itself(Trojan) to _%SYSTEM%_
   * Writes to the register(_"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"_)
+  * Keylogger
+  * Sniffer(in future)
 
 ## Client(hacker)
 
