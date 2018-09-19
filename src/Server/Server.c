@@ -9,7 +9,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-SOCKET InitServer()
+SOCKET InitTCPServer()
 {	
 	WSADATA wsaData;
 	INT     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);

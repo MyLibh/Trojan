@@ -11,7 +11,7 @@
 
 #define DEFAULT_PORT 20000
 
-SOCKET InitServer();
+SOCKET InitTCPServer();
 VOID RunServer(SOCKET listen_sock);
 CONST PTCHAR ExecuteCommand(INT code, CONST PTCHAR args);
 
