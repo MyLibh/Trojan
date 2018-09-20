@@ -1,7 +1,5 @@
-#include <tchar.h> // _tprintf
-
 #include "Debugger.h"
-#include "Server\Tools.h"
+#include "Constants.h"
 
 WORD GetConsoleColor()
 {
@@ -104,9 +102,9 @@ VOID ClearConsole()
 		return;
 	}
 
-	COORD  position = { 0,0 };
+	COORD position  = { 0,0 };
 	DWORD chars_num = csbi.dwSize.X * csbi.dwSize.Y,
-		    written = 0ul;
+		  written   = 0ul;
 	if (!FillConsoleOutputCharacter(hConsole, ' ', chars_num, position, &written))
 	{
 		PrintError(TEXT("FillConsoleOutputCharacter"), GetLastError());

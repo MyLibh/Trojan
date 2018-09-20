@@ -3,26 +3,9 @@
 #ifndef __COMMANDS_H_INCLUDED__
 #define __COMMANDS_H_INCLUDED__
 
+#include "..\Constants.h" // TODO: Remove, when all functions will be enabled
+
 #include <Windows.h>
-
-#define NUMBER_OF_COMMANDS 3
-
-#define TASK_SUCCESSP       TEXT("Success")
-#define TASK_SUCCESSW       L"Success"
-#define TASK_SUCCESSA        "Success"
-#define TASK_SUCCESS_LENGTH 7
-
-#define TASK_FAILUREP       TEXT("Failure")
-#define TASK_FAILUREW       L"Failure"
-#define TASK_FAILUREA        "Failure"
-#define TASK_FAILURE_LENGTH 7
-
-#define UNDEFINEDP       TEXT("Undefined")
-#define UNDEFINEDW       L"Undefined"
-#define UNDEFINEDA        "Undefined"
-#define UNDEFINED_LENGTH 9
-
-#define RESULT_LENGTH  256
 
 typedef enum
 {
@@ -58,8 +41,6 @@ typedef struct
 	PAIR        pair;
 	trojan_task task;
 } MAP;
-
-SOCKET InitUDPClient();
 
 VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result);
 VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result);

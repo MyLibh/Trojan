@@ -18,13 +18,10 @@
     <ClInclude Include="..\..\src\Server\Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Server\Tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Server\Commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Debugger.h">
+    <ClInclude Include="..\..\src\Server\UDPClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,26 +32,20 @@
     <ClCompile Include="..\..\src\Server\Server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Server\Tools.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Server\Commands.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Debugger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\UDPClient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Tools.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\.gitignore">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\LICENSE">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\README.md">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\..\src\Server\autorun.inf">
       <Filter>Resource Files</Filter>
     </None>

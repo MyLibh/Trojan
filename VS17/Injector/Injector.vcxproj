@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\src\Injector\Injector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Debugger.c" />
     <ClCompile Include="..\..\src\Injector\Injector.c" />
     <ClCompile Include="..\..\src\Injector\main.c" />
   </ItemGroup>

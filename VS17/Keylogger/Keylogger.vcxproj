@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Debugger.c" />
     <ClCompile Include="..\..\src\Keylogger\Keylogger.c" />
     <ClCompile Include="..\..\src\Keylogger\main.c" />
+    <ClCompile Include="..\..\src\Tools.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Keylogger\Keylogger.h" />
