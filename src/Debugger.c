@@ -62,7 +62,7 @@ VOID DebugError(const PTCHAR error)
 	SetConsoleColor(old);
 }
 
-VOID PrintError(CONST PTCHAR msg, INT error)
+VOID PrintError(CONST PTCHAR func, INT error)
 {
 	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
@@ -81,7 +81,7 @@ VOID PrintError(CONST PTCHAR msg, INT error)
 		*p-- = 0;
 	} while (p >= sysmsg && (*p == '.' || *p < 33));
 
-	$error _tprintf(TEXT("\'%s\' failed with error %lu (%s)\n"), msg, error, sysmsg);
+	$error _tprintf(TEXT("\'%s\' failed with error %lu (%s)\n"), func, error, sysmsg);
 }
 	
 VOID ClearConsole()
