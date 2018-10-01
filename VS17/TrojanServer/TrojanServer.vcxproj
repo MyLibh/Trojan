@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Application.hpp" />
     <ClInclude Include="..\..\src\Server\Commands.h" />
+    <ClInclude Include="..\..\src\Server\ScreenCapturer.h" />
     <ClInclude Include="..\..\src\Server\Server.h" />
     <ClInclude Include="..\..\src\Server\UDPClient.h" />
   </ItemGroup>
@@ -165,7 +166,8 @@
     <ClCompile Include="..\..\src\Debugger.c" />
     <ClCompile Include="..\..\src\Server\Application.cpp" />
     <ClCompile Include="..\..\src\Server\Commands.c" />
-    <ClCompile Include="..\..\src\Server\main.c" />
+    <ClCompile Include="..\..\src\Server\main.cpp" />
+    <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp" />
     <ClCompile Include="..\..\src\Server\Server.c" />
     <ClCompile Include="..\..\src\Server\UDPClient.c" />
     <ClCompile Include="..\..\src\Tools.c" />

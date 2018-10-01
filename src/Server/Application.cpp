@@ -6,7 +6,7 @@
 
 BOOL Application::startSavingThread()
 {
-	if (!CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&StayAlive, TROJAN_APP_NAME, 0, NULL))
+	if (!CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&StayAlive), TROJAN_APP_NAME, 0, NULL))
 	{
 		PrintError(TEXT("CreateThread"), GetLastError());
 
