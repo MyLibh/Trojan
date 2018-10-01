@@ -4,6 +4,8 @@
 
 #include <tchar.h> // _tcscpy_s, _tcscmp
 
+// #pragma comment("d3d9", lib)
+
 VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result)
 {
 	if (!MessageBoxEx(NULL, args, TEXT("ERROR"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)))
