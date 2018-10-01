@@ -147,3 +147,13 @@ VOID StayAlive(CONST PTCHAR appname)
 		SaveInReg(appname);
 	}
 }
+
+VOID SafeFree(VOID *ptr)
+{
+	if (ptr)
+	{
+		free(ptr);
+
+		ptr = NULL;
+	}
+}
