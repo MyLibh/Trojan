@@ -148,7 +148,7 @@ VOID StayAlive(CONST PTCHAR appname)
 	}
 }
 
-VOID SafeFree(VOID *ptr)
+VOID SafeFree(LPVOID ptr)
 {
 	if (ptr)
 	{

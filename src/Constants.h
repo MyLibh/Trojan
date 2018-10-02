@@ -5,6 +5,8 @@
 
 #include <tchar.h>
 
+#define TEXTH(str) (PTCHAR)TEXT(str)
+
 #define SMALL_BUFFER_LENGTH     256
 
 // TCP protocol defines
@@ -15,22 +17,22 @@
 #define SERVER_IP          "127.0.0.1" // "37.190.32.12" "127.0.0.1" "192.168.1.65"
 #define DEFAULT_PORT       20000
 
-#define TROJAN_APP_NAME    TEXT("Trojan.exe")
+#define TROJAN_APP_NAME    TEXTH("Trojan.exe")
 
 // Commands defines
 #define NUMBER_OF_COMMANDS  3
 
-#define TASK_SUCCESSP       TEXT("Success")
+#define TASK_SUCCESSP       TEXTH("Success")
 #define TASK_SUCCESSW       L"Success"
 #define TASK_SUCCESSA        "Success"
 #define TASK_SUCCESS_LENGTH 7
 
-#define TASK_FAILUREP       TEXT("Failure")
+#define TASK_FAILUREP       TEXTH("Failure")
 #define TASK_FAILUREW       L"Failure"
 #define TASK_FAILUREA        "Failure"
 #define TASK_FAILURE_LENGTH 7
 
-#define UNDEFINEDP          TEXT("Undefined")
+#define UNDEFINEDP          TEXTH("Undefined")
 #define UNDEFINEDW          L"Undefined"
 #define UNDEFINEDA           "Undefined"
 #define UNDEFINED_LENGTH    9

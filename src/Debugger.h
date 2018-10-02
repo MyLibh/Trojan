@@ -51,6 +51,10 @@ typedef enum _Colors
 	White        = 0x0F
 } Colors;
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 //====================================================================================================================================
 //!
 //! \brief	 Recieves the console text attributes
@@ -124,6 +128,10 @@ VOID PrintError(CONST PTCHAR func, INT error);
 
 VOID ClearConsole();
 
+#ifdef __cplusplus
+} // extern "C" 
+#endif /* __cplusplus */
+
 //====================================================================================================================================
 //!
 //! \brief  Short version of macros for outputting info
@@ -154,6 +162,6 @@ VOID ClearConsole();
 //!
 //====================================================================================================================================
 
-#define $error DebugError(TEXT("[ERROR]: "));
+#define $error DebugError((const PTCHAR)TEXT("[ERROR]: "));
 
 #endif /* __DEBUGGER_H_INCLUDED__ */

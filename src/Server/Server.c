@@ -1,13 +1,10 @@
+#include "pch.h"
+
 #include "Server.h"
 #include "Commands.h"
 #include "..\Tools.h"
 #include "..\Debugger.h"
 #include "..\Constants.h"
-
-#include <stdlib.h> // wcstombs_s
-#include <stdio.h>  // sscanf_s
-
-#pragma comment(lib, "Ws2_32.lib")
 
 SOCKET InitTCPServer()
 {	

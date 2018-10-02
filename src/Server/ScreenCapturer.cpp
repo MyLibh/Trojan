@@ -1,76 +1,72 @@
-#include <d3d9.h>
-#include <Wincodec.h> 
+#include "pch.h"
 
-#pragma comment(lib, "d3d9.lib")
+#include "ScreenCapturer.hpp"
 
-template<typename T>
-VOID SafeRelease(T **pPtr)
+DirectXParametrs::DirectXParametrs() :
+	m_pD3D9(nullptr),
+	m_pDevice(nullptr),
+	m_pSurface(nullptr),
+	m_mode({ 0 })
+{ }
+
+DirectXParametrs::~DirectXParametrs()
 {
-	if (*pPtr)
-	{
-		(*pPtr)->Release();
-
-		*pPtr = nullptr;
-	}
+	SafeRelease(&m_pSurface);
+	SafeRelease(&m_pDevice);
+	SafeRelease(&m_pD3D9);
 }
 
-LPBYTE CaptureScreen()
+BOOL DirectXParametrs::init()
 {
-	IDirect3D9 *pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!pD3D9)
-	{
-		return nullptr;
-	}
+	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!m_pD3D9)
+		return FALSE;
 
-	D3DDISPLAYMODE mode = { 0 };
-	if(pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode) != D3D_OK)
-	{
-		return nullptr;
-	}
-
+	if (m_pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &m_mode) != D3D_OK)
+		return FALSE;
+	
 	D3DPRESENT_PARAMETERS parameters = { 0 };
 	parameters.Windowed         = TRUE;
 	parameters.BackBufferCount  = 1;
-	parameters.BackBufferHeight = mode.Height;
-	parameters.BackBufferWidth  = mode.Width;
+	parameters.BackBufferHeight = m_mode.Height;
+	parameters.BackBufferWidth  = m_mode.Width;
 	parameters.SwapEffect       = D3DSWAPEFFECT_DISCARD;
 
-	IDirect3DDevice9 *pDevice = nullptr;
-	if (pD3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, nullptr, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &parameters, &pDevice) != D3D_OK)
-	{
-		return nullptr;
-	}
-
-
-	IDirect3DSurface9 *pSurface = nullptr;
-	if (pDevice->CreateOffscreenPlainSurface(mode.Width, mode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pSurface, nullptr) != D3D_OK)
-	{
-		return nullptr;
-	}
+	if (m_pD3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, nullptr, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &parameters, &m_pDevice) != D3D_OK)
+		return FALSE;
 	
+	if (m_pDevice->CreateOffscreenPlainSurface(m_mode.Width, m_mode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pSurface, nullptr) != D3D_OK)
+		return FALSE;
+	
+	return TRUE;
+}
+
+LPBYTE CaptureScreen(DirectXParametrs *pDXParams)
+{
 	D3DLOCKED_RECT rc = { 0 };
-	if (pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
-	{
+	if (pDXParams->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
 		return nullptr;
-	}
 
 	UINT pitch = rc.Pitch;
-	if (pSurface->UnlockRect() != D3D_OK)
-	{
+	if (pDXParams->m_pSurface->UnlockRect() != D3D_OK)
 		return nullptr;
-	}
 
-	LPBYTE shot = new BYTE[pitch * mode.Height];
-	pDevice->GetFrontBufferData(0, pSurface);
-	pSurface->LockRect(&rc, nullptr, 0);
-	CopyMemory(shot, rc.pBits, rc.Pitch * mode.Height);
-	pSurface->UnlockRect();
+	LPBYTE shot = new BYTE[pitch * pDXParams->m_mode.Height]; // TODO: bad_alloc check
+	if (pDXParams->m_pDevice->GetFrontBufferData(0, pDXParams->m_pSurface) != D3D_OK)
+		goto error;
 
-cleanup:
+	if (pDXParams->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
+		goto error;
 
-	SafeRelease(&pSurface);
-	SafeRelease(&pDevice);
-	SafeRelease(&pD3D9);
+	CopyMemory(shot, rc.pBits, rc.Pitch * pDXParams->m_mode.Height);
+
+	if (pDXParams->m_pSurface->UnlockRect() != D3D_OK)
+		goto error;
 
 	return shot;
+	
+error:
+	delete[] shot;
+
+	return nullptr;
 }

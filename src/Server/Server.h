@@ -3,10 +3,17 @@
 #ifndef __SERVER_H_INCLUDED__
 #define __SERVER_H_INCLUDED__
 
-#include <WinSock2.h>
+#ifdef __cplusplus
+extern "C" 
+{
+#endif /* __cplusplus */
 
 SOCKET InitTCPServer();
 VOID   RunServer(SOCKET listen_sock);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif /* __cplusplus */
 
 CONST PTCHAR ExecuteCommand(INT code, CONST PTCHAR args);
 

