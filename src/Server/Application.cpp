@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "..\pch.h"
 
 #include "Application.hpp"
 #include "Server.h"
@@ -34,6 +34,15 @@ BOOL Application::init()
 	if(!startSavingThread())
 		return FALSE;
 
+	WSADATA wsaData;
+	INT iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0)
+	{
+		$error _tprintf(TEXTH("WSAStartup failed with error: %d\n"), iResult);
+
+		return FALSE;
+	}
+
 	m_tcpServer_sock = InitTCPServer();
 	if (m_tcpServer_sock == INVALID_SOCKET)
 	{
@@ -41,6 +50,8 @@ BOOL Application::init()
 
 		return FALSE;
 	}
+
+	$i _tprintf(TEXTH("Startup finished\n"));
 
 	return TRUE;
 }

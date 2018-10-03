@@ -7,6 +7,9 @@
 #include <stdlib.h> 
 #include <stdio.h>  
 
+// C++ RunTime Header Files
+#include <string>
+
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files
 #include <Windows.h>

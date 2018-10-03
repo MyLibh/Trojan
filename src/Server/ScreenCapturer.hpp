@@ -3,8 +3,6 @@
 #ifndef __SCREENCAPTURER_HPP_INCLUDED__
 #define __SCREENCAPTURER_HPP_INCLUDED__
 
-#include "pch.h"
-
 struct IDirect3D9;
 struct IDirect3DDevice9;
 struct IDirect3DSurface9;

@@ -5,8 +5,6 @@
 
 #include "..\Constants.h" // TODO: Remove, when all functions will be enabled
 
-#include <Windows.h>
-
 typedef enum
 {
 	MESSAGEBOX,
