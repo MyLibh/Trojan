@@ -1,5 +1,5 @@
 #include "Keylogger.h"
-#include "..\Tools.h"
+#include "..\Tools.hpp"
 #include "..\Constants.h"
 
 int __cdecl main(int argc, char **argv)

@@ -3,7 +3,7 @@
 #include "Application.hpp"
 #include "..\Network\TCPConnection.hpp"
 #include "Commands.hpp"
-#include "..\Tools.h"
+#include "..\Tools.hpp"
 #include "..\Debugger.h"
 #include "..\Constants.h"
 
@@ -76,9 +76,9 @@ VOID Application::run()
 			}
 
 			sstr << msg;
-			INT code = UNDEFINEDCMD;
+			INT code = static_cast<INT>(Command::UNDEFINEDCMD);
 			sstr >> code;
-			if (code == UNDEFINEDCMD)
+			if (code == static_cast<INT>(Command::UNDEFINEDCMD))
 			{
 				$E(TEXTH("Undefined cmd code(%d)\n"), code);
 
