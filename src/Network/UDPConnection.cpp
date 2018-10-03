@@ -52,7 +52,7 @@ BOOL IUDPConnection::recv(std::string &buff)
 
 		return FALSE;
 	}
-	else if (bytes < length)
+	else if (static_cast<size_t>(bytes) < length)
 	{
 		$info _tprintf(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
 

@@ -31,6 +31,7 @@ public:
 	virtual BOOL send(CONST LPBYTE msg, size_t size)                                  final override;
 	virtual BOOL recv(std::string &buff)                                              final override;
 			BOOL accept();
+			BOOL close_client_socket();
 private:
 	SOCKET      m_clientsocket;
 	SOCKADDR_IN m_clientaddr;

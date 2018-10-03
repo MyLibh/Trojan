@@ -13,11 +13,11 @@ BOOL ITCPConnection::send(CONST std::string &msg)
 
 		return FALSE;
 	}
-	else if (bytes < length)
+	else if (static_cast<size_t>(bytes) < length)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), length - bytes);
+		$INFO(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
 
-		return FALSE;
+		return (bytes != 0);
 	}
 
 	return TRUE;
@@ -34,9 +34,9 @@ BOOL ITCPConnection::send(CONST LPBYTE msg, size_t size)
 	}
 	else if (static_cast<size_t>(bytes) < size)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), size - static_cast<size_t>(bytes));
+		$INFO(TEXTH("Bytes lost:%llu\n"), size - static_cast<size_t>(bytes));
 
-		return FALSE;
+		return (bytes != 0);
 	}
 
 	return TRUE;
@@ -54,9 +54,9 @@ BOOL ITCPConnection::recv(std::string &buff)
 	}
 	else if (static_cast<size_t>(bytes) < length)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
+		$INFO(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
 
-		return FALSE;
+		return (bytes != 0);
 	}
 
 	return TRUE;
@@ -146,9 +146,9 @@ BOOL TCPServer::send(CONST std::string &msg)
 	}
 	else if (static_cast<size_t>(bytes) < length)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
+		$INFO(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
 
-		return FALSE;
+		return (bytes != 0);
 	}
 
 	return TRUE;
@@ -165,9 +165,9 @@ BOOL TCPServer::send(CONST LPBYTE msg, size_t size)
 	}
 	else if (static_cast<size_t>(bytes) < size)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), size - static_cast<size_t>(bytes));
+		$INFO(TEXTH("Bytes lost:%llu\n"), size - static_cast<size_t>(bytes));
 
-		return FALSE;
+		return (bytes != 0);
 	}
 
 	return TRUE;
@@ -177,6 +177,7 @@ BOOL TCPServer::recv(std::string &buff)
 {
 	size_t length = buff.length();
 	INT    bytes = ::recv(m_clientsocket, const_cast<char*>(buff.c_str()), static_cast<INT>(length), 0);
+	
 	if (bytes == SOCKET_ERROR)
 	{
 		PrintError(TEXTH("recv"), WSAGetLastError());
@@ -185,10 +186,12 @@ BOOL TCPServer::recv(std::string &buff)
 	}
 	else if (static_cast<size_t>(bytes) < length)
 	{
-		$info _tprintf(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
+		$INFO(TEXTH("Bytes lost:%llu\n"), length - static_cast<size_t>(bytes));
+		buff[bytes] = '\0';
 
-		return FALSE;
+		return (bytes != 0);
 	}
+	buff[bytes] = '\0';
 
 	return TRUE;
 }
@@ -202,6 +205,22 @@ BOOL TCPServer::accept()
 
 		return FALSE;
 	}
+
+	return TRUE;
+}
+
+BOOL TCPServer::close_client_socket()
+{
+	if (closesocket(m_clientsocket) != 0)
+	{
+		PrintError(TEXTH("closesocket"), WSAGetLastError());
+	
+		return FALSE;
+	}
+
+	m_clientaddr_len = sizeof(SOCKADDR_IN);
+
+	ZeroMemory(&m_clientaddr, m_clientaddr_len);
 
 	return TRUE;
 }

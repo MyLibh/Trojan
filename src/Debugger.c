@@ -1,6 +1,8 @@
 #include "Debugger.h"
 #include "Constants.h"
 
+#include <stdio.h>
+
 WORD GetConsoleColor()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

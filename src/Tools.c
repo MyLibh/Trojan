@@ -2,6 +2,8 @@
 #include "Constants.h"
 #include "Debugger.h"
 
+#include <io.h>
+
 BOOL FileExist(CONST PTCHAR filename)
 {
 	INT code = _taccess(filename, 0); // Checks for existence only - (mode = 0)

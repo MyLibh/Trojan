@@ -1,5 +1,7 @@
 #pragma once
 
+class TCPServer;
+
 class Application
 {
 	BOOL startSavingThread();
@@ -12,5 +14,5 @@ public:
 	VOID run();
 
 private:
-	SOCKET m_tcpServer_sock;
+	TCPServer *m_pTCPServer;
 };

@@ -9,6 +9,8 @@
 
 // C++ RunTime Header Files
 #include <string>
+#include <iostream>
+#include <sstream>
 
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files

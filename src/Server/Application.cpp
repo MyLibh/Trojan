@@ -1,7 +1,8 @@
 #include "..\pch.h"
 
 #include "Application.hpp"
-#include "Server.h"
+#include "..\Network\TCPConnection.hpp"
+#include "Commands.hpp"
 #include "..\Tools.h"
 #include "..\Debugger.h"
 #include "..\Constants.h"
@@ -19,13 +20,14 @@ BOOL Application::startSavingThread()
 }
 
 Application::Application() :
-	m_tcpServer_sock(INVALID_SOCKET)
+	m_pTCPServer(new TCPServer)
 {
 }
 
 Application::~Application()
 {
-	closesocket(m_tcpServer_sock);
+	delete m_pTCPServer;
+
 	WSACleanup();
 }
 
@@ -42,21 +44,61 @@ BOOL Application::init()
 
 		return FALSE;
 	}
+	$I(TEXTH("WSAStartup finished\n"));
 
-	m_tcpServer_sock = InitTCPServer();
-	if (m_tcpServer_sock == INVALID_SOCKET)
-	{
-		$error _tprintf(TEXT("Cannot initialize the server\n"));
-
+	if(!m_pTCPServer->init())
 		return FALSE;
-	}
-
-	$i _tprintf(TEXTH("Startup finished\n"));
 
 	return TRUE;
 }
 
 VOID Application::run()
 {
-	RunServer(m_tcpServer_sock);
+	ClearConsole();
+
+	std::string msg(TCP_MESSAGE_LENGTH, { });
+	std::stringstream sstr;
+	while (TRUE)
+	{
+		$I(TEXTH("Waiting for the client\n"));
+
+		if(!m_pTCPServer->accept())
+			return;
+
+		$I(TEXTH("Connected\n"));
+		while (TRUE)
+		{
+			if (!m_pTCPServer->recv(msg))
+			{
+				$INFO(TEXTH("%hs\n"), msg.c_str());
+
+				break;
+			}
+
+			sstr << msg;
+			INT code = UNDEFINEDCMD;
+			sstr >> code;
+			if (code == UNDEFINEDCMD)
+			{
+				$E(TEXTH("Undefined cmd code(%d)\n"), code);
+
+				m_pTCPServer->send(TASK_FAILUREA);
+
+				break;
+			}
+
+			std::string args = msg.substr(CMD_LENGTH);
+			m_pTCPServer->send(ExecuteCommand(code, args));
+			sstr.str(std::string());
+			msg.resize(TCP_MESSAGE_LENGTH, { });
+		}
+
+		if(!m_pTCPServer->close_client_socket())
+			return;
+
+		$I(TEXTH("Client disconnected\n"));
+
+		system("pause"); // SleepEx(10000, FALSE);
+		ClearConsole();
+	}
 }
