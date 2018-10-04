@@ -19,12 +19,21 @@
     <Filter Include="Source Files\Network">
       <UniqueIdentifier>{e52c9bae-0434-4fa5-adfd-6d0bdef7ebf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DirectX">
+      <UniqueIdentifier>{fd17d5dc-20c2-42b4-80ac-0bae38f5e6e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DirectX">
+      <UniqueIdentifier>{a5278907-f3bd-4be5-9f2f-55887aaca140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Service">
+      <UniqueIdentifier>{f378d4d8-5ee3-4d00-9b00-22347b0d108d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Service">
+      <UniqueIdentifier>{855bd5a0-6bfa-45a9-9522-2470d9dbb714}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Application.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Network\UDPConnection.hpp">
@@ -36,27 +45,30 @@
     <ClInclude Include="..\..\src\Network\INetConnection.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Server\Commands.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp">
+      <Filter>Header Files\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp">
+      <Filter>Header Files\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pch.h">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\Tools.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Debugger.h">
+      <Filter>Header Files\Service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Debugger.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Server\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Server\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Server\Commands.cpp">
@@ -71,11 +83,20 @@
     <ClCompile Include="..\..\src\Network\INetConnection.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
+      <Filter>Source Files\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Debugger.c">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\pch.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Service</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Tools.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\WebCamCapturer.cpp">
+      <Filter>Source Files\DirectX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

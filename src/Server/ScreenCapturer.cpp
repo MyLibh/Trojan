@@ -41,17 +41,18 @@ BOOL DirectXParametrs::init()
 	return TRUE;
 }
 
-LPBYTE CaptureScreen(DirectXParametrs *pDXParams)
+std::pair<LPBYTE, size_t> CaptureScreen(DirectXParametrs *pDXParams)
 {
 	D3DLOCKED_RECT rc = { 0 };
 	if (pDXParams->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
-		return nullptr;
+		return { nullptr, 0ull };
 
 	UINT pitch = rc.Pitch;
 	if (pDXParams->m_pSurface->UnlockRect() != D3D_OK)
-		return nullptr;
+		return { nullptr, 0ull };
 
-	LPBYTE shot = new BYTE[pitch * pDXParams->m_mode.Height]; // TODO: bad_alloc check
+	size_t size = pitch * pDXParams->m_mode.Height;
+	LPBYTE shot = new BYTE[size]; // TODO: bad_alloc check
 	if (pDXParams->m_pDevice->GetFrontBufferData(0, pDXParams->m_pSurface) != D3D_OK)
 		goto error;
 
@@ -63,10 +64,10 @@ LPBYTE CaptureScreen(DirectXParametrs *pDXParams)
 	if (pDXParams->m_pSurface->UnlockRect() != D3D_OK)
 		goto error;
 
-	return shot;
+	return { shot, size };
 	
 error:
 	delete[] shot;
 
-	return nullptr;
+	return { nullptr, 0ull };
 }

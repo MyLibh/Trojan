@@ -73,9 +73,14 @@ BOOL TCPClient::init(CONST std::string &ip /* = SERVER_IP */, u_short port /* = 
 		return FALSE;
 	}
 
-	m_sockaddr.sin_family      = AF_INET;
-	m_sockaddr.sin_port        = htons(port);
-	m_sockaddr.sin_addr.s_addr = inet_addr(ip.c_str()); // _WINSOCK_DEPRECATED_NO_WARNINGS
+	m_sockaddr.sin_family = AF_INET;
+	m_sockaddr.sin_port   = htons(port);
+	if (inet_pton(AF_INET, ip.c_str(), &(m_sockaddr.sin_addr)) == -1)
+	{
+		PrintError(TEXTH("inet_pton"), WSAGetLastError());
+
+		return FALSE;
+	}
 
 	return TRUE;
 }

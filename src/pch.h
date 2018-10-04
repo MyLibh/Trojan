@@ -20,9 +20,11 @@
 // Windows Header Files
 #include <Windows.h>
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <shellapi.h>
 #include <tchar.h> 
 #include <d3d9.h>
+#include <dshow.h>
  
 #endif /* __PCH_H_INCLUDED__ */
 

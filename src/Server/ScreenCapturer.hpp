@@ -31,6 +31,6 @@ struct IDirect3DSurface9;
 		}
 	}
 
-	LPBYTE CaptureScreen(DirectXParametrs *pDXParams);
+	std::pair<LPBYTE, size_t> CaptureScreen(DirectXParametrs *pDXParams);
 
 #endif /* __SCREENCAPTURER_HPP_INCLUDED__ */

