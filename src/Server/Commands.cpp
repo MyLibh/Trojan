@@ -1,7 +1,7 @@
 #include "..\pch.h"
 
 #include "Commands.hpp"
-#include "..\Network\UDPConnection.hpp"
+//#include "..\Network\UDPConnection.hpp"
 #include "ScreenCapturer.hpp"
 #include "..\Debugger.h"
 
@@ -33,11 +33,11 @@ VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result)
 VOID SendDesktopScreen()
 {
 	static DirectXParametrs dxp;
-	static UDPClient udpclient;
+	//static UDPClient udpclient;
 	static BOOL init = FALSE;
 
-	if (!init && udpclient.init() && dxp.init())
-		init = TRUE;
+	//if (!init && udpclient.init() && dxp.init())
+	//	init = TRUE;
 	
 	while (TRUE)
 	{
@@ -45,8 +45,8 @@ VOID SendDesktopScreen()
 
 		std::cout << pair.second;
 
-		udpclient.send(std::to_string(pair.second));
-		udpclient.send(std::string(reinterpret_cast<char*>(pair.first)));
+		//udpclient.send(std::to_string(pair.second));
+		//udpclient.send(std::string(reinterpret_cast<char*>(pair.first)));
 
 		if(pair.first)
 			delete[] pair.first;

