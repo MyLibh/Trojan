@@ -11,19 +11,19 @@ A simple virus(Trojan) aka client-server application written in C++ for Windows.
 
 Use cmd:
 ```
-Client [ip] [command] [command arguments]
+Client [server_ip] [port] 
 ```
 
 For example:
 ```
-Client 127.0.0.1 message HelloWorld!
+Client 127.0.0.1 1234
 ```
 
 ## Functions List
 
 |Function             |Enabled|
 |---------------------|-------|
-|MessageBox           |      +|
+|MessageBox           |      -|
 |RemoteDesktopView    |      -|
 |ViewWebcam           |      -|
 |RemoteKeyboardControl|      -|
