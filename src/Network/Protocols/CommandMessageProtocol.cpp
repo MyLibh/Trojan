@@ -1,4 +1,4 @@
-#include "..\pch.hpp"
+#include "..\..\Service\pch.hpp"
 
 #include "CommandMessageProtocol.hpp"
 

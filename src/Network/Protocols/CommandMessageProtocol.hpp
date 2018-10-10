@@ -6,7 +6,7 @@
 class CommandMessageProtocol
 {
 public:
-	static constexpr size_t HEADER_LENGTH   = 4;
+	static constexpr size_t HEADER_LENGTH   = 4; //-V112
 	static constexpr size_t COMMAND_LENGTH  = 2;
 	static constexpr size_t SPACE_LENGTH    = 1;
 	static constexpr size_t MAX_ARGS_LENGTH = 128;

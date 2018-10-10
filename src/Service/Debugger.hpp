@@ -9,8 +9,8 @@
 //!
 //====================================================================================================================================
 
-#ifndef __DEBUGGER_H_INCLUDED__
-#define __DEBUGGER_H_INCLUDED__
+#ifndef __DEBUGGER_HPP_INCLUDED__
+#define __DEBUGGER_HPP_INCLUDED__
 
 #include <Windows.h>  
 #include "Constants.h"
@@ -51,10 +51,6 @@ typedef enum _Colors
 	Yellow       = 0x0E,
 	White        = 0x0F
 } Colors;
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 //====================================================================================================================================
 //!
@@ -108,6 +104,18 @@ VOID DebugError(CONST PTCHAR error);
 
 //====================================================================================================================================
 //!
+//! \brief	 Prints 'warning', using DarkGray color for text and Black for background
+//!
+//! \param   warning  Text for output
+//!
+//! \note    If an error occurs, it will be displayed in console(STD_OUTPUT_HANDLE)
+//!
+//====================================================================================================================================
+
+VOID DebugWarning(CONST PTCHAR warning);
+
+//====================================================================================================================================
+//!
 //! \brief	Prints the formated error("'func' failed with error 'code' ('translated_error')\n")
 //!
 //! \param  func   Name of the function, which failed
@@ -121,6 +129,16 @@ VOID PrintError(CONST PTCHAR func, INT error);
 
 //====================================================================================================================================
 //!
+//! \brief	Prints the formated boost::system::error_code
+//!
+//! \param  ec  Name of the function, which failed
+//!
+//====================================================================================================================================
+
+void PrintBoostError(boost::system::error_code ec);
+
+//====================================================================================================================================
+//!
 //! \brief	 Clears the console output
 //!
 //! \note    If an error occurs, it will be displayed in console(STD_OUTPUT_HANDLE)
@@ -129,54 +147,32 @@ VOID PrintError(CONST PTCHAR func, INT error);
 
 VOID ClearConsole();
 
-#ifdef __cplusplus
-} // extern "C" 
-#endif /* __cplusplus */
-
-//====================================================================================================================================
-//!
-//! \brief  Short version of macros for outputting info
-//!
-//====================================================================================================================================
-
-#define $i  DebugInfo(TEXTH("[I]: ")); 
-
-//====================================================================================================================================
-//!
-//! \brief  Short version of macros for outputting error
-//!
-//====================================================================================================================================
-
-#define $e  DebugError(TEXTH("[E]: "));
-
-//====================================================================================================================================
-//!
-//! \brief  Extended version of macros for outputting info
-//!
-//====================================================================================================================================
+#define $i DebugInfo(TEXTH("[I]: ")); 
+#define $e DebugError(TEXTH("[E]: "));
+#define $w DebugWarning(TEXTH("[W]: "));
 
 #define $info  DebugInfo(TEXTH("[INFO]: ")); 
-
-//====================================================================================================================================
-//!
-//! \brief  Extended version of macros for outputting error
-//!
-//====================================================================================================================================
-
 #define $error DebugError(TEXTH("[ERROR]: "));
+#define $warn  DebugWarning(TEXTH("[WARNING]: "));
 
 #ifdef NDEBUG
-	#define $I(msg, ...)    $i    _tprintf(msg, __VA_ARGS__);
-	#define $INFO(msg, ...) $info _tprintf(msg, __VA_ARGS__);
+	#define $I(msg, ...) $i _tprintf(msg, __VA_ARGS__);
+	#define $E(msg, ...) $e _tprintf(msg, __VA_ARGS__);
+	#define $W(msg, ...) $w _tprintf(msg, __VA_ARGS__);
 
-	#define $E(msg, ...)     $e    _tprintf(msg, __VA_ARGS__);
+	#define $INFO(msg, ...)  $info  _tprintf(msg, __VA_ARGS__);
 	#define $ERROR(msg, ...) $error _tprintf(msg, __VA_ARGS__);
+	#define $WARN(msg, ...)  $warn  _tprintf(msg, __VA_ARGS__);
 #else
 	#define $I(msg, ...) 
-	#define $INFO(msg, ...)
-
 	#define $E(msg, ...) 
-	#define $ERROR(msg, ...)
+	#define $W(msg, ...) 
+
+	#define $INFO(msg, ...)  
+	#define $ERROR(msg, ...) 
+	#define $WARN(msg, ...)  
 #endif /* NDEBUG */
+
+#define TEXTH(msg) (PTCHAR)TEXT(msg)
 
 #endif /* __DEBUGGER_H_INCLUDED__ */

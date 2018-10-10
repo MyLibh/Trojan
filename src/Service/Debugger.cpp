@@ -1,14 +1,14 @@
-#include "Debugger.h"
-#include "Constants.h"
+#include "pch.hpp"
 
-#include <stdio.h>
+#include "Debugger.hpp"
+#include "Constants.h"
 
 WORD GetConsoleColor()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hConsole == INVALID_HANDLE_VALUE)
 	{
-		PrintError(TEXT("GetConsoleScreenBufferInfoEx"), GetLastError());
+		PrintError(TEXTH("GetConsoleScreenBufferInfoEx"), GetLastError());
 
 		return 0;
 	}
@@ -16,7 +16,7 @@ WORD GetConsoleColor()
 	CONSOLE_SCREEN_BUFFER_INFO csbf = { 0 };
 	if (!GetConsoleScreenBufferInfo(hConsole, &csbf))  //-V2001 https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c131afcf-41a8-4e59-93d6-6c9f73dce2e1/getconsolescreenbufferinfoex-failed?forum=windowsgeneraldevelopmentissues
 	{
-		PrintError(TEXT("GetConsoleScreenBufferInfoEx"), GetLastError());
+		PrintError(TEXTH("GetConsoleScreenBufferInfoEx"), GetLastError());
 
 		return 0;
 	}
@@ -31,14 +31,14 @@ WORD SetConsoleColor(WORD color)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hConsole == INVALID_HANDLE_VALUE)
 	{
-		PrintError(TEXT("GetConsoleScreenBufferInfoEx"), GetLastError());
+		PrintError(TEXTH("GetConsoleScreenBufferInfoEx"), GetLastError());
 
 		return 0;
 	}
 
 	if (!SetConsoleTextAttribute(hConsole, color))
 	{
-		PrintError(TEXT("SetConsoleTextAttribute"), GetLastError());
+		PrintError(TEXTH("SetConsoleTextAttribute"), GetLastError());
 
 		return 0;
 	}
@@ -64,6 +64,15 @@ VOID DebugError(const PTCHAR error)
 	SetConsoleColor(old);
 }
 
+VOID DebugWarning(const PTCHAR warning)
+{
+	WORD old = SetConsoleColor(MAKECOLOR(DarkGray, Black));
+
+	_tprintf(TEXT("%s"), warning);
+
+	SetConsoleColor(old);
+}
+
 VOID PrintError(CONST PTCHAR func, INT error)
 {
 	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
@@ -85,13 +94,18 @@ VOID PrintError(CONST PTCHAR func, INT error)
 
 	$error _tprintf(TEXT("\'%s\' failed with error %lu (%s)\n"), func, error, sysmsg);
 }
+
+void PrintBoostError(boost::system::error_code ec)
+{
+	$error std::cerr << ec.message() << std::endl;
+}
 	
 VOID ClearConsole()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hConsole == INVALID_HANDLE_VALUE)
 	{
-		PrintError(TEXT("GetConsoleScreenBufferInfoEx"), GetLastError());
+		PrintError(TEXTH("GetConsoleScreenBufferInfoEx"), GetLastError());
 
 		return ;
 	}
@@ -99,7 +113,7 @@ VOID ClearConsole()
 	CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
 	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) //-V2001 https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c131afcf-41a8-4e59-93d6-6c9f73dce2e1/getconsolescreenbufferinfoex-failed?forum=windowsgeneraldevelopmentissues
 	{
-		PrintError(TEXT("GetConsoleScreenBufferInfo"), GetLastError());
+		PrintError(TEXTH("GetConsoleScreenBufferInfo"), GetLastError());
 
 		return;
 	}
@@ -109,21 +123,21 @@ VOID ClearConsole()
 		  written   = 0ul;
 	if (!FillConsoleOutputCharacter(hConsole, ' ', chars_num, position, &written))
 	{
-		PrintError(TEXT("FillConsoleOutputCharacter"), GetLastError());
+		PrintError(TEXTH("FillConsoleOutputCharacter"), GetLastError());
 
 		return;
 	}
 
 	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, chars_num, position, &written))
 	{
-		PrintError(TEXT("FillConsoleOutputAttribute"), GetLastError());
+		PrintError(TEXTH("FillConsoleOutputAttribute"), GetLastError());
 
 		return;
 	}
 
 	if (!SetConsoleCursorPosition(hConsole, position))
 	{
-		PrintError(TEXT("SetConsoleCursorPosition"), GetLastError());
+		PrintError(TEXTH("SetConsoleCursorPosition"), GetLastError());
 
 		return;
 	}

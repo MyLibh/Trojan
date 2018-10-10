@@ -13,39 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\DirectX">
-      <UniqueIdentifier>{fd17d5dc-20c2-42b4-80ac-0bae38f5e6e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DirectX">
-      <UniqueIdentifier>{a5278907-f3bd-4be5-9f2f-55887aaca140}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Service">
       <UniqueIdentifier>{f378d4d8-5ee3-4d00-9b00-22347b0d108d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Service">
       <UniqueIdentifier>{855bd5a0-6bfa-45a9-9522-2470d9dbb714}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Capturing">
+      <UniqueIdentifier>{fd17d5dc-20c2-42b4-80ac-0bae38f5e6e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{48d2e074-03a2-4a9f-b5e5-b10dac7cbfeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Capturing">
+      <UniqueIdentifier>{a5278907-f3bd-4be5-9f2f-55887aaca140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{7ab943c0-43cb-4a59-a769-d4e3e111a22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network\Protocols">
+      <UniqueIdentifier>{6bac491e-0fbe-4ad4-859b-28677bd1cb5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network\Protocols">
+      <UniqueIdentifier>{1e8f4e1a-912e-49ff-a4ce-4aca28b0e023}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Server\Commands.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp">
-      <Filter>Header Files\DirectX</Filter>
+      <Filter>Header Files\Capturing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp">
-      <Filter>Header Files\DirectX</Filter>
+      <Filter>Header Files\Capturing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\pch.h">
+    <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCPServer.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\Tools.hpp">
       <Filter>Header Files\Service</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Tools.hpp">
+    <ClInclude Include="..\..\src\Service\pch.hpp">
       <Filter>Header Files\Service</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Debugger.h">
+    <ClInclude Include="..\..\src\Service\Debugger.hpp">
       <Filter>Header Files\Service</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,25 +71,25 @@
     <ClCompile Include="..\..\src\Server\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Server\Commands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
-      <Filter>Source Files\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Debugger.c">
-      <Filter>Source Files\Service</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\pch.cpp">
-      <Filter>Source Files\Service</Filter>
+      <Filter>Source Files\Capturing</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Server\WebCamCapturer.cpp">
-      <Filter>Source Files\DirectX</Filter>
+      <Filter>Source Files\Capturing</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network.cpp">
+    <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPServer.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Tools.cpp">
       <Filter>Source Files\Service</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Tools.cpp">
+    <ClCompile Include="..\..\src\Service\pch.cpp">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <Filter>Source Files\Service</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #define __APPLICATION_HPP_INCLUDED__
 
 class TCPClient;
+class UDPParticipiant;
 
 class Application
 {
@@ -17,7 +18,8 @@ public:
 
 private:
 	boost::asio::io_context  m_io;
-	TCPClient               *m_client;
+	TCPClient               *m_tcp_client;
+	UDPParticipiant         *m_udp_participiant;
 	std::thread              m_thread;
 };
 

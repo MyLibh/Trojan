@@ -2,7 +2,7 @@
 
 #include "Tools.hpp"
 #include "Constants.h"
-#include "Debugger.h"
+#include "Debugger.hpp"
 
 BOOL FileExist(CONST PTCHAR filename)
 {

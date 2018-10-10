@@ -1,18 +1,25 @@
 #pragma once
 
+#ifndef __APLICATION_HPP_INCLUDED__
+#define __APLICATION_HPP_INCLUDED__
+
 class TCPServer;
 
 class Application
 {
-	BOOL startSavingThread();
-
 public:
 	Application();
+	Application(char *argv[]);
 	~Application();
 
-	BOOL init();
-	VOID run();
+	void run();
+	void close();
 
 private:
-	TCPServer *m_pTCPServer;
+	boost::asio::io_context  m_io;
+	TCPServer               *m_server;
+	std::thread              m_thread,
+                             m_save_thread;
 };
+
+#endif /* __APLICATION_HPP_INCLUDED__ */

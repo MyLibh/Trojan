@@ -1,26 +1,41 @@
 #include "..\Service\pch.hpp"
 
-#include "TCPClient.hpp"
-#include "Protocols/CommandMessageProtocol.hpp"
+#include "TCPServer.hpp"
+#include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 
-TCPClient::TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoints) :
+TCPServer::TCPServer(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint) :
 	m_io(io_context),
-	m_socket(io_context),
+	m_socket(io_context), 
+	m_acceptor(io_context, endpoint),
 	m_read_msg(new CMPROTO),
 	m_write_msgs()
 {
-	connect(endpoints);
+	accept();
 }
 
-TCPClient::~TCPClient()
+TCPServer::~TCPServer()
 {
 	delete m_read_msg;
 }
 
-void TCPClient::write(const CMPROTO *msg)
+void TCPServer::accept()
 {
-	boost::asio::post(m_io, 
+	m_acceptor.async_accept(
+		[this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket)
+		{
+			if (!ec)
+				m_socket = std::move(socket);
+			else
+				PrintBoostError(ec);
+
+			read_header();
+		});
+}
+
+void TCPServer::write(const CMPROTO *msg)
+{
+	boost::asio::post(m_io,
 		[this, msg]()
 		{
 			bool write_in_progress = !m_write_msgs.empty();
@@ -30,28 +45,7 @@ void TCPClient::write(const CMPROTO *msg)
 		});
 }
 
-void TCPClient::close()
-{
-	boost::asio::post(m_io,
-		[this]()
-		{
-			m_socket.close();
-		});
-}
-
-void TCPClient::connect(const boost::asio::ip::tcp::resolver::results_type &endpoints)
-{
-	boost::asio::async_connect(m_socket, endpoints,
-		[this](boost::system::error_code ec, boost::asio::ip::tcp::endpoint /* endpoint */)
-		{
-			if (!ec)
-				read_header();
-			else
-				PrintBoostError(ec);
-		});
-}
-
-void TCPClient::read_header()
+void TCPServer::read_header()
 {
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), CMPROTO::HEADER_LENGTH),
 		[this](boost::system::error_code ec, size_t /* length */)
@@ -67,7 +61,7 @@ void TCPClient::read_header()
 		});
 }
 
-void TCPClient::read_body()
+void TCPServer::read_body()
 {
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), m_read_msg->get_body_length()),
 		[this](boost::system::error_code ec, size_t /* length */)
@@ -89,7 +83,7 @@ void TCPClient::read_body()
 		});
 }
 
-void TCPClient::write()
+void TCPServer::write()
 {
 	boost::asio::async_write(m_socket, boost::asio::buffer(m_write_msgs.front()->get_data(), m_write_msgs.front()->get_length()),
 		[this](boost::system::error_code ec, size_t /* length */)
@@ -108,3 +102,5 @@ void TCPClient::write()
 			}
 		});
 }
+
+

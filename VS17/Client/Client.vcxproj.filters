@@ -25,16 +25,16 @@
     <Filter Include="Header Files\Network\Protocols">
       <UniqueIdentifier>{86f1b500-b69c-43fc-b93b-3d518a5c5313}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Service">
+      <UniqueIdentifier>{9a1e59be-886d-4a00-8ca0-7d232f06d892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Service">
+      <UniqueIdentifier>{9167ae1d-c93e-4fbf-b440-5a2856b8221f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Client\main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Network\CommandMessageProtocol.cpp">
-      <Filter>Source Files\Network\Protocols</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Network\TCPClient.cpp">
       <Filter>Source Files\Network</Filter>
@@ -42,19 +42,43 @@
     <ClCompile Include="..\..\src\Client\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\pch.cpp">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Debugger.cpp">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\Protocols\DesktopImageMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Network\CommandMessageProtocol.hpp">
-      <Filter>Header Files\Network\Protocols</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\pch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Network\TCPClient.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Client\Application.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\pch.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\Debugger.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\Protocols\DesktopImageMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp">
+      <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

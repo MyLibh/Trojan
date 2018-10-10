@@ -9,11 +9,6 @@
 
 #define SMALL_BUFFER_LENGTH     256
 
-// TCP protocol defines
-#define CMD_LENGTH         2
-#define ARGS_LENGTH        126
-#define TCP_MESSAGE_LENGTH 128
-
 #define SERVER_IP          "127.0.0.1" // "37.190.32.12" "127.0.0.1" "192.168.1.65"
 #define DEFAULT_PORT       "20000"
 
@@ -36,8 +31,6 @@
 #define UNDEFINEDW          L"Undefined"
 #define UNDEFINEDA           "Undefined"
 #define UNDEFINED_LENGTH    9
-
-#define RESULT_LENGTH       256
 
 // Injector defines
 #define PATH_LENGTH 256
