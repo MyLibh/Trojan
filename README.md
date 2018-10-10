@@ -1,5 +1,5 @@
 # Trojan
-A simple virus(Trojan) aka client-server application written in C for Windows.
+A simple virus(Trojan) aka client-server application written in C++ for Windows.
 
 ## Server(victim)
   * Copies itself(Trojan) to _%SYSTEM%_
