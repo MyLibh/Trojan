@@ -1,5 +1,5 @@
 #include "Injector.h" 
-#include "..\Tools.h"
+#include "..\Tools.hpp"
 #include "..\Debugger.h"
 #include "..\Constants.h"
 

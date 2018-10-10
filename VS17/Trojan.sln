@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\src\Debugger.h = ..\src\Debugger.h
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
-		..\src\Tools.c = ..\src\Tools.c
-		..\src\Tools.h = ..\src\Tools.h
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{5587BA36-4052-4CB3-AC4F-8AA0CC8E9356}"

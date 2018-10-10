@@ -21,10 +21,10 @@
     <ClCompile Include="..\..\src\Keylogger\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Tools.c">
+    <ClCompile Include="..\..\src\Debugger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Debugger.c">
+    <ClCompile Include="..\..\src\Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

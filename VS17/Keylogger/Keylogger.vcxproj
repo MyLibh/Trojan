@@ -22,7 +22,7 @@
     <ClCompile Include="..\..\src\Debugger.c" />
     <ClCompile Include="..\..\src\Keylogger\Keylogger.c" />
     <ClCompile Include="..\..\src\Keylogger\main.c" />
-    <ClCompile Include="..\..\src\Tools.c" />
+    <ClCompile Include="..\..\src\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Keylogger\Keylogger.h" />
@@ -100,7 +100,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -134,7 +133,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
