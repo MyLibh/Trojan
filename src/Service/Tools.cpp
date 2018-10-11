@@ -1,7 +1,6 @@
 #include "pch.hpp"
 
 #include "Tools.hpp"
-#include "Constants.h"
 #include "Debugger.hpp"
 
 BOOL FileExist(CONST PTCHAR filename)

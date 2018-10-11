@@ -14,10 +14,11 @@ public:
 	TCPServer(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint);
 	~TCPServer();
 
-	void accept();
 	void write(const CMPROTO *msg);
+	void close();
 
 private:
+	void accept();
 	void read_header();
 	void read_body();
 	void write();

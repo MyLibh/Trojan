@@ -4,7 +4,6 @@
 #include "..\Network\TCPServer.hpp"
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
-#include "..\Service\Constants.h"
 #include "..\Service\Tools.hpp"
 
 Application::Application() :
@@ -28,14 +27,12 @@ Application::~Application()
 
 void Application::run()
 {
-	m_server->accept();
-	
 	char line[CMPROTO::MAX_BODY_LENGTH + 1] = "";
 	while (std::cin.getline(line, CMPROTO::MAX_BODY_LENGTH + 1))
 	{
 		CMPROTO msg;
 		msg.set_body_length(std::strlen(line));
-		std::memcpy(msg.get_body(), line + CMPROTO::HEADER_LENGTH, msg.get_body_length());
+		std::memcpy(msg.get_body(), line, msg.get_body_length());
 		msg.encode_header();
 
 		m_server->write(&msg);

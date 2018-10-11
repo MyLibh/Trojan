@@ -29,6 +29,8 @@ public:
 	void encode_header();
 	bool decode_header();
 
+	inline void clear_data() { std::memset(m_data, char{}, HEADER_LENGTH + MAX_BODY_LENGTH); m_body_length = 0; }
+
 private:
 	size_t m_body_length;
 	char   m_data[HEADER_LENGTH + MAX_BODY_LENGTH];

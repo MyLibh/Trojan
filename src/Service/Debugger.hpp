@@ -12,9 +12,6 @@
 #ifndef __DEBUGGER_HPP_INCLUDED__
 #define __DEBUGGER_HPP_INCLUDED__
 
-#include <Windows.h>  
-#include "Constants.h"
-
 //====================================================================================================================================
 //!
 //! \brief  Macro, which constructs color

@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <deque>
 #include <thread>
+#include <tuple>
 
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files
@@ -27,7 +28,11 @@
 #include <dshow.h>
  
 // Additional Libraries Header Files
-#include <boost/asio.hpp>
+#include <boost\asio.hpp>
+#include <boost\bimap\bimap.hpp>
+
+// My Header Files
+#include "Constants.hpp"
 
 #endif /* __PCH_H_INCLUDED__ */
 

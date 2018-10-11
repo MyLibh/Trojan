@@ -1,7 +1,7 @@
 #include "..\Service\pch.hpp"
 
 #include "TCPClient.hpp"
-#include "Protocols/CommandMessageProtocol.hpp"
+#include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 
 TCPClient::TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoints) :
@@ -35,6 +35,7 @@ void TCPClient::close()
 	boost::asio::post(m_io,
 		[this]()
 		{
+			m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 			m_socket.close();
 		});
 }
@@ -62,21 +63,23 @@ void TCPClient::read_header()
 			{
 				PrintBoostError(ec);
 
-				m_socket.close();
+				close();
 			}
 		});
 }
 
 void TCPClient::read_body()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), m_read_msg->get_body_length()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body(), m_read_msg->get_body_length()),
 		[this](boost::system::error_code ec, size_t /* length */)
 		{
 			if (!ec)
 			{
 				std::cout << "========================RECEIVED MESSAGE========================" << std::endl;
-				std::cout.write(m_read_msg->get_data(), m_read_msg->get_body_length());
+				std::cout.write(m_read_msg->get_body(), m_read_msg->get_body_length()); 
 				std::cout << "\n================================================================\n";
+
+				m_read_msg->clear_data();
 
 				read_header();
 			}
@@ -84,7 +87,7 @@ void TCPClient::read_body()
 			{
 				PrintBoostError(ec);
 
-				m_socket.close();
+				close();
 			}
 		});
 }
@@ -104,7 +107,7 @@ void TCPClient::write()
 			{
 				PrintBoostError(ec);
 
-				m_socket.close();
+				close();
 			}
 		});
 }

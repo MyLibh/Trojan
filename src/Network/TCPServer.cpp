@@ -19,20 +19,6 @@ TCPServer::~TCPServer()
 	delete m_read_msg;
 }
 
-void TCPServer::accept()
-{
-	m_acceptor.async_accept(
-		[this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket)
-		{
-			if (!ec)
-				m_socket = std::move(socket);
-			else
-				PrintBoostError(ec);
-
-			read_header();
-		});
-}
-
 void TCPServer::write(const CMPROTO *msg)
 {
 	boost::asio::post(m_io,
@@ -43,6 +29,30 @@ void TCPServer::write(const CMPROTO *msg)
 			if (!write_in_progress)
 				write();
 		});
+}
+
+void TCPServer::close()
+{
+	boost::asio::post(m_io,
+		[this]()
+	{
+		m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		m_socket.close();
+	});
+}
+
+void TCPServer::accept()
+{
+	m_acceptor.async_accept(
+		[this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket)
+	{
+		if (!ec)
+			m_socket = std::move(socket);
+		else
+			PrintBoostError(ec);
+
+		read_header();
+	});
 }
 
 void TCPServer::read_header()
@@ -63,14 +73,16 @@ void TCPServer::read_header()
 
 void TCPServer::read_body()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), m_read_msg->get_body_length()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body(), m_read_msg->get_body_length()),
 		[this](boost::system::error_code ec, size_t /* length */)
 		{
 			if (!ec)
 			{
 				std::cout << "========================RECEIVED MESSAGE========================" << std::endl;
-				std::cout.write(m_read_msg->get_data(), m_read_msg->get_body_length());
+				std::cout.write(m_read_msg->get_body(), m_read_msg->get_body_length()); 
 				std::cout << "\n================================================================\n";
+
+				m_read_msg->clear_data();
 
 				read_header();
 			}
