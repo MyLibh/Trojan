@@ -2,6 +2,7 @@
 
 #include "CommandManager.hpp"
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
+#include "..\Service\Debugger.hpp"
 
 CommandManager::CommandManager() :
 	m_in_progress(0)
@@ -9,14 +10,18 @@ CommandManager::CommandManager() :
 
 bool CommandManager::execute_command(const CMPROTO *msg)
 {
-	Commands cmd = static_cast<Commands>(msg->get_command()); // CHECK: enum overrage set
-	if (cmd == Commands::UNDEFINED_COMMAND || cmd == Commands::NUMBER_OF_COMMANDS)
-		return false;
+	Commands cmd = static_cast<Commands>(msg->get_command()); // TODO: enum overrage set check
+	if (cmd == Commands::UNDEFINED_COMMAND || cmd >= Commands::NUMBER_OF_COMMANDS)
+	{
+		$ERROR("Wrong command: %llu", static_cast<size_t>(cmd))
 
-	auto args = std::move(parse_args(msg->get_args()));
+		return false;
+	}
+
 	auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [cmd](const auto &cmd_prop) { return (cmd == std::get<0>(cmd_prop.command)); });
 	if (iter != std::end(COMMAND_PROPERTIES))
 	{
+		auto args = std::move(parse_args(msg->get_args()));
 		if (iter->exec_func.index() == 0) // CommandProperties::exec_func_t
 			return std::get<0>(iter->exec_func)(args);
 		else // CommandProperties::threaded_exec_func_t
@@ -24,12 +29,10 @@ bool CommandManager::execute_command(const CMPROTO *msg)
 			auto pos = static_cast<size_t>(get_bit(cmd));
 			m_in_progress.set(pos, get_bit_new_value(cmd));
 			
-			std::thread t(std::get<1>(iter->exec_func), std::ref(args), std::ref(m_in_progress), pos);
-			t.detach();
+			// std::thread t(std::get<1>(iter->exec_func), std::ref(args), std::ref(m_in_progress), pos);
+			// t.detach();
 		}
 	}
-	else
-		return false;
 
 	return true;
 }

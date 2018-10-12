@@ -21,7 +21,7 @@ private:
 	bool                     get_bit_new_value(Commands command);
 
 private:
-	std::bitset<static_cast<size_t>(CIP_BITS::NUMBER_OF_BITS)> m_in_progress;
+	std::bitset<CIP_NUMBER_OF_BITS> m_in_progress;
 };
 
 #endif /* __COMMANDMANGER_HPP_INCLUDED__ */
