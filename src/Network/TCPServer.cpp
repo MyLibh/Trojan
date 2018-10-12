@@ -3,13 +3,15 @@
 #include "TCPServer.hpp"
 #include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
+#include "..\Server\CommandManager.hpp"
 
 TCPServer::TCPServer(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint) :
 	m_io(io_context),
 	m_socket(io_context), 
 	m_acceptor(io_context, endpoint),
 	m_read_msg(new CMPROTO),
-	m_write_msgs()
+	m_write_msgs(),
+	m_cmd_manager(new CommandManager)
 {
 	accept();
 }
@@ -17,6 +19,7 @@ TCPServer::TCPServer(boost::asio::io_context &io_context, const boost::asio::ip:
 TCPServer::~TCPServer()
 {
 	delete m_read_msg;
+	delete m_cmd_manager;
 }
 
 void TCPServer::write(const CMPROTO *msg)
@@ -78,9 +81,7 @@ void TCPServer::read_body()
 		{
 			if (!ec)
 			{
-				std::cout << "========================RECEIVED MESSAGE========================" << std::endl;
-				std::cout.write(m_read_msg->get_body(), m_read_msg->get_body_length()); 
-				std::cout << "\n================================================================\n";
+				write(&(m_cmd_manager->execute_command(m_read_msg) ? CMPROTO_RESULT_SUCCESS : CMPROTO_RESULT_FAILURE));
 
 				m_read_msg->clear_data();
 

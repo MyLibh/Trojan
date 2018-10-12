@@ -2,6 +2,39 @@
 
 #include "CommandMessageProtocol.hpp"
 
+namespace detail
+{
+	CMPROTO make_success_msg()
+	{
+		static const char *line = "SUCCESS";
+		static constexpr size_t length = 8;
+
+		CMPROTO msg;
+		msg.set_body_length(length);
+		std::memcpy(msg.get_body(), line, msg.get_body_length());
+		msg.encode_header();
+
+		return msg;
+	}
+
+	CMPROTO make_failure_msg()
+	{
+		static const char *line = "FAILURE";
+		static constexpr size_t length = 8;
+
+		CMPROTO msg;
+		msg.set_body_length(length);
+		std::memcpy(msg.get_body(), line, msg.get_body_length());
+		msg.encode_header();
+
+		return msg;
+	}
+
+}
+
+const CMPROTO CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
+const CMPROTO CMPROTO_RESULT_FAILURE = detail::make_failure_msg();
+
 CommandMessageProtocol::CommandMessageProtocol() :
 	m_body_length(0ull),
 	m_data("")

@@ -18,6 +18,8 @@
 #include <deque>
 #include <thread>
 #include <tuple>
+#include <variant>
+#include <bitset>
 
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files
@@ -29,7 +31,6 @@
  
 // Additional Libraries Header Files
 #include <boost\asio.hpp>
-#include <boost\bimap\bimap.hpp>
 
 // My Header Files
 #include "Constants.hpp"

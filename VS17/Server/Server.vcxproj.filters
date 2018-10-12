@@ -37,6 +37,12 @@
     <Filter Include="Header Files\Network\Protocols">
       <UniqueIdentifier>{1e8f4e1a-912e-49ff-a4ce-4aca28b0e023}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{14ccd7c4-b041-4eea-8492-152cf65cde14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{606b3065-9366-4539-ae79-02dff4e76e6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Application.hpp">
@@ -62,6 +68,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Service\Debugger.hpp">
       <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\CommandManager.hpp">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
+      <Filter>Header Files\Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandManager.cpp">
+      <Filter>Source Files\Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

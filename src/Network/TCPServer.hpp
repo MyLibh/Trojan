@@ -5,6 +5,7 @@
 
 class CommandMessageProtocol;
 using CMPROTO = CommandMessageProtocol;
+class CommandManager;
 
 using msg_queue_t = std::deque<CMPROTO*>;
 
@@ -29,6 +30,7 @@ private:
 	boost::asio::ip::tcp::acceptor  m_acceptor;
 	CMPROTO                        *m_read_msg;
 	msg_queue_t                     m_write_msgs;
+	CommandManager                 *m_cmd_manager;
 };
 
 #endif /* __TCPSERVER_HPP_INCLUDED__ */

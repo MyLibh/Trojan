@@ -163,6 +163,8 @@
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\TCPServer.hpp" />
     <ClInclude Include="..\..\src\Server\Application.hpp" />
+    <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
     <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp" />
     <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
@@ -178,6 +180,8 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandManager.cpp" />
+    <ClCompile Include="..\..\src\Server\CommandProperties.cpp" />
     <ClCompile Include="..\..\src\Server\main.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>

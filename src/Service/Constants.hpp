@@ -15,7 +15,6 @@
 #define TROJAN_APP_NAME    TEXTH("Trojan.exe")
 
 // Commands defines
-#define NUMBER_OF_COMMANDS  3
 
 #define TASK_SUCCESSP       TEXTH("Success")
 #define TASK_SUCCESSW       L"Success"
