@@ -14,14 +14,14 @@
 
 //====================================================================================================================================
 //!
-//! \brief  Macro, which constructs color
+//! \brief  Constructs color
 //!
-//! \param  color       Text color
-//! \param  background  Background color
-//!
+//! \param   color       Text color
+//! \param   background  Background color
+//! \return  Constructed color
 //====================================================================================================================================
 
-#define MAKECOLOR(color, background) ((static_cast<WORD>(background) << 4) | static_cast<WORD>(color))
+inline WORD MAKECOLOR(WORD color, WORD background) { return ((background << 4) | color); }
 
 //====================================================================================================================================
 //!
@@ -153,13 +153,13 @@ VOID ClearConsole();
 #define $warn  DebugWarning(TEXTH("[WARNING]: "));
 
 #ifdef NDEBUG
-	#define $I(msg, ...) $i _tprintf(msg, __VA_ARGS__);
-	#define $E(msg, ...) $e _tprintf(msg, __VA_ARGS__);
-	#define $W(msg, ...) $w _tprintf(msg, __VA_ARGS__);
+	#define $I(msg, ...) { $i _tprintf(msg, __VA_ARGS__); }
+	#define $E(msg, ...) { $e _tprintf(msg, __VA_ARGS__); }
+	#define $W(msg, ...) { $w _tprintf(msg, __VA_ARGS__); }
 
-	#define $INFO(msg, ...)  $info  _tprintf(msg, __VA_ARGS__);
-	#define $ERROR(msg, ...) $error _tprintf(msg, __VA_ARGS__);
-	#define $WARN(msg, ...)  $warn  _tprintf(msg, __VA_ARGS__);
+	#define $INFO(msg, ...)  { $info  _tprintf(msg, __VA_ARGS__); }
+	#define $ERROR(msg, ...) { $error _tprintf(msg, __VA_ARGS__); }
+	#define $WARN(msg, ...)  { $warn  _tprintf(msg, __VA_ARGS__); }
 #else
 	#define $I(msg, ...) 
 	#define $E(msg, ...) 

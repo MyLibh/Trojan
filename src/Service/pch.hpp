@@ -20,6 +20,7 @@
 #include <tuple>
 #include <variant>
 #include <bitset>
+#include <filesystem>
 
 #define WIN32_LEAN_AND_MEAN 
 // Windows Header Files
@@ -28,6 +29,7 @@
 #include <tchar.h> 
 #include <d3d9.h>
 #include <dshow.h>
+#include <wincodec.h>
  
 // Additional Libraries Header Files
 #include <boost\asio.hpp>

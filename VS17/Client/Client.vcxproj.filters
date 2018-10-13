@@ -31,6 +31,12 @@
     <Filter Include="Header Files\Service">
       <UniqueIdentifier>{9167ae1d-c93e-4fbf-b440-5a2856b8221f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{029bf898-667a-4c06-ad14-82b98e2bc798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{23e30155-a182-4dd2-9a4a-14564b550d17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Client\main.cpp">
@@ -57,6 +63,12 @@
     <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Network\TCPClient.hpp">
@@ -78,6 +90,12 @@
       <Filter>Header Files\Network\Protocols</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCPConnection.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>

@@ -35,7 +35,11 @@
     <ClCompile Include="..\..\src\Network\TCPClient.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp" />
+    <ClCompile Include="..\..\src\Server\CommandProperties.cpp" />
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -49,7 +53,9 @@
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\Protocols\DesktopImageMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\TCPClient.hpp" />
+    <ClInclude Include="..\..\src\Network\TCPConnection.hpp" />
     <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp" />
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
     <ClInclude Include="..\..\src\Service\pch.hpp" />
   </ItemGroup>

@@ -72,8 +72,8 @@
     <ClInclude Include="..\..\src\Server\CommandManager.hpp">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
-      <Filter>Header Files\Commands</Filter>
+    <ClInclude Include="..\..\src\Network\TCPConnection.hpp">
+      <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,11 +104,14 @@
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <Filter>Source Files\Service</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandManager.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Server\CommandManager.cpp">
-      <Filter>Source Files\Commands</Filter>
+    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
+      <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 #include "..\Service\Tools.hpp"
+#include "ScreenCapturer.hpp"
 
 Application::Application() :
 	m_io(),

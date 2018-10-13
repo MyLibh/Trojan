@@ -3,34 +3,38 @@
 #ifndef __SCREENCAPTURER_HPP_INCLUDED__
 #define __SCREENCAPTURER_HPP_INCLUDED__
 
-struct IDirect3D9;
-struct IDirect3DDevice9;
-struct IDirect3DSurface9;
-
-	struct DirectXParametrs
+class ScreenCapturer final
+{
+private:
+	class DirectXImpl;
+	class WinCodec
 	{
-		IDirect3D9        *m_pD3D9;
-		IDirect3DDevice9  *m_pDevice;
-		IDirect3DSurface9 *m_pSurface;
-		D3DDISPLAYMODE     m_mode;
+	public:
+		WinCodec();
+		~WinCodec();
 
-		DirectXParametrs();
-		~DirectXParametrs();
-
-		BOOL init();
+	public:
+		IWICImagingFactory    *m_pFactory;
+		IWICBitmapEncoder     *m_pEncoder;
+		IWICBitmapFrameEncode *m_pFrame;
+		IWICStream            *m_pStream;
 	};
 
-	template<typename T>
-	VOID SafeRelease(T **pPtr)
-	{
-		if (*pPtr)
-		{
-			(*pPtr)->Release();
+public:
+	ScreenCapturer();
+	~ScreenCapturer();
 
-			*pPtr = nullptr;
-		}
-	}
+	inline       LPBYTE get_data()            noexcept { return (m_pData); }
+	inline const LPBYTE get_data()      const noexcept { return (m_pData); }
+	inline const size_t get_data_size() const noexcept { return (m_data_size); }
 
-	std::pair<LPBYTE, size_t> CaptureScreen(DirectXParametrs *pDXParams);
+	bool capture();
+	bool save2png(const std::filesystem::path &path);
+
+private:
+	DirectXImpl *m_pImpl;
+	size_t       m_data_size;
+	LPBYTE       m_pData;
+};
 
 #endif /* __SCREENCAPTURER_HPP_INCLUDED__ */

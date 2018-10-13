@@ -161,10 +161,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
+    <ClInclude Include="..\..\src\Network\TCPConnection.hpp" />
     <ClInclude Include="..\..\src\Network\TCPServer.hpp" />
     <ClInclude Include="..\..\src\Server\Application.hpp" />
     <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
-    <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
     <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp" />
     <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
@@ -175,6 +175,7 @@
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPConnection.cpp" />
     <ClCompile Include="..\..\src\Network\TCPServer.cpp" />
     <ClCompile Include="..\..\src\Server\Application.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
@@ -188,11 +189,11 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="..\..\src\Server\WebCamCapturer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.hpp</PrecompiledHeaderFile>
