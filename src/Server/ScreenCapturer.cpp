@@ -17,7 +17,11 @@ namespace detail
 	}
 }
 
-ScreenCapturer::WinCodec::WinCodec()
+ScreenCapturer::WinCodec::WinCodec() :
+	m_pFactory(nullptr),
+	m_pEncoder(nullptr),
+	m_pFrame(nullptr),
+	m_pStream(nullptr)
 {
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 }
@@ -119,7 +123,7 @@ bool ScreenCapturer::capture()
 	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
 		goto error;
 
-	std::memcpy(m_pData, rc.pBits, rc.Pitch * m_pImpl->m_mode.Height);
+	std::memcpy(m_pData, rc.pBits, static_cast<size_t>(rc.Pitch * m_pImpl->m_mode.Height));
 
 	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
 		goto error;
@@ -149,7 +153,7 @@ bool ScreenCapturer::save2png(const std::filesystem::path &path)
 	CHECK_HRESULT(pWC->m_pFrame->Initialize(nullptr))
 	CHECK_HRESULT(pWC->m_pFrame->SetSize(m_pImpl->m_mode.Width, m_pImpl->m_mode.Height))
 	CHECK_HRESULT(pWC->m_pFrame->SetPixelFormat(&format))
-	CHECK_HRESULT(pWC->m_pFrame->WritePixels(m_pImpl->m_mode.Height, static_cast<UINT>(m_data_size / m_pImpl->m_mode.Height), static_cast<UINT>(m_data_size), &m_pData[0]))
+	CHECK_HRESULT(pWC->m_pFrame->WritePixels(m_pImpl->m_mode.Height, static_cast<UINT>(m_data_size) / m_pImpl->m_mode.Height, static_cast<UINT>(m_data_size), &m_pData[0]))
 	CHECK_HRESULT(pWC->m_pFrame->Commit())
 	CHECK_HRESULT(pWC->m_pEncoder->Commit())
 #undef CHECK_HRESULT

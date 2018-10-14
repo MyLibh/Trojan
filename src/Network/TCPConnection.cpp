@@ -4,7 +4,7 @@
 #include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 
-TCPConnection::TCPConnection(boost::asio::io_context & io_context) :
+TCPConnection::TCPConnection(boost::asio::io_context &io_context) :
 	m_io(io_context),
 	m_socket(io_context),
 	m_connected(false),

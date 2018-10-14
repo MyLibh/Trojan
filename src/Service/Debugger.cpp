@@ -91,12 +91,12 @@ VOID PrintError(CONST PTCHAR func, INT error)
 		*p-- = 0;
 	} while (p >= sysmsg && (*p == '.' || *p < 33));
 
-	$error _tprintf(TEXT("\'%s\' failed with error %lu (%s)\n"), func, error, sysmsg);
+	$ERROR("\'%s\' failed with error %d (%s)\n", func, error, sysmsg);
 }
 
-void PrintBoostError(boost::system::error_code ec)
+void PrintBoostError(const boost::system::error_code &ec)
 {
-	$error std::cerr << ec.message() << std::endl;
+	$error std::cerr << "BOOST: " << ec.message() << std::endl;
 }
 	
 VOID ClearConsole()

@@ -3,7 +3,6 @@
 #ifndef __TOOLS_HPP_INCLUDED__
 #define __TOOLS_HPP_INCLUDED__
 
-BOOL FileExist(CONST PTCHAR filename);
 BOOL Copy2Sysdir(CONST PTCHAR appname);
 BOOL SaveInReg(CONST PTCHAR appname);
 

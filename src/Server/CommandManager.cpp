@@ -21,9 +21,8 @@ bool CommandManager::execute_command(const CMPROTO *msg)
 	auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [cmd](const auto &cmd_prop) { return (cmd == std::get<0>(cmd_prop.command)); });
 	if (iter != std::end(COMMAND_PROPERTIES))
 	{
-		auto args = std::move(parse_args(msg->get_args()));
 		if (iter->exec_func.index() == 0) // CommandProperties::exec_func_t
-			return std::get<0>(iter->exec_func)(args);
+			return std::get<0>(iter->exec_func)(parse_args(msg->get_args()));
 		else // CommandProperties::threaded_exec_func_t
 		{
 			auto pos = static_cast<size_t>(get_bit(cmd));
