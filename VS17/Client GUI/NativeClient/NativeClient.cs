@@ -27,8 +27,6 @@ namespace Client_GUI.NativeClient
         public NativeMethods(IPEndPoint endPoint)
         {
             this.m_pNativeClient = CtorApplication(endPoint.Address.ToString(), endPoint.Port.ToString());
-            if (this.m_pNativeClient == IntPtr.Zero)
-                Console.Write("Bad Alloc");
         }
 
         public void Dispose()

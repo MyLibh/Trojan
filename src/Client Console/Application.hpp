@@ -21,7 +21,7 @@ public:
 private:
 	boost::asio::io_context  m_io;
 	TCPClient               *m_tcp_client;
-	//UDPParticipiant         *m_udp_participiant;
+	// UDPParticipiant         *m_udp_participiant;
 	std::thread              m_thread;
 };
 

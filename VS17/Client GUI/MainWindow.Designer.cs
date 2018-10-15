@@ -13,6 +13,7 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                m_client.Dispose();
             }
             base.Dispose(disposing);
         }
