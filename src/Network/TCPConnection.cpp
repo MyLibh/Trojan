@@ -4,7 +4,7 @@
 #include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 
-TCPConnection::TCPConnection(boost::asio::io_context &io_context) :
+TCPConnection::TCPConnection(boost::asio::io_context & io_context) :
 	m_io(io_context),
 	m_socket(io_context),
 	m_connected(false),
@@ -47,7 +47,7 @@ void TCPConnection::read_header()
 		[this](boost::system::error_code ec, size_t /* length */)
 		{
 			if (!ec && m_read_msg->decode_header())
-				read_body();
+				read_body();	
 			else
 			{
 				PrintBoostError(ec);
@@ -90,6 +90,8 @@ void TCPConnection::write()
 			{
 				if (!ec)
 				{
+					std::cout << "'" << m_write_msgs.front()->get_data() << "'\n";
+
 					m_write_msgs.pop_front();
 					if (!m_write_msgs.empty())
 						write();

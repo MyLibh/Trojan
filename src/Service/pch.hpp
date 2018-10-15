@@ -22,8 +22,11 @@
 #include <bitset>
 #include <filesystem>
 
-#define WIN32_LEAN_AND_MEAN 
 // Windows Header Files
+#include <sdkddkver.h>
+#ifndef WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN 
+#endif /* WIN32_LEAN_AND_MEAN */
 #include <Windows.h>
 #include <shellapi.h>
 #include <tchar.h> 
