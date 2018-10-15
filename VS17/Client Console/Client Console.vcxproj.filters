@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{5f58ce5e-4164-4727-aee4-1c48b4f4b26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{83503bf8-519b-446f-8b78-e345a55da308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network\Protocols">
+      <UniqueIdentifier>{8d94e4f3-f3c3-4d22-81a9-4ca728a1be71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{e3a36f47-3f62-49bc-9781-0d6f29f67e78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Service">
+      <UniqueIdentifier>{031468ba-a3d3-41ea-b644-4f2be5f50bcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Service">
+      <UniqueIdentifier>{6b373a34-4092-4040-8092-f1dc80752adc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{769f7178-065a-4845-9cd6-7d8a65f671aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network\Protocols">
+      <UniqueIdentifier>{b09b4910-8935-4d27-afa3-f11d43125762}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Service\Debugger.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\pch.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\Protocols\DesktopImageMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCPClient.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCPConnection.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Client Console\Application.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Service\Debugger.cpp">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\pch.cpp">
+      <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\Protocols\DesktopImageMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPClient.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Client Console\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Client Console\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
