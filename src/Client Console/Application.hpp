@@ -11,9 +11,11 @@ class Application
 public:
 	Application();
 	Application(char *argv[]);
+	Application(const std::string &ip, const std::string &port);
 	~Application();
 
 	void run();
+	void send_command(const std::string &command);
 	void close();
 
 private:
