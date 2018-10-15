@@ -7,7 +7,7 @@ A simple virus(Trojan) aka client-server application written in C++ for Windows.
   * Keylogger
   * Sniffer(in future)
 
-## Client(hacker)
+## Client Console(hacker)
 
 Use cmd:
 ```
@@ -21,16 +21,16 @@ Client 127.0.0.1 1234
 
 ## Functions List
 
-|Function             |Enabled|
-|---------------------|-------|
-|MessageBox           |      -|
-|RemoteDesktopView    |      -|
-|ViewWebcam           |      -|
-|RemoteKeyboardControl|      -|
-|RemoteMouseControl   |      -|
-|RemoteCmdLineAccess  |      -|
-|FileEncryption       |      -|
-|ImportingFiles       |      -|
-|ExportingFiles       |      -|
-|InputBlocking        |      -|
-|SoundPlaying         |      -|
+|Function             |Enabled|Name   |Args  |Notes            |
+|---------------------|-------|-------|------|-----------------|
+|MessageBox           |      +|message|\<str>|str.length <= 128|
+|RemoteDesktopView    |      -||||
+|ViewWebcam           |      -||||
+|RemoteKeyboardControl|      -||||
+|RemoteMouseControl   |      -||||
+|RemoteCmdLineAccess  |      -||||
+|FileEncryption       |      -||||
+|ImportingFiles       |      -||||
+|ExportingFiles       |      -||||
+|InputBlocking        |      -||||
+|SoundPlaying         |      -||||
