@@ -9,13 +9,13 @@ namespace Client_GUI.NativeClient
         #region P/Invokes
 
         [DllImport("Client DLL.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        static private extern IntPtr CtorApplication(string ip, string port);
+        static private extern IntPtr CtorApplication(String ip, String port);
         
         [DllImport("Client DLL.dll")]
         static private extern void DtorApplication(IntPtr pNative);
 
         [DllImport("Client DLL.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        static private extern void SendCommand(IntPtr pNative, string command);
+        static private extern void SendCommand(IntPtr pNative, String command);
 
         [DllImport("Client DLL.dll")]
         static private extern void Close(IntPtr pNative);
@@ -55,7 +55,7 @@ namespace Client_GUI.NativeClient
 
         #region Wrapper methods
 
-        public void SendCommand(string command)
+        public void SendCommand(String command)
         {
             SendCommand(this.m_pNativeClient, command);
         }

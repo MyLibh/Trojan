@@ -10,15 +10,8 @@ namespace Client_GUI
 
         public MainWindow()
         {       
-            try
-            {
-                m_client = new NativeClient.NativeMethods(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 20000));
-            }
-            catch (System.NullReferenceException excpt)
-            {
-                MessageBox.Show(excpt.Message);
-            }
-
+            m_client = new NativeClient.NativeMethods(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 20000));
+          
             InitializeComponent();
         }
 
@@ -30,7 +23,6 @@ namespace Client_GUI
         private void messageBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
             m_client.SendCommand("message Hello");
-            Console.WriteLine("send");
         }
     }
 }

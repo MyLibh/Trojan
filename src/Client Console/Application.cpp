@@ -10,26 +10,24 @@
 
 Application::Application() :
 	m_io(),
-	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT)))//,
+	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT))),
 	/*m_udp_participiant(new UDPParticipiant(m_io, boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(SERVER_IP), std::atoi(DEFAULT_PORT)))),*/
-	//m_thread([this]() { m_io.run(); })
+	m_thread([this]() { m_io.run(); })
 { }
 
 Application::Application(char *argv[]) :
 	m_io(),
-	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2])))//,
+	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2]))),
 	/*m_udp_participiant(new UDPParticipiant(m_io, boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(argv[1]), std::atoi(argv[2])))),*/
-	//m_thread([this]() { m_io.run(); })
+	m_thread([this]() { m_io.run(); })
 { }
 
 Application::Application(const std::string &ip, const std::string &port) :
 	m_io(),
-	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port)))//,
+	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port))),
 	/*m_udp_participiant(new UDPParticipiant(m_io, boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(argv[1]), std::atoi(argv[2])))),*/
-	// m_thread([this]() { m_io.run(); })
-{
-	m_io.run();
-}
+	m_thread([this]() { m_io.run(); })
+{ }
 
 Application::~Application()
 {
@@ -74,5 +72,5 @@ void Application::send_command(const std::string &command)
 void Application::close()
 {
 	m_tcp_client->close();
-	//m_thread.join();
+	m_thread.join();
 }
