@@ -90,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 195);
+            this.ClientSize = new System.Drawing.Size(400, 195);
             this.Controls.Add(this.port_maskedTextBox);
             this.Controls.Add(this.ip_port_label);
             this.Controls.Add(this.confirm_button);

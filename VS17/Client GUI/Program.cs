@@ -14,11 +14,19 @@ namespace Client_GUI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            InitProgramForm initProgramForm = new InitProgramForm();
-            Application.Run(initProgramForm);
+            MainWindowForm mainWindowForm;
+            while (true)
+            { 
+                InitProgramForm initProgramForm = new InitProgramForm();
+                Application.Run(initProgramForm);
 
-            MainWindowForm mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
-            Application.Run(mainWindowForm);
+                mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
+                Application.Run(mainWindowForm);
+                if (!mainWindowForm.reinit)
+                    break;       
+            }
+
+
             mainWindowForm.Dispose();
         }
     }

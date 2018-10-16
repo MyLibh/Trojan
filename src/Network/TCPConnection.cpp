@@ -90,8 +90,6 @@ void TCPConnection::write()
 			{
 				if (!ec)
 				{
-					std::cout << "'" << m_write_msgs.front()->get_data() << "'\n";
-
 					m_write_msgs.pop_front();
 					if (!m_write_msgs.empty())
 						write();

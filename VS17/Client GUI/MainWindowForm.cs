@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Net;
+using System.IO;
 
 using Client_GUI.MainWindowInputForms;
 
@@ -8,12 +9,15 @@ namespace Client_GUI
 {
     public partial class MainWindowForm : Form
     {
+        public bool reinit { get; set; }
+
         NativeClient.NativeMethods m_client;
 
         public MainWindowForm(IPEndPoint endpoint)
         {       
             m_client = new NativeClient.NativeMethods(endpoint);
-          
+            reinit = false;
+
             InitializeComponent();
         }
 
@@ -32,6 +36,14 @@ namespace Client_GUI
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.Close();
+        }
+
+        private void updateIPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            File.Delete("Connection.properties");
+            this.reinit = true;
+
             this.Close();
         }
     }

@@ -100,6 +100,7 @@
             // 
             // aboutToolStripMenuItem
             // 
+            this.aboutToolStripMenuItem.Enabled = false;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
@@ -299,6 +300,7 @@
             this.updateIPToolStripMenuItem.Name = "updateIPToolStripMenuItem";
             this.updateIPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.updateIPToolStripMenuItem.Text = "Update IP";
+            this.updateIPToolStripMenuItem.Click += new System.EventHandler(this.updateIPToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
