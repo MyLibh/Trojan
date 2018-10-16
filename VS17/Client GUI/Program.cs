@@ -13,7 +13,13 @@ namespace Client_GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+
+            InitProgramForm initProgramForm = new InitProgramForm();
+            Application.Run(initProgramForm);
+
+            MainWindowForm mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
+            Application.Run(mainWindowForm);
+            mainWindowForm.Dispose();
         }
     }
 }
