@@ -38,54 +38,6 @@ void Application::run()
 
 		m_server->write(&msg);
 	}
-
-	/*ClearConsole();
-
-	std::string msg(TCP_MESSAGE_LENGTH, { });
-	std::stringstream sstr;
-	while (TRUE)
-	{
-		$I(TEXTH("Waiting for the client\n"));
-
-		if(!m_pTCPServer->accept())
-			return;
-
-		$I(TEXTH("Connected\n"));
-		while (TRUE)
-		{
-			if (!m_pTCPServer->recv(msg))
-			{
-				$INFO(TEXTH("%hs\n"), msg.c_str());
-
-				break;
-			}
-
-			sstr << msg;
-			INT code = static_cast<INT>(Command::UNDEFINEDCMD);
-			sstr >> code;
-			if (code == static_cast<INT>(Command::UNDEFINEDCMD))
-			{
-				$E(TEXTH("Undefined cmd code(%d)\n"), code);
-
-				m_pTCPServer->send(TASK_FAILUREA);
-
-				break;
-			}
-
-			std::string args = msg.substr(CMD_LENGTH);
-			m_pTCPServer->send(ExecuteCommand(code, args));
-			sstr.str(std::string());
-			msg.resize(TCP_MESSAGE_LENGTH, { });
-		}
-
-		if(!m_pTCPServer->close_client_socket())
-			return;
-
-		$I(TEXTH("Client disconnected\n"));
-
-		system("pause"); // SleepEx(10000, FALSE);
-		ClearConsole();
-	}*/
 }
 
 void Application::close()

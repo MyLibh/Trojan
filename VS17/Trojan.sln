@@ -25,6 +25,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client Console", "Client Console\Client Console.vcxproj", "{E4D8DA5B-BBB4-4245-8F95-A1E3FD07ADB5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client DLL", "Client DLL\Client DLL.vcxproj", "{AEEBFB0C-E8CF-4354-B570-27F07577542E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4D8DA5B-BBB4-4245-8F95-A1E3FD07ADB5} = {E4D8DA5B-BBB4-4245-8F95-A1E3FD07ADB5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

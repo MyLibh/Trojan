@@ -4,18 +4,18 @@
 #include "..\Client Console\Application.hpp"
 #include "..\Service\Debugger.hpp" 
 
-EXTERN_C DLLEXPORT Application *CtorApplication(const std::string &ip, const std::string &port)
+EXTERN_C DLLEXPORT Application *CtorApplication(const char *cpIP, const char *cpPort)
 {
-	$INFO("IP: %s:%s\n", ip.c_str(), port.c_str())
+	$INFO("IP: %s:%s\n", cpIP, cpPort)
 
 	Application *pApp = nullptr;
 	try
 	{
-		pApp = new Application();
+		pApp = new Application(cpIP, cpPort);
 	}
 	catch (const std::bad_alloc &e)
 	{
-		std::cerr << e.what() << std::endl;
+		$ERROR("Exception: %s\n", e.what())
 	}
 
 	return (pApp);
@@ -33,16 +33,16 @@ EXTERN_C DLLEXPORT void DtorApplication(Application *pApp)
 		$ERROR("'pApp' is nullptr");
 }
 
-EXTERN_C DLLEXPORT void SendCommand(Application *pApp, const std::string &command)
+EXTERN_C DLLEXPORT void SendCommand(Application *pApp, const char *cpCommand)
 {
 	if (pApp)
 	{
-		$INFO("Command: '%s'\n", command.c_str())
+		$INFO("Command: '%s'\n", cpCommand)
 
-		pApp->send_command(command);
+		pApp->send_command(cpCommand);
 	}
 	else
-		$ERROR("'pApp' is nullptr");
+	 	$ERROR("'pApp' is nullptr");
 }
 
 EXTERN_C DLLEXPORT void Close(Application *pApp)

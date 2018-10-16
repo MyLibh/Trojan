@@ -27,8 +27,7 @@ Application::Application(const std::string &ip, const std::string &port) :
 	m_tcp_client(new TCPClient(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port))),
 	/*m_udp_participiant(new UDPParticipiant(m_io, boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(argv[1]), std::atoi(argv[2])))),*/
 	m_thread([this]() { m_io.run(); })
-{
-}
+{ }
 
 Application::~Application()
 {
