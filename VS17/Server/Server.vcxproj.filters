@@ -75,6 +75,9 @@
     <ClInclude Include="..\..\src\Network\TCPConnection.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Server\Application.cpp">

