@@ -3,43 +3,53 @@ using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Client_GUI.NativeClient
-{ 
-    public class NativeMethods : IDisposable
+{
+    internal static class NativeMethods
     {
-        #region P/Invokes
-
         [DllImport("Client DLL.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        static private extern IntPtr CtorApplication(String ip, String port);
-        
-        [DllImport("Client DLL.dll")]
-        static private extern void DtorApplication(IntPtr pNative);
-
-        [DllImport("Client DLL.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        static private extern void SendCommand(IntPtr pNative, String command);
+        internal static extern IntPtr CtorApplication(String ip, String port);
 
         [DllImport("Client DLL.dll")]
-        static private extern void Close(IntPtr pNative);
+        internal static extern void DtorApplication(IntPtr pNative);
+
+        [DllImport("Client DLL.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern void SendCommand(IntPtr pNative, String command);
+
+        [DllImport("Client DLL.dll")]
+        internal static extern void Close(IntPtr pNative);
+    }
+
+    public class Client : IDisposable 
+    {
+        #region Fileds
+
+        private IntPtr m_pNativeClient = IntPtr.Zero;
 
         #endregion
 
-        private IntPtr m_pNativeClient = IntPtr.Zero;
-        
-        public NativeMethods(IPEndPoint endPoint)
+        #region Methods
+
+        public void SendCommand(String command)
         {
-            this.m_pNativeClient = CtorApplication(endPoint.Address.ToString(), endPoint.Port.ToString());
+            NativeMethods.SendCommand(this.m_pNativeClient, command);
+        }
+
+        public void Close()
+        {
+            NativeMethods.Close(this.m_pNativeClient);
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if(this.m_pNativeClient != IntPtr.Zero)
+            if (this.m_pNativeClient != IntPtr.Zero)
             {
-                Close(this.m_pNativeClient);
-                DtorApplication(this.m_pNativeClient);
+                NativeMethods.Close(this.m_pNativeClient);
+                NativeMethods.DtorApplication(this.m_pNativeClient);
 
                 this.m_pNativeClient = IntPtr.Zero;
             }
@@ -48,21 +58,22 @@ namespace Client_GUI.NativeClient
                 GC.SuppressFinalize(this);
         }
 
-        ~NativeMethods()
+        #endregion
+
+        #region Constructors
+
+        public Client(IPEndPoint ipEndPoint)
         {
-            Dispose(false);
+            this.m_pNativeClient = NativeMethods.CtorApplication(ipEndPoint.Address.ToString(), ipEndPoint.Port.ToString());
         }
 
-        #region Wrapper methods
+        #endregion
 
-        public void SendCommand(String command)
-        {
-            SendCommand(this.m_pNativeClient, command);
-        }
+        #region Finalizers
 
-        public void Close()
+        ~Client()
         {
-            Close(m_pNativeClient);
+            this.Dispose(false);
         }
 
         #endregion

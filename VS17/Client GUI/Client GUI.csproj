@@ -66,10 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InitProgramForm.cs">
+    <Compile Include="InputForms\InitProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InitProgramForm.Designer.cs">
+    <Compile Include="InputForms\InitProgramForm.Designer.cs">
       <DependentUpon>InitProgramForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWindowForm.cs">
@@ -78,22 +78,22 @@
     <Compile Include="MainWindowForm.Designer.cs">
       <DependentUpon>MainWindowForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainWindowInputForms\GetMessageForm.cs">
+    <Compile Include="InputForms\GetMessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainWindowInputForms\GetMessageForm.Designer.cs">
+    <Compile Include="InputForms\GetMessageForm.Designer.cs">
       <DependentUpon>GetMessageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NativeClient\NativeClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="InitProgramForm.resx">
+    <EmbeddedResource Include="InputForms\InitProgramForm.resx">
       <DependentUpon>InitProgramForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindowForm.resx">
       <DependentUpon>MainWindowForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainWindowInputForms\GetMessageForm.resx">
+    <EmbeddedResource Include="InputForms\GetMessageForm.resx">
       <DependentUpon>GetMessageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
