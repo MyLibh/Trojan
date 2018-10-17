@@ -9,16 +9,27 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Client_GUI
 {
     public partial class InitProgramForm : Form
     {
+        public static readonly IPEndPoint BAD_IPENDPOINT = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 0);
+
         public IPEndPoint endpoint { get; set; }
 
         public InitProgramForm()
         {
             InitializeComponent();
+            this.endpoint = BAD_IPENDPOINT;
+        }
+
+        private bool CheckInput(string str)
+        {
+            Regex rgx = new Regex(@"\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[:](6553[0-5]|655[0-2][0-9]|65[0-4][0-9][0-9]|6[0-4][0-9][0-9][0-9]|[1-5][0-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9]|[1-9]?)\b");
+
+            return rgx.IsMatch(str);
         }
 
         private void InitProgramForm_Load(object sender, EventArgs e)
@@ -30,47 +41,26 @@ namespace Client_GUI
 
                 this.endpoint = new IPEndPoint(IPAddress.Parse(ip_port.First()), int.Parse(ip_port.Last()));
                 this.Close();
-            }
-
-            ip_maskedTextBox.ValidatingType = typeof(System.Net.IPAddress);
-            ip_maskedTextBox.Text = "127.000.000.001";
-
-            port_maskedTextBox.ValidatingType = typeof(Int16);
-            port_maskedTextBox.Text = "20000";
-        }
-
-        private void maskedTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            ip_port_label.Text = ip_maskedTextBox.Text + ":" + port_maskedTextBox.Text;
+            }            
         }
 
         private void confirm_button_Click(object sender, EventArgs e)
         {
-            IPAddress ip;
-            if (IPAddress.TryParse(ip_maskedTextBox.Text, out ip))
-            {
-                Int16 port;
-                if(Int16.TryParse(port_maskedTextBox.Text, out port))
-                {
-                    IPEndPoint endpoint = new IPEndPoint(ip, port);
-                    File.WriteAllText("Connection.properties", endpoint.ToString());
-                    this.endpoint = endpoint;
-                    this.Close();
-                }
-                else
-                {
-                    ip_port_label.Text = "Wrong port";
-                }
-            }
+            if(!this.CheckInput(ip_port_textBox.Text))
+                ip_port_label.Text = "Wrong input";
             else
             {
-                ip_port_label.Text = "Wrong IP";
+                File.WriteAllText("Connection.properties", ip_port_label.Text);
+
+                string[] ip_port = ip_port_textBox.Text.Split(':');
+                this.endpoint = new IPEndPoint(IPAddress.Parse(ip_port.First()), int.Parse(ip_port.Last()));
+                this.Close();
             }
         }
 
-        private void port_maskedTextBox_TextChanged(object sender, EventArgs e)
+        private void ip_port_textBox_TextChanged(object sender, EventArgs e)
         {
-            ip_port_label.Text = ip_maskedTextBox.Text + ":" + port_maskedTextBox.Text;
+            ip_port_label.Text = ip_port_textBox.Text;
         }
     }
 }

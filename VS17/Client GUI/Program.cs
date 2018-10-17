@@ -20,14 +20,18 @@ namespace Client_GUI
                 InitProgramForm initProgramForm = new InitProgramForm();
                 Application.Run(initProgramForm);
 
-                mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
-                Application.Run(mainWindowForm);
-                if (!mainWindowForm.reinit)
-                    break;       
+                if (initProgramForm.endpoint != InitProgramForm.BAD_IPENDPOINT)
+                {
+                    mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
+                    Application.Run(mainWindowForm);
+                    mainWindowForm.Dispose();
+
+                    if (!mainWindowForm.reinit)
+                        break;
+                }
+                else
+                    break;
             }
-
-
-            mainWindowForm.Dispose();
         }
     }
 }
