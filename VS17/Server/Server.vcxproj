@@ -165,6 +165,7 @@
     <ClInclude Include="..\..\src\Network\TCPServer.hpp" />
     <ClInclude Include="..\..\src\Server\Application.hpp" />
     <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
+    <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
     <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp" />
     <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />

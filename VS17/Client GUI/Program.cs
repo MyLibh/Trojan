@@ -18,16 +18,21 @@ namespace Client_GUI
             while (true)
             { 
                 InitProgramForm initProgramForm = new InitProgramForm();
-                Application.Run(initProgramForm);
+                if(initProgramForm.IPEndPoint == InitProgramForm.BAD_IPENDPOINT)
+                    Application.Run(initProgramForm);
 
-                mainWindowForm = new MainWindowForm(initProgramForm.endpoint);
-                Application.Run(mainWindowForm);
-                if (!mainWindowForm.reinit)
-                    break;       
+                if (initProgramForm.IPEndPoint != InitProgramForm.BAD_IPENDPOINT)
+                { 
+                    mainWindowForm = new MainWindowForm(initProgramForm.IPEndPoint);
+                    Application.Run(mainWindowForm);
+                    mainWindowForm.Dispose();
+
+                    if (!mainWindowForm.Reinit)
+                        break;
+                }
+                else
+                    break;
             }
-
-
-            mainWindowForm.Dispose();
         }
     }
 }
