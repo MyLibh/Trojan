@@ -78,6 +78,9 @@
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Server\Application.cpp">
@@ -114,6 +117,9 @@
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>

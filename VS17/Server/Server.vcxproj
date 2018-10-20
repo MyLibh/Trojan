@@ -163,6 +163,7 @@
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\TCPConnection.hpp" />
     <ClInclude Include="..\..\src\Network\TCPServer.hpp" />
+    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp" />
     <ClInclude Include="..\..\src\Server\Application.hpp" />
     <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
@@ -178,6 +179,7 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\TCPConnection.cpp" />
     <ClCompile Include="..\..\src\Network\TCPServer.cpp" />
+    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp" />
     <ClCompile Include="..\..\src\Server\Application.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>

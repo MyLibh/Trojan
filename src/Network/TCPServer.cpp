@@ -4,6 +4,7 @@
 #include "Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 #include "..\Server\CommandManager.hpp"
+#include "UDPParticipiant.hpp"
 
 TCPServer::TCPServer(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint) :
 	TCPConnection(io_context),

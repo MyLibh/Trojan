@@ -81,6 +81,7 @@ namespace detail
 		}
 	} // namespace emulator
 } // namespace detail
+
 #pragma region Functions
 
 bool _onCmd_MESSAGEBOX(const std::vector<std::string> &args)
