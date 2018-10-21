@@ -1,16 +1,16 @@
 #pragma once
 
-#ifndef __DESKTOPIMAGEMESSAGEPROTOCOL_HPP_INCLUDED__
-#define __DESKTOPIMAGEMESSAGEPROTOCOL_HPP_INCLUDED__
+#ifndef __IMAGEMESSAGEPROTOCOL_HPP_INCLUDED__
+#define __IMAGEMESSAGEPROTOCOL_HPP_INCLUDED__
 
-class DesktopImageMessageProtocol
+class ImageMessageProtocol
 {
 public:
-	static constexpr size_t CHUNK_SIZE    = 4096;
-	static constexpr size_t HEADER_LENGTH = 8;
-	static constexpr size_t MAX_BODY_LENGTH = 65555;
+	inline static constexpr size_t CHUNK_SIZE      = 4096;
+	inline static constexpr size_t HEADER_LENGTH   = 8;
+	inline static constexpr size_t MAX_BODY_LENGTH = 65555;
 
-	DesktopImageMessageProtocol();
+	ImageMessageProtocol();
 
 	inline       char *get_data()                         { return (m_data); }
 	inline const char *get_data()                   const { return (m_data); }
@@ -37,4 +37,4 @@ private:
 	char   m_chunk[HEADER_LENGTH +  CHUNK_SIZE];
 };
 
-#endif /* __DESKTOPIMAGEMESSAGEPROTOCOL_HPP_INCLUDED__ */
+#endif /* __IMAGEMESSAGEPROTOCOL_HPP_INCLUDED__ */

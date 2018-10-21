@@ -1,39 +1,41 @@
 #include "..\..\Service\pch.hpp"
 
-#include "DesktopImageMessageProtocol.hpp"
+#include "ImageMessageProtocol.hpp"
 
-DesktopImageMessageProtocol::DesktopImageMessageProtocol() :
-	m_chunk_num(0ull),
-	m_body_length(0ull),
-	m_data(""),
-	m_chunk("")
+ImageMessageProtocol::ImageMessageProtocol() :
+	m_chunk_num{ 0ull },
+	m_body_length{ 0ull },
+	m_data{ },
+	m_chunk{ }
 { }
 
-char *DesktopImageMessageProtocol::get_chunk(size_t chunk)
+[[nodiscard]]
+char *ImageMessageProtocol::get_chunk(size_t chunk)
 {
 	if (m_chunk_num < chunk)
 		return nullptr;
 
-	auto size = (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : 0);
+	auto size{ (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : 0) };
 	std::memcpy(m_chunk, m_data + HEADER_LENGTH + chunk * CHUNK_SIZE + size, (!size ? CHUNK_SIZE : size));
 
 	return (m_chunk);
 }
 
-inline size_t DesktopImageMessageProtocol::get_chunk_size(size_t chunk) const
+[[nodiscard]]
+inline size_t ImageMessageProtocol::get_chunk_size(size_t chunk) const
 {
 	if (m_chunk_num < chunk)
 		throw std::length_error("'chunk' is greater than 'm_chunk_num'\n");
 
-	return (HEADER_LENGTH + (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : CHUNK_SIZE)); 
+	return (HEADER_LENGTH + (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : CHUNK_SIZE));
 }
 
-bool DesktopImageMessageProtocol::encode_header(size_t chunk)
+bool ImageMessageProtocol::encode_header(size_t chunk)
 {
 	if (m_chunk_num < chunk)
 		return false;
 
-	char header[HEADER_LENGTH + 1] = "";
+	char header[HEADER_LENGTH + 1]{ };
 	if(!chunk)
 		sprintf_s(header, "%3d %4d", static_cast<int>(m_chunk_num), static_cast<int>(m_body_length % CHUNK_SIZE));
 	else
@@ -43,9 +45,9 @@ bool DesktopImageMessageProtocol::encode_header(size_t chunk)
 	return true;
 }
 
-bool DesktopImageMessageProtocol::decode_header(size_t chunk)
+bool ImageMessageProtocol::decode_header(size_t chunk)
 {
-	char header[HEADER_LENGTH + 1] = "";
+	char header[HEADER_LENGTH + 1]{ };
 	strncat_s(header, m_chunk, HEADER_LENGTH);
 
 	if (!chunk)

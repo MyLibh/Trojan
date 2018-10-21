@@ -4,6 +4,7 @@
 
 namespace detail
 {
+	[[nodiscard]]
 	CMPROTO make_success_msg()
 	{
 		static const char *line = "SUCCESS";
@@ -17,6 +18,7 @@ namespace detail
 		return msg;
 	}
 
+	[[nodiscard]]
 	CMPROTO make_failure_msg()
 	{
 		static const char *line = "FAILURE";
@@ -29,7 +31,6 @@ namespace detail
 
 		return msg;
 	}
-
 }
 
 const CMPROTO CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
@@ -62,4 +63,5 @@ bool CommandMessageProtocol::decode_header()
 
 	return true;
 }
+
 
