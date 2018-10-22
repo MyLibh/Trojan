@@ -10,7 +10,7 @@ class CommandManager;
 class TCPServer final : public TCPConnection
 {
 public:
-	TCPServer(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint);
+	TCPServer(boost::asio::io_context &io_context, unsigned short port);
 
 private:
 	void accept();

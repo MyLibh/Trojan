@@ -20,10 +20,8 @@ public:
 	inline size_t      get_length()                 const { return (HEADER_LENGTH + m_body_length); }
 	inline size_t      get_body_length()            const { return (m_body_length); };
 
-	inline const char *get_chunk(size_t chunk) const { return (get_chunk(chunk)); }
-	             char *get_chunk(size_t chunk);
-
-	size_t get_chunk_size(size_t chunk) const;
+	char   *get_chunk(size_t chunk);
+	size_t  get_chunk_size(size_t chunk) const;
 
 	inline void set_body_length(size_t new_length) { m_body_length = /* std:: */ min(new_length, MAX_BODY_LENGTH); m_chunk_num = static_cast<size_t>(std::ceil(m_body_length / CHUNK_SIZE)); }
 

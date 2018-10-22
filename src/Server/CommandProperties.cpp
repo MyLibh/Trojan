@@ -1,8 +1,13 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "..\Service\pch.hpp"
 
 #include "CommandProperties.hpp"
-#include "..\Network\UDPParticipiant.hpp"
+#include "..\Network\UDP\UDPParticipiant.hpp"
+#include "..\Network\Protocols\ImageMessageProtocol.hpp"
 #include "..\Capturing\ScreenCapturer.hpp"
+#include "..\Service\Debugger.hpp"
 
 const std::array<CommandProperties, static_cast<size_t>(Commands::NUMBER_OF_COMMANDS)> COMMAND_PROPERTIES
 { {
@@ -96,7 +101,7 @@ bool _onCmd_MESSAGEBOX(const args_t &args)
 	return (MessageBoxA(nullptr, args[0].c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
 }
 
-void _onCmd_VIEWDESKTOP_START(const args_t &args, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
+void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
 {
 	UDPParticipiant server(io_context, endpoint);
 	ScreenCapturer scapt;
@@ -107,15 +112,15 @@ void _onCmd_VIEWDESKTOP_START(const args_t &args, cip_t &cip, size_t pos, boost:
 		IMPROTO msg;
 		msg.set_body_length(scapt.get_data_size());
 		std::memcpy(msg.get_body(), scapt.get_data(), msg.get_body_length());
-		msg.encode_header(IMPROTO::CHUNK_SIZE);
 
-		server.send(msg);
+		server.send(&msg);
+		$INFO("Sent %llu bytes\n", msg.get_body_length())
 	}
 }
 
 void _onCmd_VIEWDESKTOP_STOP(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context&, const boost::asio::ip::udp::endpoint&)
 {
-	cip[pos] = false;
+	cip[pos] = false; // TODO: mutex
 }
 
 bool _onCmd_KEYBOARDCTRL_ON(const args_t &args)
@@ -142,7 +147,7 @@ bool _onCmd_MOUSECTRL_ON(const args_t &args)
 	int   x{},
 		  y{};
 	DWORD button{};
-	if (sscanf_s(args[0].c_str(), "%d %d %ul", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
+	if (sscanf_s(args[0].c_str(), "%d %d %lu", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
 		return false;
 
 	return SetCursorPos(x, y);
