@@ -1,4 +1,7 @@
-﻿#include "dllpch.hpp"
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+#include "dllpch.hpp"
 
 #include "ClientDLL.hpp"
 #include "..\Client Console\Application.hpp"

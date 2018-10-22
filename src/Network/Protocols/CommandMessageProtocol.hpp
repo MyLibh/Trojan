@@ -6,11 +6,11 @@
 class CommandMessageProtocol
 {
 public:
-	static constexpr size_t HEADER_LENGTH   = 4; //-V112
-	static constexpr size_t COMMAND_LENGTH  = 2;
-	static constexpr size_t SPACE_LENGTH    = 1;
-	static constexpr size_t MAX_ARGS_LENGTH = 128;
-	static constexpr size_t MAX_BODY_LENGTH = COMMAND_LENGTH + SPACE_LENGTH + MAX_ARGS_LENGTH;
+	inline static constexpr size_t HEADER_LENGTH   = 4; //-V112
+	inline static constexpr size_t COMMAND_LENGTH  = 2;
+	inline static constexpr size_t SPACE_LENGTH    = 1;
+	inline static constexpr size_t MAX_ARGS_LENGTH = 128;
+	inline static constexpr size_t MAX_BODY_LENGTH = COMMAND_LENGTH + SPACE_LENGTH + MAX_ARGS_LENGTH;
 
 	CommandMessageProtocol();
 

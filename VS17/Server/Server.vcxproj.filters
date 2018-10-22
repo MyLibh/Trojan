@@ -43,22 +43,25 @@
     <Filter Include="Source Files\Commands">
       <UniqueIdentifier>{606b3065-9366-4539-ae79-02dff4e76e6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Network\TCP">
+      <UniqueIdentifier>{68bb10c4-37fd-4828-8975-7d46769ef4ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network\UDP">
+      <UniqueIdentifier>{bbe3fe13-0ccb-4409-b2fd-40a83a649ca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network\TCP">
+      <UniqueIdentifier>{deceb99f-444c-4103-90bd-84cb2f15c680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network\UDP">
+      <UniqueIdentifier>{d3a21245-58d0-4340-b809-b5c25833a55d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Server\Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp">
-      <Filter>Header Files\Capturing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp">
-      <Filter>Header Files\Capturing</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
       <Filter>Header Files\Network\Protocols</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Network\TCPServer.hpp">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Service\Tools.hpp">
       <Filter>Header Files\Service</Filter>
@@ -72,14 +75,29 @@
     <ClInclude Include="..\..\src\Server\CommandManager.hpp">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Network\TCPConnection.hpp">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp">
-      <Filter>Header Files\Network</Filter>
+    <ClInclude Include="..\..\src\Network\Protocols\ImageMessageProtocol.hpp">
+      <Filter>Header Files\Network\Protocols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Capturing\ScreenCapturer.hpp">
+      <Filter>Header Files\Capturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Capturing\WebCamCapturer.hpp">
+      <Filter>Header Files\Capturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCP\TCPConnection.hpp">
+      <Filter>Header Files\Network\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\TCP\TCPServer.hpp">
+      <Filter>Header Files\Network\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\UDP\UDPParticipiant.hpp">
+      <Filter>Header Files\Network\UDP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Network\UDP\UDPServer.hpp">
+      <Filter>Header Files\Network\UDP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,17 +107,8 @@
     <ClCompile Include="..\..\src\Server\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
-      <Filter>Source Files\Capturing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Server\WebCamCapturer.cpp">
-      <Filter>Source Files\Capturing</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <Filter>Source Files\Network\Protocols</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Network\TCPServer.cpp">
-      <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Tools.cpp">
       <Filter>Source Files\Service</Filter>
@@ -116,11 +125,26 @@
     <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
-      <Filter>Source Files\Network</Filter>
+    <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp">
+      <Filter>Source Files\Network\Protocols</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp">
-      <Filter>Source Files\Network</Filter>
+    <ClCompile Include="..\..\src\Capturing\WebCamCapturer.cpp">
+      <Filter>Source Files\Capturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Capturing\ScreenCapturer.cpp">
+      <Filter>Source Files\Capturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPConnection.cpp">
+      <Filter>Source Files\Network\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPServer.cpp">
+      <Filter>Source Files\Network\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp">
+      <Filter>Source Files\Network\UDP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPServer.cpp">
+      <Filter>Source Files\Network\UDP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

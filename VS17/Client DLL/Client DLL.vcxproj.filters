@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Application\Commands">
       <UniqueIdentifier>{b8932626-2de8-4847-b994-6e950d5e5194}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Application\Network\TCP">
+      <UniqueIdentifier>{e96199b0-006d-4279-b176-47037c6a33b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Application\Capturing">
+      <UniqueIdentifier>{5fe635ca-c9ff-4e42-91fd-fff1bb037ef2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Client DLL\dllmain.cpp">
@@ -48,12 +54,6 @@
     <ClCompile Include="..\..\src\Client Console\Application.cpp">
       <Filter>Source Files\Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\TCPClient.cpp">
-      <Filter>Source Files\Application\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Network\TCPConnection.cpp">
-      <Filter>Source Files\Application\Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <Filter>Source Files\Application\Network\Protocols</Filter>
     </ClCompile>
@@ -62,6 +62,21 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
       <Filter>Source Files\Application\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPClient.cpp">
+      <Filter>Source Files\Application\Network\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPConnection.cpp">
+      <Filter>Source Files\Application\Network\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Capturing\ScreenCapturer.cpp">
+      <Filter>Source Files\Application\Capturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Capturing\WebCamCapturer.cpp">
+      <Filter>Source Files\Application\Capturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp">
+      <Filter>Source Files\Application\Network\Protocols</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

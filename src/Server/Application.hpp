@@ -4,6 +4,7 @@
 #define __APLICATION_HPP_INCLUDED__
 
 class TCPServer;
+class UDPServer;
 
 class Application
 {
@@ -17,7 +18,8 @@ public:
 
 private:
 	boost::asio::io_context  m_io;
-	TCPServer               *m_server;
+	TCPServer               *m_tcp_server;
+	UDPServer               *m_udp_server;
 	std::thread              m_thread,
                              m_save_thread;
 };

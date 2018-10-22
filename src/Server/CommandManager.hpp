@@ -11,17 +11,15 @@ using CMPROTO = CommandMessageProtocol;
 class CommandManager
 {
 public:
-	CommandManager();
-
-	bool execute_command(const CMPROTO *msg);
+	static bool execute_command(const CMPROTO *msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
 
 private:
-	std::vector<std::string> parse_args(const char *args);
-	CIP_BITS                 get_bit(Commands command);
-	bool                     get_bit_new_value(Commands command);
+	static std::vector<std::string> parse_args(const char *args);
+	static CIP_BITS                 get_bit(Commands command);
+	static bool                     get_bit_new_value(Commands command);
 
 private:
-	std::bitset<CIP_NUMBER_OF_BITS> m_in_progress;
+	static cip_t m_in_progress;
 };
 
 #endif /* __COMMANDMANGER_HPP_INCLUDED__ */

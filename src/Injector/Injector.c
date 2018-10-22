@@ -1,7 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Injector.h" 
-#include "..\Tools.hpp"
-#include "..\Debugger.h"
-#include "..\Constants.h"
+#include "..\Service\Tools.hpp"
+#include "..\Service\Debugger.hpp"
+#include "..\Service\Constants.hpp"
 
 #include <TlHelp32.h> 
 #include <stdlib.h>   // malloc, free

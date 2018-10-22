@@ -8,7 +8,7 @@ class ImageMessageProtocol
 public:
 	inline static constexpr size_t CHUNK_SIZE      = 4096;
 	inline static constexpr size_t HEADER_LENGTH   = 8;
-	inline static constexpr size_t MAX_BODY_LENGTH = 65555;
+	inline static constexpr size_t MAX_BODY_LENGTH = 500000;
 
 	ImageMessageProtocol();
 

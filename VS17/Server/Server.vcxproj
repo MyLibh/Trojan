@@ -160,26 +160,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\Capturing\ScreenCapturer.hpp" />
+    <ClInclude Include="..\..\src\Capturing\WebCamCapturer.hpp" />
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
-    <ClInclude Include="..\..\src\Network\TCPConnection.hpp" />
-    <ClInclude Include="..\..\src\Network\TCPServer.hpp" />
-    <ClInclude Include="..\..\src\Network\UDPParticipiant.hpp" />
+    <ClInclude Include="..\..\src\Network\Protocols\ImageMessageProtocol.hpp" />
+    <ClInclude Include="..\..\src\Network\TCP\TCPConnection.hpp" />
+    <ClInclude Include="..\..\src\Network\TCP\TCPServer.hpp" />
+    <ClInclude Include="..\..\src\Network\UDP\UDPParticipiant.hpp" />
+    <ClInclude Include="..\..\src\Network\UDP\UDPServer.hpp" />
     <ClInclude Include="..\..\src\Server\Application.hpp" />
     <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
-    <ClInclude Include="..\..\src\Server\ScreenCapturer.hpp" />
-    <ClInclude Include="..\..\src\Server\WebCamCapturer.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
     <ClInclude Include="..\..\src\Service\pch.hpp" />
     <ClInclude Include="..\..\src\Service\Tools.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Capturing\ScreenCapturer.cpp" />
+    <ClCompile Include="..\..\src\Capturing\WebCamCapturer.cpp" />
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\TCPConnection.cpp" />
-    <ClCompile Include="..\..\src\Network\TCPServer.cpp" />
-    <ClCompile Include="..\..\src\Network\UDPParticipiant.cpp" />
+    <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPConnection.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\TCP\TCPServer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPServer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="..\..\src\Server\Application.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
@@ -187,14 +208,6 @@
     <ClCompile Include="..\..\src\Server\CommandManager.cpp" />
     <ClCompile Include="..\..\src\Server\CommandProperties.cpp" />
     <ClCompile Include="..\..\src\Server\main.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Server\ScreenCapturer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Server\WebCamCapturer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
