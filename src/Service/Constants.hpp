@@ -9,7 +9,7 @@
 
 #define SMALL_BUFFER_LENGTH     256
 
-#define SERVER_IP          "127.0.0.1" // "37.190.32.12" "127.0.0.1" "192.168.1.65"
+#define SERVER_IP          "127.0.0.1" 
 #define DEFAULT_PORT       "20000"
 
 #define TROJAN_APP_NAME    TEXTH("Trojan.exe")

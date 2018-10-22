@@ -40,6 +40,9 @@
     <Filter Include="Source Files\Application\Capturing">
       <UniqueIdentifier>{5fe635ca-c9ff-4e42-91fd-fff1bb037ef2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Application\Network\UDP">
+      <UniqueIdentifier>{adf973b8-08bb-4171-a704-7818916976b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Client DLL\dllmain.cpp">
@@ -77,6 +80,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp">
       <Filter>Source Files\Application\Network\Protocols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPClient.cpp">
+      <Filter>Source Files\Application\Network\UDP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp">
+      <Filter>Source Files\Application\Network\UDP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

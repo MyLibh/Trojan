@@ -6,6 +6,7 @@
 #include "UDPParticipiant.hpp"
 #include "..\Protocols\CommandMessageProtocol.hpp"
 #include "..\Protocols\ImageMessageProtocol.hpp"
+#include "..\..\Service\Debugger.hpp"
 
 UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) :
 	m_socket{ io_context, endpoint },
@@ -16,12 +17,15 @@ UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boos
 
 void UDPParticipiant::send(const CMPROTO *msg)
 {
-	m_socket.send_to(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint);
+	std::cout << m_endpoint;
+	while(m_socket.send_to(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint) != msg->get_length());
 }
 
 void UDPParticipiant::recv(CMPROTO *msg)
 {
 	m_socket.receive_from(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint);
+
+	msg->decode_header();
 }
 
 void UDPParticipiant::send(const IMPROTO *msg)
