@@ -8,14 +8,11 @@ using CMPROTO = CommandMessageProtocol;
 
 using msg_queue_t = std::deque<CMPROTO*>;
 
-class TCPConnection abstract
+class TCPConnection : private boost::noncopyable
 {
 public:
 	TCPConnection(boost::asio::io_context &io_context);
 	~TCPConnection();
-
-	TCPConnection(const TCPConnection&) = delete;
-	TCPConnection& operator=(const TCPConnection&) = delete;
 
 	virtual void write(const CMPROTO *msg);
 	virtual void close();

@@ -12,13 +12,13 @@ public:
 
 	ImageMessageProtocol();
 
-	inline       char *get_data()                         { return (m_data); }
-	inline const char *get_data()                   const { return (m_data); }
-	inline       char *get_body()                         { return (m_data + HEADER_LENGTH); }
-	inline const char *get_body()                   const { return (m_data + HEADER_LENGTH); }
-	inline size_t      get_chunk_num()              const { return (m_chunk_num); }
-	inline size_t      get_length()                 const { return (HEADER_LENGTH + m_body_length); }
-	inline size_t      get_body_length()            const { return (m_body_length); };
+	inline       char *get_data()              { return (m_data); }
+	inline const char *get_data()        const { return (m_data); }
+	inline       char *get_body()              { return (m_data + HEADER_LENGTH); }
+	inline const char *get_body()        const { return (m_data + HEADER_LENGTH); }
+	inline size_t      get_chunk_num()   const { return (m_chunk_num); }
+	inline size_t      get_length()      const { return (HEADER_LENGTH + m_body_length); }
+	inline size_t      get_body_length() const { return (m_body_length); };
 
 	char   *get_chunk(size_t chunk);
 	size_t  get_chunk_size(size_t chunk) const;
@@ -29,10 +29,10 @@ public:
 	bool decode_header(size_t chunk);
 
 private:
-	size_t m_chunk_num;
-	size_t m_body_length;
+	size_t m_chunk_num; //-V122
+	size_t m_body_length; //-V122
 	char   m_data[MAX_BODY_LENGTH];
-	char   m_chunk[HEADER_LENGTH +  CHUNK_SIZE];
+	char   m_chunk[HEADER_LENGTH + CHUNK_SIZE];
 };
 
 #endif /* __IMAGEMESSAGEPROTOCOL_HPP_INCLUDED__ */

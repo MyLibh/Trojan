@@ -32,7 +32,7 @@ public:
 	inline void clear_data() { std::memset(m_data, char{}, HEADER_LENGTH + MAX_BODY_LENGTH); m_body_length = 0; }
 
 private:
-	size_t m_body_length;
+	size_t m_body_length; //-V122
 	char   m_data[HEADER_LENGTH + MAX_BODY_LENGTH];
 };
 

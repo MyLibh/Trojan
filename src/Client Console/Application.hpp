@@ -6,23 +6,23 @@
 class TCPClient;
 class UDPClient;
 
-class Application
+class Application : private boost::noncopyable
 {
 public:
 	Application();
 	Application(char *argv[]);
-	Application(const std::string &ip, const std::string &port);
+	Application(std::string_view ip, std::string_view port);
 	~Application();
 
 	void run();
-	void send_command(const std::string &command);
+	void send_command(std::string_view command);
 	void close();
 
 private:
-	boost::asio::io_context  m_io;
-	TCPClient               *m_tcp_client;
-	UDPClient               *m_udp_client;
-	std::thread              m_thread;
+	boost::asio::io_context    m_io;
+	std::unique_ptr<TCPClient> m_tcp_client;
+	std::unique_ptr<UDPClient> m_udp_client;
+	std::thread                m_thread;
 };
 
 #endif /* __APPLICATION_HPP_INCLUDED__ */

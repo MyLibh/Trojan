@@ -48,9 +48,9 @@ public:
 	BOOL init();
 
 public:
-	IDirect3D9        *m_pD3D9;
-	IDirect3DDevice9  *m_pDevice;
-	IDirect3DSurface9 *m_pSurface;
+	IDirect3D9        *m_pD3D9; //-V122
+	IDirect3DDevice9  *m_pDevice; //-V122
+	IDirect3DSurface9 *m_pSurface; //-V122
 	D3DDISPLAYMODE     m_mode;
 };
 
@@ -94,13 +94,11 @@ ScreenCapturer::ScreenCapturer() :
 {
 	if (!m_pImpl->init())
 		$ERROR("Smth went wrong during DirectX initialization\n");
-	
 }
 
 ScreenCapturer::~ScreenCapturer()
 {
-	delete[] m_pData;
-	delete m_pImpl;
+	// delete m_pImpl;
 }
 
 bool ScreenCapturer::capture()
@@ -116,9 +114,9 @@ bool ScreenCapturer::capture()
 
 	m_data_size = static_cast<size_t>(pitch * m_pImpl->m_mode.Height);
 	if (m_pData)
-		delete[] m_pData;
+		m_pData = nullptr;
 
-	m_pData = new BYTE[m_data_size];
+	m_pData = std::make_unique<BYTE[]>(m_data_size);
 
 	if (m_pImpl->m_pDevice->GetFrontBufferData(0, m_pImpl->m_pSurface) != D3D_OK)
 		goto error;
@@ -126,7 +124,7 @@ bool ScreenCapturer::capture()
 	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
 		goto error;
 
-	std::memcpy(m_pData, rc.pBits, static_cast<size_t>(rc.Pitch * m_pImpl->m_mode.Height));
+	std::memcpy(&m_pData, rc.pBits, static_cast<size_t>(rc.Pitch) * static_cast<size_t>(m_pImpl->m_mode.Height));
 
 	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
 		goto error;
@@ -142,9 +140,9 @@ error:
 
 bool ScreenCapturer::save2png(const std::filesystem::path &path)
 {
-	WinCodec *pWC    = new WinCodec;
-	GUID      format = GUID_WICPixelFormat32bppPBGRA;
-	HRESULT   hr     = S_OK; 
+	std::unique_ptr<WinCodec> pWC{ new WinCodec };
+	GUID                      format{ GUID_WICPixelFormat32bppPBGRA };
+	HRESULT                   hr{ S_OK };
 
 #define CHECK_HRESULT(ret_val) { hr = ret_val; if(hr != S_OK) { $ERROR("Error(0x%08X) on line(%d)\n", hr, __LINE__) goto end; } }
 	CHECK_HRESULT(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pWC->m_pFactory)))
@@ -162,8 +160,6 @@ bool ScreenCapturer::save2png(const std::filesystem::path &path)
 #undef CHECK_HRESULT
 
 end:
-	delete pWC;
-
 	return (hr == S_OK);
 }
 

@@ -6,10 +6,11 @@
 class CommandMessageProtocol;
 using CMPROTO = CommandMessageProtocol;
 
-class UDPClient
+class UDPClient : private boost::noncopyable
 {
 public:
-	UDPClient(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
+	UDPClient(boost::asio::io_context &io_context, const boost::asio::ip::udp::resolver::results_type &endpoint);
+	~UDPClient() = default;
 
 	void send(const CMPROTO *msg);
 

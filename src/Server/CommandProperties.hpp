@@ -26,6 +26,8 @@ enum class Commands : size_t
 	PLAYSOUND_START,
 	PLAYSOUND_STOP,
 
+	CLOSE_CONNECTION,
+
 	NUMBER_OF_COMMANDS
 };
 
@@ -41,9 +43,10 @@ using CIP_BITS = COMMAND_IN_PROGRESS_BITS;
 
 #define CIP_NUMBER_OF_BITS static_cast<size_t>(CIP_BITS::NUMBER_OF_BITS)
 
-using cip_t = std::bitset<CIP_NUMBER_OF_BITS>;
+using cip_t  = std::bitset<CIP_NUMBER_OF_BITS>;
 using args_t = std::vector<std::string>;
-struct CommandProperties
+
+struct CommandProperties 
 {
 	using command_t            = std::tuple<Commands, std::string>;
 	using exec_func_t          = std::function<bool(const args_t&)>;

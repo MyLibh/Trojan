@@ -9,7 +9,7 @@ using CMPROTO = CommandMessageProtocol;
 class ImageMessageProtocol;
 using IMPROTO = ImageMessageProtocol;
 
-class UDPParticipiant
+class UDPParticipiant : private boost::noncopyable
 { 
 public:
 	inline static constexpr std::string_view OK_MESSAGE{ "OK" };

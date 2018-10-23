@@ -21,6 +21,7 @@
 #include <variant>
 #include <bitset>
 #include <filesystem>
+#include <memory>
 
 // Windows Header Files
 #include <sdkddkver.h>
@@ -36,7 +37,7 @@
  
 // Additional Libraries Header Files
 #include <boost\asio.hpp>
-#include <boost\bind.hpp>
+#include <boost\core\noncopyable.hpp>
 
 // My Header Files
 #include "Constants.hpp"

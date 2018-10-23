@@ -17,11 +17,11 @@ public:
 	void close();
 
 private:
-	boost::asio::io_context  m_io;
-	TCPServer               *m_tcp_server;
-	UDPServer               *m_udp_server;
-	std::thread              m_thread,
-                             m_save_thread;
+	boost::asio::io_context    m_io;
+	std::unique_ptr<TCPServer> m_tcp_server;
+	std::unique_ptr<UDPServer> m_udp_server;
+	std::thread                m_thread,
+                               m_save_thread;
 };
 
 #endif /* __APLICATION_HPP_INCLUDED__ */

@@ -27,10 +27,7 @@ Application::Application(char *argv[]) :
 { }
 
 Application::~Application()
-{
-	delete m_tcp_server;
-	delete m_udp_server;
-}
+{ }
 
 void Application::run()
 {

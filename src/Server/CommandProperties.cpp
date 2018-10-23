@@ -98,7 +98,7 @@ bool _onCmd_MESSAGEBOX(const args_t &args)
 	if(args.size() != 1ull)
 		return false;
 
-	return (MessageBoxA(nullptr, args[0].c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
+	return (MessageBox(nullptr, args[0].c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
 }
 
 void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
@@ -111,7 +111,7 @@ void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, size_t pos, boost::asio
 
 		IMPROTO msg;
 		msg.set_body_length(scapt.get_data_size());
-		std::memcpy(msg.get_body(), scapt.get_data(), msg.get_body_length());
+		std::memcpy(msg.get_body(), scapt.release_data(), msg.get_body_length());
 
 		server.send(&msg);
 		$INFO("Sent %llu bytes\n", msg.get_body_length())
