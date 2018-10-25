@@ -47,7 +47,7 @@ typedef enum _Colors
 //! \return  Constructed color
 //====================================================================================================================================
 
-inline WORD MAKECOLOR(WORD color, WORD background) { return ((background << 4) | color); }
+inline constexpr WORD MAKECOLOR(WORD color, WORD background) noexcept { return ((background << 4) | color); }
 
 //====================================================================================================================================
 //!
@@ -152,7 +152,7 @@ VOID ClearConsole();
 #define $error DebugError(TEXTH("[ERROR]: "));
 #define $warn  DebugWarning(TEXTH("[WARNING]: "));
 
-#ifdef NDEBUG
+#ifdef _DEBUG
 	#define $I(msg, ...) { $i _tprintf(msg, __VA_ARGS__); }
 	#define $E(msg, ...) { $e _tprintf(msg, __VA_ARGS__); }
 	#define $W(msg, ...) { $w _tprintf(msg, __VA_ARGS__); }
@@ -161,13 +161,13 @@ VOID ClearConsole();
 	#define $ERROR(msg, ...) { $error _tprintf(msg, __VA_ARGS__); }
 	#define $WARN(msg, ...)  { $warn  _tprintf(msg, __VA_ARGS__); }
 #else
-	#define $I(msg, ...) 
-	#define $E(msg, ...) 
-	#define $W(msg, ...) 
+	#define $I(msg, ...) { }
+	#define $E(msg, ...) { }
+	#define $W(msg, ...) { }
 
-	#define $INFO(msg, ...)  
-	#define $ERROR(msg, ...) 
-	#define $WARN(msg, ...)  
+	#define $INFO(msg, ...)  { }
+	#define $ERROR(msg, ...) { }
+	#define $WARN(msg, ...)  { }
 #endif /* NDEBUG */
 
 #define TEXTH(msg) (PTCHAR)TEXT(msg)

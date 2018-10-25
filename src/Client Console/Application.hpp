@@ -9,7 +9,7 @@ class UDPClient;
 class Application : private boost::noncopyable
 {
 public:
-	Application();
+	Application() noexcept;
 	Application(char *argv[]);
 	Application(std::string_view ip, std::string_view port);
 	~Application();

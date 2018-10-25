@@ -23,10 +23,12 @@ void UDPClient::send(const CMPROTO *msg)
 			client.send(msg);
 			while (true)
 			{
-				IMPROTO imsg;
-				client.recv(&imsg);
-				$info std::cout << "[THREAD " << std::this_thread::get_id() << "] Recieved " << imsg.get_body_length() << " bytes\n";
-				std::cout.write(imsg.get_body(), imsg.get_body_length());
+				IMPROTO *imsg = new IMPROTO;
+				client.recv(imsg);
+				$info std::cout << "[THREAD " << std::this_thread::get_id() << "] Recieved " << imsg->get_body_length() << " bytes\n";
+
+				std::copy(imsg->get_body(), imsg->get_body() + imsg->get_body_length(), std::ostream_iterator<char>(std::cout, ""));
+				delete imsg;
 			}
 		});
 

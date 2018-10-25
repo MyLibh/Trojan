@@ -5,12 +5,22 @@
 
 #include "ScreenCapturer.hpp"
 #include "..\Service\Debugger.hpp"
+#include "..\Service\Log.hpp"
 
 namespace detail
 {
 	template<typename T>
-	void SafeRelease(T *ptr)
+	void SafeRelease(T *ptr) noexcept
 	{
+		if (!std::is_same_v<T, IWICImagingFactory> ||
+			!std::is_same_v<T, IWICBitmapEncoder> ||
+			!std::is_same_v<T, IWICBitmapFrameEncode> ||
+			!std::is_same_v<T, IWICStream> ||
+			!std::is_same_v<T, IDirect3D9> ||
+			!std::is_same_v<T, IDirect3DDevice9> ||
+			!std::is_same_v<T, IDirect3DSurface9>)
+			return;
+			
 		if (ptr)
 		{
 			ptr->Release();
@@ -20,13 +30,14 @@ namespace detail
 	}
 }
 
-ScreenCapturer::WinCodec::WinCodec() :
+ScreenCapturer::WinCodec::WinCodec() noexcept :
 	m_pFactory(nullptr),
 	m_pEncoder(nullptr),
 	m_pFrame(nullptr),
 	m_pStream(nullptr)
 {
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	if (const auto hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED); hr != S_OK)
+		LOG(warning) << "Cannot initialize COM(0x" << hr << ")";
 }
 
 ScreenCapturer::WinCodec::~WinCodec()
@@ -45,7 +56,7 @@ class ScreenCapturer::DirectXImpl
 public:
 	~DirectXImpl();
 
-	BOOL init();
+	bool init() noexcept;
 
 public:
 	IDirect3D9        *m_pD3D9; //-V122
@@ -61,7 +72,7 @@ ScreenCapturer::DirectXImpl::~DirectXImpl()
 	detail::SafeRelease(m_pD3D9);
 }
 
-BOOL ScreenCapturer::DirectXImpl::init()
+bool ScreenCapturer::DirectXImpl::init() noexcept
 {
 	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
 	if (!m_pD3D9)
@@ -87,60 +98,51 @@ BOOL ScreenCapturer::DirectXImpl::init()
 }
 
 
-ScreenCapturer::ScreenCapturer() :
-	m_pImpl(new ScreenCapturer::DirectXImpl),
-	m_data_size(0ull),
-	m_pData(nullptr)
+ScreenCapturer::ScreenCapturer() noexcept :
+	m_pImpl{ std::make_unique<ScreenCapturer::DirectXImpl>() },
+	m_data_size{ },
+	m_pData{ }
 {
 	if (!m_pImpl->init())
-		$ERROR("Smth went wrong during DirectX initialization\n");
+		$ERROR("Smth went wrong during DirectX initialization\n")
 }
 
 ScreenCapturer::~ScreenCapturer()
-{
-	// delete m_pImpl;
-}
+{ }
 
 bool ScreenCapturer::capture()
 {
 	UINT pitch        = 0;
 	D3DLOCKED_RECT rc = { 0 };
 	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
-		goto error;
+		return false;
 
 	pitch = rc.Pitch;
 	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
-		goto error;
+		return false;
 
-	m_data_size = static_cast<size_t>(pitch * m_pImpl->m_mode.Height);
-	if (m_pData)
-		m_pData = nullptr;
+	m_data_size = static_cast<size_t>(pitch) * static_cast<size_t>(m_pImpl->m_mode.Height);
 
 	m_pData = std::make_unique<BYTE[]>(m_data_size);
 
 	if (m_pImpl->m_pDevice->GetFrontBufferData(0, m_pImpl->m_pSurface) != D3D_OK)
-		goto error;
+		return false;
 
 	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
-		goto error;
+		return false;
 
-	std::memcpy(&m_pData, rc.pBits, static_cast<size_t>(rc.Pitch) * static_cast<size_t>(m_pImpl->m_mode.Height));
+#pragma warning(suppress : 6387) // 'rc.pBits' could be '0':  this does not adhere to the specification for the function 'memcpy'.
+	std::memcpy(&m_pData, rc.pBits, gsl::narrow_cast<size_t>(rc.Pitch) * static_cast<size_t>(m_pImpl->m_mode.Height));
 
 	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
-		goto error;
+		return false;
 
 	return true;
-
-error:
-	m_data_size = 0;
-	m_pData     = nullptr;
-
-	return false;
 }
 
 bool ScreenCapturer::save2png(const std::filesystem::path &path)
 {
-	std::unique_ptr<WinCodec> pWC{ new WinCodec };
+	std::unique_ptr<WinCodec> pWC{ std::make_unique<WinCodec>() };
 	GUID                      format{ GUID_WICPixelFormat32bppPBGRA };
 	HRESULT                   hr{ S_OK };
 

@@ -9,25 +9,30 @@
 #include "..\Server\CommandProperties.hpp"
 #include "..\Service\Debugger.hpp"
 #include "..\Network\UDP\UDPClient.hpp"
+#include "..\Service\Constants.hpp"
+#include "..\Service\Log.hpp"
 
-Application::Application() :
+Application::Application() noexcept :
 	m_io{ },
-	m_tcp_client{ new TCPClient{ m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT) } },
-	m_udp_client{ new UDPClient{ m_io, boost::asio::ip::udp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT) } },
-	m_thread{ [this]() { m_io.run(); } }
+	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT)) },
+	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT)) },
+	m_thread{ [this]() noexcept { m_io.run(); } }
 { }
 
+#pragma warning(push)
+#pragma warning(disable : 26481 26485) 
 Application::Application(char *argv[]) :
 	m_io{ },
-	m_tcp_client{ new TCPClient{ m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2]) } },
-	m_udp_client{ new UDPClient{ m_io, boost::asio::ip::udp::resolver(m_io).resolve(argv[1], argv[2]) } },
+	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2])) },
+	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(argv[1], argv[2])) },
 	m_thread{ [this]() { m_io.run(); } }
 { }
+#pragma warning(pop)
 
 Application::Application(std::string_view ip, std::string_view port) :
 	m_io{ },
-	m_tcp_client{ new TCPClient{ m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port) } },
-	m_udp_client{ new UDPClient{ m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port) } },
+	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port)) },
+	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port)) },
 	m_thread{ [this]() { m_io.run(); } }
 { }
 
@@ -60,12 +65,12 @@ void Application::send_command(std::string_view command)
 	{	
 		// Translate command
 		char buff[CMPROTO::COMMAND_LENGTH + 1]{ };
-		int cmd = static_cast<int>(std::get<Commands>(iter->command));
+		const int cmd = static_cast<int>(std::get<Commands>(iter->command));
 		sprintf_s(buff, "%2d", cmd);
 
 		// Copy full command 
-		std::memcpy(msg.get_body(), buff, CMPROTO::COMMAND_LENGTH);
-		std::memcpy(msg.get_args(), args.data(), CMPROTO::MAX_ARGS_LENGTH);
+		std::memcpy(msg.get_body().data(), buff, CMPROTO::COMMAND_LENGTH);
+		std::memcpy(msg.get_args().data(), args.data(), CMPROTO::MAX_ARGS_LENGTH);
 
 		msg.encode_header();
 
@@ -75,7 +80,7 @@ void Application::send_command(std::string_view command)
 			m_udp_client->send(&msg);
 	}
 	else
-		$ERROR(TEXTH("Wrong Command: '%s'\n"), command.data());
+		LOG(error) << "Wrong Command: '" << command.data() << "'";
 }
 
 void Application::close()

@@ -10,29 +10,30 @@ public:
 	inline static constexpr size_t HEADER_LENGTH   = 8;
 	inline static constexpr size_t MAX_BODY_LENGTH = 500000;
 
-	ImageMessageProtocol();
+public:
+	ImageMessageProtocol() noexcept;
 
-	inline       char *get_data()              { return (m_data); }
-	inline const char *get_data()        const { return (m_data); }
-	inline       char *get_body()              { return (m_data + HEADER_LENGTH); }
-	inline const char *get_body()        const { return (m_data + HEADER_LENGTH); }
-	inline size_t      get_chunk_num()   const { return (m_chunk_num); }
-	inline size_t      get_length()      const { return (HEADER_LENGTH + m_body_length); }
-	inline size_t      get_body_length() const { return (m_body_length); };
+	inline       auto get_data()               noexcept { return (std:: begin(m_data)); }
+	inline const auto get_data()         const noexcept { return (std::cbegin(m_data)); }
+	inline       auto get_body()               noexcept { return (std:: begin(m_data) + HEADER_LENGTH); }
+	inline const auto get_body()         const noexcept { return (std::cbegin(m_data) + HEADER_LENGTH); }
+	inline size_t      get_chunk_num()   const noexcept { return (m_chunk_num); }
+	inline size_t      get_length()      const noexcept { return (HEADER_LENGTH + m_body_length); }
+	inline size_t      get_body_length() const noexcept { return (m_body_length); };
 
-	char   *get_chunk(size_t chunk);
+	char   *get_chunk(size_t chunk) const noexcept;
 	size_t  get_chunk_size(size_t chunk) const;
 
-	inline void set_body_length(size_t new_length) { m_body_length = /* std:: */ min(new_length, MAX_BODY_LENGTH); m_chunk_num = static_cast<size_t>(std::ceil(m_body_length / CHUNK_SIZE)); }
+	inline void set_body_length(size_t new_length) { m_body_length = std::min(new_length, MAX_BODY_LENGTH); m_chunk_num = static_cast<size_t>(std::ceil(m_body_length / CHUNK_SIZE)); }
 
-	bool encode_header(size_t chunk);
-	bool decode_header(size_t chunk);
+	bool encode_header(size_t chunk) const;
+	bool decode_header(size_t chunk) noexcept;
 
 private:
-	size_t m_chunk_num; //-V122
-	size_t m_body_length; //-V122
-	char   m_data[MAX_BODY_LENGTH];
-	char   m_chunk[HEADER_LENGTH + CHUNK_SIZE];
+	size_t       m_chunk_num; //-V122
+	size_t       m_body_length; //-V122
+	char         m_data[MAX_BODY_LENGTH];
+	mutable char m_chunk[HEADER_LENGTH + CHUNK_SIZE];
 };
 
 #endif /* __IMAGEMESSAGEPROTOCOL_HPP_INCLUDED__ */

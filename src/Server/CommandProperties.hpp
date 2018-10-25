@@ -65,16 +65,16 @@ void _onCmd_VIEWDESKTOP_STOP (const args_t&, cip_t &cip, size_t pos, boost::asio
 void _onCmd_VIEWWEBCAM_START (const args_t &args, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
 void _onCmd_VIEWWEBCAM_STOP  (const args_t&, cip_t &cip, size_t pos, boost::asio::io_context&, const boost::asio::ip::udp::endpoint&);
 bool _onCmd_KEYBOARDCTRL_ON  (const args_t &args);
-bool _onCmd_KEYBOARDCTRL_OFF (const args_t&);
+bool _onCmd_KEYBOARDCTRL_OFF (const args_t&) noexcept;
 bool _onCmd_MOUSECTRL_ON     (const args_t &args);
-bool _onCmd_MOUSECTRL_OFF    (const args_t&);
+bool _onCmd_MOUSECTRL_OFF    (const args_t&) noexcept;
 bool _onCmd_EXECUTECMD       (const args_t &args);
 bool _onCmd_ENCRYPTFILE      (const args_t &args);
 bool _onCmd_DECRYPTFILE      (const args_t &args);
 bool _onCmd_IMPORTFILE       (const args_t &args);
 bool _onCmd_EXPORTFILE       (const args_t &args);
-bool _onCmd_BLOCKINPUT_ON    (const args_t&);
-bool _onCmd_BLOCKINPUT_OFF   (const args_t&);
+bool _onCmd_BLOCKINPUT_ON    (const args_t&) noexcept;
+bool _onCmd_BLOCKINPUT_OFF   (const args_t&) noexcept;
 bool _onCmd_PLAYSOUND        (const args_t &args);
 
 #endif /* __COMMANDPROPERTIES_HPP_INCLUDED__ */

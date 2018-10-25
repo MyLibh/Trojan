@@ -93,6 +93,12 @@
     <ClInclude Include="..\..\src\Network\UDP\UDPParticipiant.hpp">
       <Filter>Header Files\Network\UDP</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Service\Log.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\Constants.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp">
       <Filter>Source Files\Network\UDP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Log.cpp">
+      <Filter>Source Files\Service</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

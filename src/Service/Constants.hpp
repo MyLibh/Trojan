@@ -3,8 +3,6 @@
 #ifndef __CONSTANTS_H_INCLUDED__
 #define __CONSTANTS_H_INCLUDED__
 
-#include <tchar.h>
-
 #define TEXTH(str) (PTCHAR)TEXT(str)
 
 #define SMALL_BUFFER_LENGTH     256
@@ -13,6 +11,9 @@
 #define DEFAULT_PORT       "20000"
 
 #define TROJAN_APP_NAME    TEXTH("Trojan.exe")
+
+// Client constants
+inline static constexpr std::string_view CLIENT_LOG_FMT_FILENAME{ "client%N.log" };
 
 // Commands defines
 

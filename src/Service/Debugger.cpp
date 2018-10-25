@@ -4,6 +4,7 @@
 #include "pch.hpp"
 
 #include "Debugger.hpp"
+#include "Constants.hpp"
 
 WORD GetConsoleColor()
 {
@@ -28,7 +29,7 @@ WORD GetConsoleColor()
 
 WORD SetConsoleColor(WORD color)
 {
-	WORD old = GetConsoleColor();
+	const WORD old = GetConsoleColor();
 
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hConsole == INVALID_HANDLE_VALUE)
@@ -48,53 +49,55 @@ WORD SetConsoleColor(WORD color)
 	return old;
 }
 
-VOID DebugInfo(const PTCHAR info)
+void DebugInfo(const PTCHAR info)
 {
-	WORD old = SetConsoleColor(MAKECOLOR(LightBlue, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(LightBlue, Black));
 
 	_tprintf(TEXT("%s"), info);
 
 	SetConsoleColor(old);
 }
 
-VOID DebugError(const PTCHAR error)
+void DebugError(const PTCHAR error)
 {
-	WORD old = SetConsoleColor(MAKECOLOR(Red, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(Red, Black));
 
 	_tprintf(TEXT("%s"), error);
 
 	SetConsoleColor(old);
 }
 
-VOID DebugWarning(const PTCHAR warning)
+void DebugWarning(const PTCHAR warning)
 {
-	WORD old = SetConsoleColor(MAKECOLOR(DarkGray, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(DarkGray, Black));
 
 	_tprintf(TEXT("%s"), warning);
 
 	SetConsoleColor(old);
 }
 
-VOID PrintError(CONST PTCHAR func, INT error)
+void PrintError(CONST PTCHAR func, INT error)
 {
-	TCHAR sysmsg[SMALL_BUFFER_LENGTH] = { 0 };
-	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, NULL))
+	TCHAR sysmsg[SMALL_BUFFER_LENGTH]{ };
+	
+	[[gsl::suppress(26485)]] // Expression 'sysmsg': No array to pointer decay (bounds.3).
+	if (!FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), sysmsg, SMALL_BUFFER_LENGTH, nullptr))
 	{
 		$error _tprintf(TEXT("[ERROR]: FormatMessage failed with 0x%x\n"), GetLastError());
 
 		return;
 	}
 
-	PTCHAR p = sysmsg;
-	while ((*p > 31) || (*p == 9))
-		++p;
+	const gsl::span<TCHAR> span(sysmsg);
+	auto end   = std::find_if_not(std::execution::par_unseq, span.begin(), span.end(), [](auto &&c) { return ((c > 31) || (c == 9)); });
+	if (end == span.end())
+		end = span.begin();
 
-	do
-	{
-		*p-- = 0;
-	} while (p >= sysmsg && (*p == '.' || *p < 33));
+	auto begin = std::find_if_not(std::execution::par_unseq, decltype(span)::reverse_iterator(end), span.rend(), [](auto &&c) { return ((c == '.') || (c < 33)); });
 
-	$ERROR("\'%s\' failed with error %d (%s)\n", func, error, sysmsg);
+	std::for_each(std::execution::par_unseq, begin.base(), end, [](auto &&c) { c = 0; });
+
+	$ERROR("\'%s\' failed with error %d (%s)\n", func, error, span.data());
 }
 
 void PrintBoostError(const boost::system::error_code &ec)
@@ -120,9 +123,9 @@ VOID ClearConsole()
 		return;
 	}
 
-	COORD position  = { 0,0 };
-	DWORD chars_num = csbi.dwSize.X * csbi.dwSize.Y,
-		  written   = 0ul;
+	      COORD position  = { 0,0 };
+	const DWORD chars_num = csbi.dwSize.X * csbi.dwSize.Y;
+		  DWORD written   = 0ul;
 	if (!FillConsoleOutputCharacter(hConsole, ' ', chars_num, position, &written))
 	{
 		PrintError(TEXTH("FillConsoleOutputCharacter"), GetLastError());

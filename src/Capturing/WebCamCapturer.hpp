@@ -6,7 +6,7 @@
 class VideoDevice
 {
 public:
-	VideoDevice();
+	VideoDevice() noexcept;
 
 	std::string get_friendly_name() const;
 

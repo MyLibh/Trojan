@@ -17,27 +17,33 @@ UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boos
 
 void UDPParticipiant::send(const CMPROTO *msg)
 {
-	while(m_socket.send_to(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint) != msg->get_length());
+	assert(msg);
+
+	while(m_socket.send_to(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 }
 
 void UDPParticipiant::recv(CMPROTO *msg)
 {
-	while(m_socket.receive_from(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint) != msg->get_length());
+	assert(msg);
+
+	while(m_socket.receive_from(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 
 	msg->decode_header();
 }
 
 void UDPParticipiant::send(const IMPROTO *msg)
 {
+	assert(msg);
+
 	for (size_t i{}; i < msg->get_chunk_num(); ++i)
 	{
 	start:
-		const_cast<IMPROTO*>(msg)->encode_header(i);
-		m_socket.send_to(boost::asio::buffer(const_cast<IMPROTO*>(msg)->get_chunk(i), msg->get_chunk_size(i)), m_endpoint);
+		msg->encode_header(i);
+		m_socket.send_to(boost::asio::buffer(msg->get_chunk(i), msg->get_chunk_size(i)), m_endpoint);
 
 		if (!i)
 		{
-			char buff[OK_MESSAGE.length() + 1]{ };
+			char buff[OK_MESSAGE.length() + 1]{};
 			m_socket.receive_from(boost::asio::buffer(buff, OK_MESSAGE.length()), m_endpoint);
 			if (buff != OK_MESSAGE)
 				goto start;
@@ -47,6 +53,8 @@ void UDPParticipiant::send(const IMPROTO *msg)
 
 void UDPParticipiant::recv(IMPROTO *msg)
 {
+	assert(msg);
+
 	m_socket.receive_from(boost::asio::buffer(msg->get_chunk(0), msg->get_chunk_size(0)), m_endpoint);
 	msg->decode_header(0);
 

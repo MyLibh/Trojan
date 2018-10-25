@@ -12,7 +12,7 @@ class TCPConnection : private boost::noncopyable
 {
 public:
 	TCPConnection(boost::asio::io_context &io_context);
-	~TCPConnection();
+	virtual ~TCPConnection() = default;
 
 	virtual void write(const CMPROTO *msg);
 	virtual void close();
@@ -21,12 +21,12 @@ protected:
 	virtual void read_header();
 	virtual void read_body();
 	virtual void write();
-
+	
 protected:
 	boost::asio::io_context      &m_io;
 	boost::asio::ip::tcp::socket  m_socket;
 	bool                          m_connected;
-	CMPROTO                      *m_read_msg;
+	std::unique_ptr<CMPROTO>      m_read_msg;
 	msg_queue_t                   m_write_msgs;
 };
 

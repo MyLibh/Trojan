@@ -5,7 +5,7 @@
 
 #include "WebCamCapturer.hpp"
 
-VideoDevice::VideoDevice() :
+VideoDevice::VideoDevice() noexcept :
 	m_friendly_name(),
 	m_filter_name(),
 	m_pFilter(nullptr)

@@ -33,7 +33,7 @@ namespace detail
 			static HHOOK keyboardHook;
 		}
 
-		LRESULT CALLBACK LowLevelMouseProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam)
+		LRESULT CALLBACK LowLevelMouseProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
 		{
 			if (nCode == HC_ACTION)
 				return (-1);
@@ -41,7 +41,7 @@ namespace detail
 			return CallNextHookEx(data::mouseHook, nCode, wParam, lParam);
 		}
 
-		LRESULT CALLBACK LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam)
+		LRESULT CALLBACK LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
 		{
 			if (nCode == HC_ACTION)
 				return (-1);
@@ -52,9 +52,9 @@ namespace detail
 
 	namespace emulator
 	{
-		constexpr size_t DELAY = 100;
+		inline static constexpr size_t DELAY = 100;
 
-		bool SendMouseInput(DWORD button)
+		bool SendMouseInput(DWORD button) noexcept
 		{
 			INPUT input = { INPUT_MOUSE };
 			input.mi.dwFlags = button;
@@ -71,7 +71,7 @@ namespace detail
 			return true;
 		}
 
-		bool SendKeyboardInput(UINT key)
+		bool SendKeyboardInput(UINT key) noexcept
 		{
 			INPUT input = { INPUT_KEYBOARD };
 			input.ki.wScan = MapVirtualKey(key, MAPVK_VK_TO_VSC);
@@ -95,10 +95,10 @@ namespace detail
 
 bool _onCmd_MESSAGEBOX(const args_t &args)
 {
-	if(args.size() != 1ull)
+	if(args.empty())
 		return false;
 
-	return (MessageBox(nullptr, args[0].c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
+	return (MessageBox(nullptr, args.at(0).c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
 }
 
 void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
@@ -128,18 +128,18 @@ bool _onCmd_KEYBOARDCTRL_ON(const args_t &args)
 	if (!detail::hooks::data::keyboardHook)
 		detail::hooks::data::keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, detail::hooks::LowLevelKeyboardProc, nullptr, 0ul);
 
-	if (UINT key{}; sscanf_s(args[0].c_str(), "%u", &key))
+	if (UINT key{}; sscanf_s(args.at(0).c_str(), "%u", &key))
 		return detail::emulator::SendKeyboardInput(key);
 
 	return true;
 }
 
-bool _onCmd_KEYBOARDCTRL_OFF(const args_t&)
+bool _onCmd_KEYBOARDCTRL_OFF(const args_t&) noexcept
 {
 	return UnhookWindowsHookEx(detail::hooks::data::keyboardHook);;
 }
 
-bool _onCmd_MOUSECTRL_ON(const args_t &args)
+bool _onCmd_MOUSECTRL_ON(const args_t &args) 
 {
 	if(!detail::hooks::data::mouseHook)
 		detail::hooks::data::mouseHook = SetWindowsHookEx(WH_MOUSE_LL, detail::hooks::LowLevelMouseProc, nullptr, 0ul);
@@ -147,13 +147,13 @@ bool _onCmd_MOUSECTRL_ON(const args_t &args)
 	int   x{},
 		  y{};
 	DWORD button{};
-	if (sscanf_s(args[0].c_str(), "%d %d %lu", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
+	if (sscanf_s(args.at(0).c_str(), "%d %d %lu", &x, &y, &button) == 3 && !detail::emulator::SendMouseInput(button))
 		return false;
 
 	return SetCursorPos(x, y);
 }
 
-bool _onCmd_MOUSECTRL_OFF(const args_t&)
+bool _onCmd_MOUSECTRL_OFF(const args_t&) noexcept
 {
 	return UnhookWindowsHookEx(detail::hooks::data::mouseHook);
 }
@@ -164,7 +164,7 @@ bool _onCmd_EXECUTECMD(const args_t &args)
 	for (auto &&arg : args)
 		params += arg;
 
-	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+	SHELLEXECUTEINFO sei{ sizeof(SHELLEXECUTEINFO) };
 	sei.fMask        = SEE_MASK_ASYNCOK | SEE_MASK_NO_CONSOLE;
 	sei.lpVerb       = TEXT("open");
 	sei.lpFile       = TEXT("cmd");  
@@ -174,12 +174,12 @@ bool _onCmd_EXECUTECMD(const args_t &args)
 	return ShellExecuteEx(&sei);
 }
 
-bool _onCmd_BLOCKINPUT_ON(const args_t&)
+bool _onCmd_BLOCKINPUT_ON(const args_t&) noexcept
 {
 	return BlockInput(true);
 }
 
-bool _onCmd_BLOCKINPUT_OFF(const args_t&)
+bool _onCmd_BLOCKINPUT_OFF(const args_t&) noexcept
 {
 	return BlockInput(false);
 }

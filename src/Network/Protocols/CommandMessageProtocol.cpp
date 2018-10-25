@@ -8,52 +8,55 @@
 namespace detail
 {
 	[[nodiscard]]
-	CMPROTO make_success_msg()
+	CMPROTO make_success_msg() noexcept
 	{
-		static const char *line = "SUCCESS";
-		static constexpr size_t length = 8;
+		static constexpr std::string_view success = "SUCCESS";
 
 		CMPROTO msg;
-		msg.set_body_length(length);
-		std::memcpy(msg.get_body(), line, msg.get_body_length());
+		msg.set_body_length(success.length());
+		std::memcpy(msg.get_body().data(), success.data(), msg.get_body_length());
 		msg.encode_header();
 
 		return msg;
 	}
 
 	[[nodiscard]]
-	CMPROTO make_failure_msg()
+	CMPROTO make_failure_msg() noexcept
 	{
-		static const char *line = "FAILURE";
-		static constexpr size_t length = 8;
+		static constexpr std::string_view failure = "FAILURE";
 
 		CMPROTO msg;
-		msg.set_body_length(length);
-		std::memcpy(msg.get_body(), line, msg.get_body_length());
+		msg.set_body_length(failure.length());
+		std::memcpy(msg.get_body().data(), failure.data(), msg.get_body_length());
 		msg.encode_header();
 
 		return msg;
 	}
 }
 
+#pragma warning(push)
+#pragma warning(disable : 26426)
+
 const CMPROTO CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
 const CMPROTO CMPROTO_RESULT_FAILURE = detail::make_failure_msg();
 
-CommandMessageProtocol::CommandMessageProtocol() :
-	m_body_length(0ull),
-	m_data("")
+#pragma warning(pop)
+
+CommandMessageProtocol::CommandMessageProtocol() noexcept :
+	m_body_length{ },
+	m_data{ }
 { }
 
-void CommandMessageProtocol::encode_header()
+void CommandMessageProtocol::encode_header() noexcept
 {
-	char header[HEADER_LENGTH + 1] = "";
-	sprintf_s(header, "%4d", static_cast<int>(m_body_length));
+	char header[HEADER_LENGTH + 1]{ };
+	sprintf_s(header, "%4d", gsl::narrow<int>(m_body_length));
 	std::memcpy(m_data, header, HEADER_LENGTH);
 }
 
-bool CommandMessageProtocol::decode_header()
+bool CommandMessageProtocol::decode_header() noexcept
 {
-	char header[HEADER_LENGTH + 1] = "";
+	char header[HEADER_LENGTH + 1]{ };
 	strncat_s(header, m_data, HEADER_LENGTH);
 
 	m_body_length = std::atoi(header);

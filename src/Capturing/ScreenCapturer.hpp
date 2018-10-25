@@ -10,7 +10,7 @@ private:
 	class WinCodec
 	{
 	public:
-		WinCodec();
+		WinCodec() noexcept;
 		~WinCodec();
 
 	public:
@@ -21,10 +21,10 @@ private:
 	};
 
 public:
-	ScreenCapturer();
+	ScreenCapturer() noexcept;
 	~ScreenCapturer();
 
-	inline       BYTE*  release_data()        noexcept { return &m_pData[0]; }
+	inline       BYTE*  release_data()         { return &m_pData[0]; }
 	inline const size_t get_data_size() const noexcept { return (m_data_size); }
 
 	bool capture();

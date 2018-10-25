@@ -9,7 +9,6 @@ class TCPClient : public TCPConnection
 {
 public:
 	TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoint);
-	~TCPClient() = default;
 
 private:
 	void connect(const boost::asio::ip::tcp::resolver::results_type &endpoint);
