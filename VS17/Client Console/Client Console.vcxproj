@@ -92,6 +92,7 @@
     <ClInclude Include="..\..\src\Service\Constants.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
     <ClInclude Include="..\..\src\Service\Log.hpp" />
+    <ClInclude Include="..\..\src\Service\NeedPostInit.hpp" />
     <ClInclude Include="..\..\src\Service\pch.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

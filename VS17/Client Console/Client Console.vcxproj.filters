@@ -99,6 +99,9 @@
     <ClInclude Include="..\..\src\Service\Constants.hpp">
       <Filter>Header Files\Service</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Service\NeedPostInit.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">

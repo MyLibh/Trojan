@@ -17,9 +17,9 @@ public:
 	inline const auto get_data()         const noexcept { return (std::cbegin(m_data)); }
 	inline       auto get_body()               noexcept { return (std:: begin(m_data) + HEADER_LENGTH); }
 	inline const auto get_body()         const noexcept { return (std::cbegin(m_data) + HEADER_LENGTH); }
-	inline size_t      get_chunk_num()   const noexcept { return (m_chunk_num); }
-	inline size_t      get_length()      const noexcept { return (HEADER_LENGTH + m_body_length); }
-	inline size_t      get_body_length() const noexcept { return (m_body_length); };
+	inline size_t     get_chunk_num()    const noexcept { return (m_chunk_num); }
+	inline size_t     get_length()       const noexcept { return (HEADER_LENGTH + m_body_length); }
+	inline size_t     get_body_length()  const noexcept { return (m_body_length); };
 
 	char   *get_chunk(size_t chunk) const noexcept;
 	size_t  get_chunk_size(size_t chunk) const;

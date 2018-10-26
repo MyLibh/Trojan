@@ -14,30 +14,37 @@
 
 Application::Application() noexcept :
 	m_io{ },
-	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT)) },
-	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT)) },
-	m_thread{ [this]() noexcept { m_io.run(); } }
-{ }
-
-#pragma warning(push)
-#pragma warning(disable : 26481 26485) 
-Application::Application(char *argv[]) :
-	m_io{ },
-	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2])) },
-	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(argv[1], argv[2])) },
-	m_thread{ [this]() { m_io.run(); } }
-{ }
-#pragma warning(pop)
-
-Application::Application(std::string_view ip, std::string_view port) :
-	m_io{ },
-	m_tcp_client{ std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port)) },
-	m_udp_client{ std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port)) },
-	m_thread{ [this]() { m_io.run(); } }
+	m_tcp_client{ },
+	m_udp_client{ },
+	m_thread{ }
 { }
 
 Application::~Application()
 { }
+
+void Application::init()
+{
+	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT));
+	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT));
+	m_thread     = std::thread{ [this]() { m_io.run(); } };
+} 
+
+#pragma warning(push)
+//#pragma warning(disable : ) 
+void Application::init(const char **argv)
+{
+	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(argv[1], argv[2]));
+	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(argv[1], argv[2]));
+	m_thread     = std::thread{ [this]() { m_io.run(); } };
+}
+#pragma warning(pop)
+
+void Application::init(std::string_view ip, std::string_view port)
+{
+	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port));
+	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port));
+	m_thread     = std::thread{ [this]() { m_io.run(); } };
+}
 
 void Application::run()
 {

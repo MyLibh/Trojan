@@ -51,7 +51,7 @@ WORD SetConsoleColor(WORD color)
 
 void DebugInfo(const PTCHAR info)
 {
-	const WORD old = SetConsoleColor(MAKECOLOR(LightBlue, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(Colors::LightBlue, Colors::Black));
 
 	_tprintf(TEXT("%s"), info);
 
@@ -60,7 +60,7 @@ void DebugInfo(const PTCHAR info)
 
 void DebugError(const PTCHAR error)
 {
-	const WORD old = SetConsoleColor(MAKECOLOR(Red, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(Colors::Red, Colors::Black));
 
 	_tprintf(TEXT("%s"), error);
 
@@ -69,7 +69,7 @@ void DebugError(const PTCHAR error)
 
 void DebugWarning(const PTCHAR warning)
 {
-	const WORD old = SetConsoleColor(MAKECOLOR(DarkGray, Black));
+	const WORD old = SetConsoleColor(MAKECOLOR(Colors::DarkGray, Colors::Black));
 
 	_tprintf(TEXT("%s"), warning);
 

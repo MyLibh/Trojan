@@ -57,16 +57,10 @@ void UDPParticipiant::recv(IMPROTO *msg)
 
 	m_socket.receive_from(boost::asio::buffer(msg->get_chunk(0), msg->get_chunk_size(0)), m_endpoint);
 	msg->decode_header(0);
+	m_socket.send_to(boost::asio::buffer(OK_MESSAGE, OK_MESSAGE.length()), m_endpoint);
 
 	for (size_t i{ 1 }; i < msg->get_chunk_num(); ++i)
 	{
-		if (!i)
-		{
-			m_socket.send_to(boost::asio::buffer(OK_MESSAGE, OK_MESSAGE.length()), m_endpoint);
-
-			continue;
-		}
-
 		m_socket.receive_from(boost::asio::buffer(msg->get_chunk(i), msg->get_chunk_size(i)), m_endpoint);
 		msg->decode_header(i);
 	}
