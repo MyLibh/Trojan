@@ -57,9 +57,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Server\Application.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
       <Filter>Header Files\Network\Protocols</Filter>
     </ClInclude>
@@ -99,11 +96,20 @@
     <ClInclude Include="..\..\src\Network\UDP\UDPServer.hpp">
       <Filter>Header Files\Network\UDP</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Server\Server.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\Constants.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\Log.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Service\NeedPostInit.hpp">
+      <Filter>Header Files\Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Server\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Server\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +151,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\UDP\UDPServer.cpp">
       <Filter>Source Files\Network\UDP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Server\Server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Log.cpp">
+      <Filter>Source Files\Service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

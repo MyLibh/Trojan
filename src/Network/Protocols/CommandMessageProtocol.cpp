@@ -8,27 +8,27 @@
 namespace detail
 {
 	[[nodiscard]]
-	CMPROTO make_success_msg() 
+	std::shared_ptr<CMPROTO> make_success_msg()
 	{
 		static constexpr std::string_view success = "SUCCESS";
 
-		CMPROTO msg;
-		msg.set_body_length(success.length());
-		std::copy(std::cbegin(success), std::cend(success), std::begin(msg.get_body()));
-		msg.encode_header();
+		std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
+		msg->set_body_length(success.length());
+		std::copy(std::cbegin(success), std::cend(success), std::begin(msg->get_body()));
+		msg->encode_header();
 
 		return msg;
 	}
 
 	[[nodiscard]]
-	CMPROTO make_failure_msg() 
+	std::shared_ptr<CMPROTO> make_failure_msg()
 	{
 		static constexpr std::string_view failure = "FAILURE";
 
-		CMPROTO msg;
-		msg.set_body_length(failure.length());
-		std::copy(std::cbegin(failure), std::cend(failure), std::begin(msg.get_body()));
-		msg.encode_header();
+		std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
+		msg->set_body_length(failure.length());
+		std::copy(std::cbegin(failure), std::cend(failure), std::begin(msg->get_body()));
+		msg->encode_header();
 
 		return msg;
 	}
@@ -37,8 +37,8 @@ namespace detail
 #pragma warning(push)
 #pragma warning(disable : 26426)
 	// C26462: Global initializer calls a non-constexpr function.
-const CMPROTO CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
-const CMPROTO CMPROTO_RESULT_FAILURE = detail::make_failure_msg();
+const std::shared_ptr<CMPROTO> CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
+const std::shared_ptr<CMPROTO> CMPROTO_RESULT_FAILURE = detail::make_failure_msg();
 #pragma warning(pop)
 
 CommandMessageProtocol::CommandMessageProtocol() noexcept :

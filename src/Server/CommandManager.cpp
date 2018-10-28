@@ -9,7 +9,7 @@
 
 cip_t CommandManager::m_in_progress{ 0 };
 
-bool CommandManager::execute_command(const CMPROTO *msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint)
+bool CommandManager::execute_command(const std::shared_ptr<CMPROTO> &msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint)
 {
 	Commands cmd = static_cast<Commands>(msg->get_command()); // TODO: enum overrage set check
 	if (cmd == Commands::UNDEFINED_COMMAND || cmd >= Commands::NUMBER_OF_COMMANDS)
@@ -22,7 +22,7 @@ bool CommandManager::execute_command(const CMPROTO *msg, boost::asio::io_context
 	auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [cmd](const auto &cmd_prop) { return (cmd == std::get<0>(cmd_prop.command)); });
 	if (iter != std::end(COMMAND_PROPERTIES))
 	{
-		if (auto args{ parse_args(msg->get_args()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
+		if (auto args{ parse_args(msg->get_args().data()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
 			return std::get<0>(iter->exec_func)(args);
 		else // CommandProperties::threaded_exec_func_t
 		{
@@ -38,8 +38,8 @@ bool CommandManager::execute_command(const CMPROTO *msg, boost::asio::io_context
 			auto pos = static_cast<size_t>(get_bit(cmd));
 			m_in_progress.set(pos, get_bit_new_value(cmd));
 			
-			std::thread t(std::get<1>(iter->exec_func), std::ref(args), std::ref(m_in_progress), pos, std::ref(io_context), std::ref(endpoint));
-			t.detach();
+			//std::thread t(std::get<1>(iter->exec_func), std::ref(args), std::ref(m_in_progress), pos, std::ref(io_context), std::ref(endpoint));
+			//t.detach();
 		}
 	}
 

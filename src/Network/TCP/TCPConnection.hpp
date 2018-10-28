@@ -29,7 +29,7 @@ protected:
 	boost::asio::io_context      &m_io;
 	boost::asio::ip::tcp::socket  m_socket;
 	bool                          m_connected;
-	std::unique_ptr<CMPROTO>      m_read_msg;
+	std::shared_ptr<CMPROTO>      m_read_msg;
 	msg_queue_t                   m_write_msgs;
 };
 

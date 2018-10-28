@@ -5,6 +5,7 @@
 
 #include "Tools.hpp"
 #include "Debugger.hpp"
+#include "Constants.hpp"
 
 BOOL Copy2Sysdir(CONST PTCHAR appname)
 {

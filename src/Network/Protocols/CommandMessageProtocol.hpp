@@ -43,7 +43,7 @@ private:
 
 using CMPROTO = CommandMessageProtocol;
 
-extern const CMPROTO CMPROTO_RESULT_SUCCESS; 
-extern const CMPROTO CMPROTO_RESULT_FAILURE;
+extern const std::shared_ptr<CMPROTO> CMPROTO_RESULT_SUCCESS; 
+extern const std::shared_ptr<CMPROTO> CMPROTO_RESULT_FAILURE;
 
 #endif /* __COMMANDMESSAGEPROTOCOL_HPP_INCLUDED__ */

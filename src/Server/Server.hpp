@@ -3,15 +3,22 @@
 #ifndef __APLICATION_HPP_INCLUDED__
 #define __APLICATION_HPP_INCLUDED__
 
+#include "..\Service\NeedPostInit.hpp"
+
 class TCPServer;
 class UDPServer;
 
-class Application
+class Server : public NeedPostInit
 {
 public:
-	Application();
-	Application(char *argv[]);
-	~Application();
+	Server() noexcept;
+	~Server() noexcept;
+
+	void init();
+	void init(std::string_view port);
+
+	template<typename... Args>
+	inline static std::shared_ptr<Server> create(Args... args);
 
 	void run();
 	void close();
@@ -23,5 +30,11 @@ private:
 	std::thread                m_thread,
                                m_save_thread;
 };
+
+template<typename... Args>
+std::shared_ptr<Server> Server::create(Args... args)
+{
+	return NeedPostInit::create<Server, Args...>(args...);
+}
 
 #endif /* __APLICATION_HPP_INCLUDED__ */

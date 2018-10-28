@@ -94,6 +94,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\lib\GSL\GSL\include;D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +111,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\lib\GSL\GSL\include;D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +130,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\lib\GSL\GSL\include;D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,7 +151,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>..\Service\pch.hpp</PrecompiledHeaderFile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\lib\GSL\GSL\include;D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -170,10 +173,13 @@
     <ClInclude Include="..\..\src\Network\TCP\TCPServer.hpp" />
     <ClInclude Include="..\..\src\Network\UDP\UDPParticipiant.hpp" />
     <ClInclude Include="..\..\src\Network\UDP\UDPServer.hpp" />
-    <ClInclude Include="..\..\src\Server\Application.hpp" />
+    <ClInclude Include="..\..\src\Server\Server.hpp" />
     <ClInclude Include="..\..\src\Server\CommandManager.hpp" />
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp" />
+    <ClInclude Include="..\..\src\Service\Constants.hpp" />
     <ClInclude Include="..\..\src\Service\Debugger.hpp" />
+    <ClInclude Include="..\..\src\Service\Log.hpp" />
+    <ClInclude Include="..\..\src\Service\NeedPostInit.hpp" />
     <ClInclude Include="..\..\src\Service\pch.hpp" />
     <ClInclude Include="..\..\src\Service\Tools.hpp" />
   </ItemGroup>
@@ -203,7 +209,7 @@
     <ClCompile Include="..\..\src\Network\UDP\UDPServer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\src\Server\Application.cpp">
+    <ClCompile Include="..\..\src\Server\Server.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -214,6 +220,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Service\Log.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="..\..\src\Service\pch.cpp">

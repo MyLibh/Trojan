@@ -15,6 +15,9 @@
 // Client constants
 inline static constexpr std::string_view CLIENT_LOG_FMT_FILENAME{ "client%N.log" };
 
+// Server constants
+inline static constexpr std::string_view SERVER_LOG_FMT_FILENAME{ "server%N.log" };
+
 // Commands defines
 
 #define TASK_SUCCESSP       TEXTH("Success")

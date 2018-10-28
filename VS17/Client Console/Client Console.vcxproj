@@ -31,7 +31,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\src\Client Console\Application.cpp">
+    <ClCompile Include="..\..\src\Client Console\Client.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -81,7 +81,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\Capturing\ScreenCapturer.hpp" />
     <ClInclude Include="..\..\src\Capturing\WebCamCapturer.hpp" />
-    <ClInclude Include="..\..\src\Client Console\Application.hpp" />
+    <ClInclude Include="..\..\src\Client Console\Client.hpp" />
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\Protocols\ImageMessageProtocol.hpp" />
     <ClInclude Include="..\..\src\Network\TCP\TCPClient.hpp" />

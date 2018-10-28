@@ -3,7 +3,7 @@
 
 #include "..\Service\pch.hpp"
 
-#include "Application.hpp"
+#include "Client.hpp"
 #include "..\Network\TCP\TCPClient.hpp"
 #include "..\Network\Protocols\CommandMessageProtocol.hpp"
 #include "..\Server\CommandProperties.hpp"
@@ -12,40 +12,37 @@
 #include "..\Service\Constants.hpp"
 #include "..\Service\Log.hpp"
 
-Application::Application() noexcept :
-	m_io{ },
-	m_tcp_client{ },
-	m_udp_client{ },
-	m_thread{ }
+Client::Client() noexcept :
+	m_io        { },
+	m_tcp_client{ nullptr },
+	m_udp_client{ nullptr },
+	m_thread    { }
 { }
 
-#pragma warning(suppress : 26432)
-	// warning C26432: If you define or delete any default operation in the type 'class Application', define or delete them all (c.21).
-Application::~Application()
-{ }
+Client::~Client() noexcept = default;
 
-void Application::init()
+void Client::init()
 {
 	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT));
 	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(SERVER_IP, DEFAULT_PORT));
 	m_thread     = std::thread{ [this]() { m_io.run(); } };
 } 
 
-void Application::init(std::string_view ip, std::string_view port)
+void Client::init(std::string_view ip, std::string_view port)
 {
 	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port));
 	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port));
 	m_thread     = std::thread{ [this]() { m_io.run(); } };
 }
 
-void Application::run()
+void Client::run()
 {
 	std::string command;
 	while (std::getline(std::cin, command))
 		send_command(command);
 }
 
-void Application::send_command(std::string_view command)
+void Client::send_command(std::string_view command)
 {
 	std::size_t separator_pos = command.find_first_of(' ');
 	if (separator_pos == std::string::npos)
@@ -83,7 +80,7 @@ void Application::send_command(std::string_view command)
 		LOG(error) << "Wrong Command: '" << command.data() << "'";
 }
 
-void Application::close()
+void Client::close()
 {
 	m_tcp_client->close();
 	m_thread.join();

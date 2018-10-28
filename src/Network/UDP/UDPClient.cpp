@@ -10,9 +10,10 @@
 #include "..\..\Service\Debugger.hpp"
 
 UDPClient::UDPClient(boost::asio::io_context &io_context, const boost::asio::ip::udp::resolver::results_type &endpoint) :
-	m_io{ io_context },
+	m_io      { io_context },
 	m_endpoint{ *endpoint }
 { }
+
 
 void UDPClient::send(const std::shared_ptr<CMPROTO> &msg)
 {

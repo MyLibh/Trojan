@@ -66,9 +66,6 @@
     <ClInclude Include="..\..\src\Network\Protocols\CommandMessageProtocol.hpp">
       <Filter>Header Files\Network\Protocols</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Client Console\Application.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Server\CommandProperties.hpp">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
@@ -102,6 +99,9 @@
     <ClInclude Include="..\..\src\Service\NeedPostInit.hpp">
       <Filter>Header Files\Service</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Client Console\Client.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Service\Debugger.cpp">
@@ -112,9 +112,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <Filter>Source Files\Network\Protocols</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\Client Console\Application.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Client Console\main.cpp">
       <Filter>Source Files</Filter>
@@ -145,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Service\Log.cpp">
       <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Client Console\Client.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

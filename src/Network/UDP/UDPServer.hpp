@@ -10,15 +10,15 @@ class UDPServer
 {
 public:
 	UDPServer(boost::asio::io_context &io_context, unsigned short port);
-	~UDPServer();
+	~UDPServer() noexcept;
 
 private:
 	void setup_new_connection();
 
 private:
-	boost::asio::ip::udp::socket    m_socket;
-	boost::asio::ip::udp::endpoint  m_endpoint;
-	CMPROTO                        *m_msg;
+	boost::asio::ip::udp::socket   m_socket;
+	boost::asio::ip::udp::endpoint m_endpoint;
+	std::shared_ptr<CMPROTO>       m_msg;
 };
 
 #endif /* __UDPSERVER_HPP_INCLUDED__ */

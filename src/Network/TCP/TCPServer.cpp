@@ -7,6 +7,7 @@
 #include "..\Protocols\CommandMessageProtocol.hpp"
 #include "..\..\Service\Debugger.hpp"
 #include "..\..\Server\CommandManager.hpp"
+#include "..\..\Service\Log.hpp"
 
 TCPServer::TCPServer(boost::asio::io_context &io_context, unsigned short port) :
 	TCPConnection{ io_context },
@@ -24,7 +25,7 @@ void TCPServer::accept()
 			{
 				m_socket = std::move(socket);
 
-				$INFO("New connection via TCP: %s:%d\n", m_socket.remote_endpoint().address().to_string().c_str(), m_socket.remote_endpoint().port())
+				LOG(info) << "New connection via TCP: " << m_socket.remote_endpoint();
 
 				m_connected = true;
 			}
@@ -37,28 +38,32 @@ void TCPServer::accept()
 
 void TCPServer::read_header()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), CMPROTO::HEADER_LENGTH),
-		[this](const boost::system::error_code &ec, size_t /* length */)
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data().data(), CMPROTO::HEADER_LENGTH),
+		[this](const boost::system::error_code &ec, [[maybe_unused]] size_t length)
 		{
+			LOG(info) << "Recieved via TCP: " << length << " bytes";
+
 			if (!ec && m_read_msg->decode_header())
 				read_body();
 			else
 			{
 				PrintBoostError(ec);
 
-				close();
+				m_socket.close();
 			}
 		});
 }
 
 void TCPServer::read_body()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body(), m_read_msg->get_body_length()),
-		[this](const boost::system::error_code &ec, size_t /* length */)
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body().data(), m_read_msg->get_body_length()),
+		[this](const boost::system::error_code &ec, [[maybe_unused]] size_t length)
 		{
+			LOG(info) << "Recieved via TCP: " << length << " bytes";
+
 			if (!ec)
 			{
-				write(&(CommandManager::execute_command(m_read_msg, m_socket.get_io_context(), { }) ? CMPROTO_RESULT_SUCCESS : CMPROTO_RESULT_FAILURE));
+				write(CommandManager::execute_command(m_read_msg, m_socket.get_io_context(), { }) ? CMPROTO_RESULT_SUCCESS : CMPROTO_RESULT_FAILURE);
 
 				m_read_msg->clear_data();
 

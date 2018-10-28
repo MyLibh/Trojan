@@ -11,7 +11,7 @@ using CMPROTO = CommandMessageProtocol;
 class CommandManager
 {
 public:
-	static bool execute_command(const CMPROTO *msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
+	static bool execute_command(const std::shared_ptr<CMPROTO> &msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
 
 private:
 	static std::vector<std::string> parse_args(const char *args);
