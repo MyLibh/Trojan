@@ -77,8 +77,9 @@
 	#pragma warning(pop)
 #pragma endregion
 
-// My Header Files
- #include "NeedPostInit.hpp"
+// Turn off sime warnings
+#pragma warning(disable : 26485)
+// warning C26485: No array to pointer decay (bounds.3).
 
 #endif /* __PCH_H_INCLUDED__ */
 

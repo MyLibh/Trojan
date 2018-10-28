@@ -9,38 +9,72 @@
 
 namespace detail
 {
-	template<typename T>
-	void SafeRelease(T *ptr) noexcept
-	{
-		if (!std::is_same_v<T, IWICImagingFactory> ||
-			!std::is_same_v<T, IWICBitmapEncoder> ||
-			!std::is_same_v<T, IWICBitmapFrameEncode> ||
-			!std::is_same_v<T, IWICStream> ||
-			!std::is_same_v<T, IDirect3D9> ||
-			!std::is_same_v<T, IDirect3DDevice9> ||
-			!std::is_same_v<T, IDirect3DSurface9>)
-			return;
-			
-		if (ptr)
-		{
-			ptr->Release();
+	template<typename T, typename = void>
+	struct has_Release_func : std::false_type
+	{ };
 
-			ptr = nullptr;
+	template<typename T>
+	struct has_Release_func<T, std::void_t<decltype(std::declval<T>().Release())>> : std::true_type
+	{ };
+
+	template<typename T>
+	constexpr bool has_Release_func_v = has_Release_func<T>::value;
+
+	template<typename T>
+	void SafeRelease(T *ptr) 
+	{
+		if constexpr (has_Release_func_v<T>)
+		{
+			if (ptr)
+			{
+				ptr->Release();
+
+				ptr = nullptr;
+			}
 		}
+
 	}
 }
 
-ScreenCapturer::WinCodec::WinCodec() noexcept :
-	m_pFactory(nullptr),
-	m_pEncoder(nullptr),
-	m_pFrame(nullptr),
-	m_pStream(nullptr)
+bool ScreenCapturer::DirectXImpl::init() noexcept
 {
-	if (const auto hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED); hr != S_OK)
-		LOG(warning) << "Cannot initialize COM(0x" << hr << ")";
+	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION); //-V2001
+	if (!m_pD3D9)
+		return false;
+
+	if (m_pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &m_mode) != D3D_OK)
+		return false;
+
+	D3DPRESENT_PARAMETERS parameters{ };
+	parameters.Windowed         = true;
+	parameters.BackBufferCount  = 1;
+	parameters.BackBufferHeight = m_mode.Height;
+	parameters.BackBufferWidth  = m_mode.Width;
+	parameters.SwapEffect       = D3DSWAPEFFECT_DISCARD;
+
+	if (m_pD3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, nullptr, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &parameters, &m_pDevice) != D3D_OK)
+		return false;
+
+	if (m_pDevice->CreateOffscreenPlainSurface(m_mode.Width, m_mode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pSurface, nullptr) != D3D_OK)
+		return false;
+
+	return true;
 }
 
-ScreenCapturer::WinCodec::~WinCodec()
+void ScreenCapturer::DirectXImpl::release()
+{
+	detail::SafeRelease(m_pSurface);
+	detail::SafeRelease(m_pDevice);
+	detail::SafeRelease(m_pD3D9);
+}
+
+
+bool ScreenCapturer::WinCodec::init() noexcept
+{
+	return (CoInitializeEx(nullptr, COINIT_MULTITHREADED) == S_OK);	
+}
+
+void ScreenCapturer::WinCodec::release()
 {
 	detail::SafeRelease(m_pStream);
 	detail::SafeRelease(m_pFrame);
@@ -51,90 +85,39 @@ ScreenCapturer::WinCodec::~WinCodec()
 }
 
 
-class ScreenCapturer::DirectXImpl
+
+void ScreenCapturer::init() 
 {
-public:
-	~DirectXImpl();
-
-	bool init() noexcept;
-
-public:
-	IDirect3D9        *m_pD3D9; //-V122
-	IDirect3DDevice9  *m_pDevice; //-V122
-	IDirect3DSurface9 *m_pSurface; //-V122
-	D3DDISPLAYMODE     m_mode;
-};
-
-ScreenCapturer::DirectXImpl::~DirectXImpl()
-{
-	detail::SafeRelease(m_pSurface);
-	detail::SafeRelease(m_pDevice);
-	detail::SafeRelease(m_pD3D9);
+	m_dxImpl = ScreenCapturer::DirectXImpl::create_with_deleter<DirectXImpl>();
 }
-
-bool ScreenCapturer::DirectXImpl::init() noexcept
-{
-	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!m_pD3D9)
-		return false;
-
-	if (m_pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &m_mode) != D3D_OK)
-		return false;
-
-	D3DPRESENT_PARAMETERS parameters = { 0 };
-	parameters.Windowed = TRUE;
-	parameters.BackBufferCount = 1;
-	parameters.BackBufferHeight = m_mode.Height;
-	parameters.BackBufferWidth = m_mode.Width;
-	parameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-	if (m_pD3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, nullptr, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &parameters, &m_pDevice) != D3D_OK)
-		return FALSE;
-
-	if (m_pDevice->CreateOffscreenPlainSurface(m_mode.Width, m_mode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pSurface, nullptr) != D3D_OK)
-		return FALSE;
-
-	return TRUE;
-}
-
-
-ScreenCapturer::ScreenCapturer() noexcept :
-	m_pImpl{ std::make_unique<ScreenCapturer::DirectXImpl>() },
-	m_data_size{ },
-	m_pData{ }
-{
-	if (!m_pImpl->init())
-		$ERROR("Smth went wrong during DirectX initialization\n")
-}
-
-ScreenCapturer::~ScreenCapturer()
-{ }
 
 bool ScreenCapturer::capture()
 {
-	UINT pitch        = 0;
-	D3DLOCKED_RECT rc = { 0 };
-	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
+	UINT           pitch{ };
+	D3DLOCKED_RECT rc{ };
+	auto ptr{ m_dxImpl->m_pSurface };
+	if (ptr->LockRect(&rc, nullptr, 0) != D3D_OK)
 		return false;
 
 	pitch = rc.Pitch;
-	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
+	if (ptr->UnlockRect() != D3D_OK)
 		return false;
 
-	m_data_size = static_cast<size_t>(pitch) * static_cast<size_t>(m_pImpl->m_mode.Height);
+	m_data_size = gsl::narrow_cast<std::size_t>(pitch) * gsl::narrow_cast<std::size_t>(m_dxImpl->m_mode.Height);
 
-	m_pData = std::make_unique<BYTE[]>(m_data_size);
+	m_data = std::make_unique<BYTE[]>(m_data_size);
 
-	if (m_pImpl->m_pDevice->GetFrontBufferData(0, m_pImpl->m_pSurface) != D3D_OK)
+	if (m_dxImpl->m_pDevice->GetFrontBufferData(0, m_dxImpl->m_pSurface) != D3D_OK)
 		return false;
 
-	if (m_pImpl->m_pSurface->LockRect(&rc, nullptr, 0) != D3D_OK)
+	if (ptr->LockRect(&rc, nullptr, 0) != D3D_OK)
 		return false;
 
-#pragma warning(suppress : 6387) // 'rc.pBits' could be '0':  this does not adhere to the specification for the function 'memcpy'.
-	std::memcpy(&m_pData, rc.pBits, gsl::narrow_cast<size_t>(rc.Pitch) * static_cast<size_t>(m_pImpl->m_mode.Height));
+#pragma warning(suppress : 6387) 
+	// warning C6387: 'rc.pBits' could be '0':  this does not adhere to the specification for the function 'memcpy'.
+	std::memcpy(m_data.get(), rc.pBits, gsl::narrow_cast<std::size_t>(rc.Pitch) * gsl::narrow_cast<std::size_t>(m_dxImpl->m_mode.Height));
 
-	if (m_pImpl->m_pSurface->UnlockRect() != D3D_OK)
+	if (m_dxImpl->m_pSurface->UnlockRect() != D3D_OK)
 		return false;
 
 	return true;
@@ -142,26 +125,46 @@ bool ScreenCapturer::capture()
 
 bool ScreenCapturer::save2png(const std::filesystem::path &path)
 {
-	std::unique_ptr<WinCodec> pWC{ std::make_unique<WinCodec>() };
-	GUID                      format{ GUID_WICPixelFormat32bppPBGRA };
-	HRESULT                   hr{ S_OK };
+	std::shared_ptr<WinCodec> pWC     { ScreenCapturer::WinCodec::create_with_deleter<WinCodec>() };
+	if (CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pWC->m_pFactory)) != S_OK) //-V2001
+		return false;
 
-#define CHECK_HRESULT(ret_val) { hr = ret_val; if(hr != S_OK) { $ERROR("Error(0x%08X) on line(%d)\n", hr, __LINE__) goto end; } }
-	CHECK_HRESULT(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pWC->m_pFactory)))
-	CHECK_HRESULT(pWC->m_pFactory->CreateStream(&pWC->m_pStream))
-	CHECK_HRESULT(pWC->m_pStream->InitializeFromFilename(path.generic_wstring().c_str(), GENERIC_WRITE))
-	CHECK_HRESULT(pWC->m_pFactory->CreateEncoder(GUID_ContainerFormatJpeg, nullptr, &pWC->m_pEncoder))
-	CHECK_HRESULT(pWC->m_pEncoder->Initialize(pWC->m_pStream, WICBitmapEncoderNoCache))
-	CHECK_HRESULT(pWC->m_pEncoder->CreateNewFrame(&pWC->m_pFrame, nullptr))
-	CHECK_HRESULT(pWC->m_pFrame->Initialize(nullptr))
-	CHECK_HRESULT(pWC->m_pFrame->SetSize(m_pImpl->m_mode.Width, m_pImpl->m_mode.Height))
-	CHECK_HRESULT(pWC->m_pFrame->SetPixelFormat(&format))
-	CHECK_HRESULT(pWC->m_pFrame->WritePixels(m_pImpl->m_mode.Height, static_cast<UINT>(m_data_size) / m_pImpl->m_mode.Height, static_cast<UINT>(m_data_size), &m_pData[0]))
-	CHECK_HRESULT(pWC->m_pFrame->Commit())
-	CHECK_HRESULT(pWC->m_pEncoder->Commit())
-#undef CHECK_HRESULT
+	if (pWC->m_pFactory->CreateStream(&pWC->m_pStream) != S_OK)
+		return false;
 
-end:
-	return (hr == S_OK);
+	if (pWC->m_pStream->InitializeFromFilename(path.generic_wstring().c_str(), GENERIC_WRITE) != S_OK)
+		return false;
+
+	auto pEncoder{ pWC->m_pEncoder };
+	if (pWC->m_pFactory->CreateEncoder(GUID_ContainerFormatJpeg, nullptr, &pEncoder) != S_OK)
+		return false;
+	
+	if (pEncoder->Initialize(pWC->m_pStream, WICBitmapEncoderNoCache) != S_OK)
+		return false;
+
+	auto pFrame{ pWC->m_pFrame };
+	if (pEncoder->CreateNewFrame(&pFrame, nullptr) != S_OK)
+		return false;
+
+	if (pFrame->Initialize(nullptr) != S_OK)
+		return false;
+
+	const D3DDISPLAYMODE mode{ m_dxImpl->m_mode };
+	if (pFrame->SetSize(mode.Width, mode.Height) != S_OK)
+		return false;
+
+	if (GUID format{ GUID_WICPixelFormat32bppPBGRA }; pFrame->SetPixelFormat(&format) != S_OK)
+		return false;
+
+	if (pFrame->WritePixels(mode.Height, gsl::narrow_cast<UINT>(m_data_size) / gsl::narrow_cast<UINT>(mode.Height), gsl::narrow_cast<UINT>(m_data_size), m_data.get()) != S_OK)
+		return false;
+
+	if (pFrame->Commit() != S_OK)
+		return false;
+
+	if (pEncoder->Commit() != S_OK)
+		return false;
+
+	return true;
 }
 

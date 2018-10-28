@@ -11,7 +11,7 @@ class UDPClient : private boost::noncopyable
 public:
 	UDPClient(boost::asio::io_context &io_context, const boost::asio::ip::udp::resolver::results_type &endpoint);
 
-	void send(const CMPROTO *msg);
+	void send(const std::shared_ptr<CMPROTO> &msg);
 
 private:
 	boost::asio::io_context        &m_io;

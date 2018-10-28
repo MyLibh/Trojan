@@ -6,18 +6,21 @@
 class CommandMessageProtocol;
 using CMPROTO = CommandMessageProtocol;
 
-using msg_queue_t = std::deque<CMPROTO*>;
+using msg_queue_t = std::deque<std::shared_ptr<CMPROTO>>;
 
 class TCPConnection : private boost::noncopyable
 {
 public:
 	TCPConnection(boost::asio::io_context &io_context);
-	virtual ~TCPConnection() = default;
 
-	virtual void write(const CMPROTO *msg);
+	virtual void write(const std::shared_ptr<CMPROTO> &msg);
 	virtual void close();
 
 protected:
+#pragma warning(suppress : 26432)
+	// warning C26432: If you define or delete any default operation in the type 'class TCPConnection', define or delete them all (c.21).
+	~TCPConnection() noexcept = default;
+
 	virtual void read_header();
 	virtual void read_body();
 	virtual void write();

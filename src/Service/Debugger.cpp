@@ -89,11 +89,17 @@ void PrintError(CONST PTCHAR func, INT error)
 	}
 
 	const gsl::span<TCHAR> span(sysmsg);
-	auto end   = std::find_if_not(std::execution::par_unseq, span.begin(), span.end(), [](auto &&c) { return ((c > 31) || (c == 9)); });
-	if (end == span.end())
-		end = span.begin();
+	auto end{ std::find_if_not(std::execution::par_unseq, std::begin(span), std::end(span), [](auto &&c) { return ((c > 31) || (c == 9)); }) };
+#pragma warning(suppress : 26486)
+	// warning C26486: Don't pass a pointer that may be invalid to a function(lifetime.1).
+	if (end == std::end(span))
+		end = std::begin(span);
 
-	auto begin = std::find_if_not(std::execution::par_unseq, decltype(span)::reverse_iterator(end), span.rend(), [](auto &&c) { return ((c == '.') || (c < 33)); });
+#pragma warning(suppress : 26486)
+	// warning C26486: Don't pass a pointer that may be invalid to a function(lifetime.1).
+	auto begin{ std::find_if_not(std::execution::par_unseq, std::reverse_iterator(end), std::rend(span), [](auto &&c) { return ((c == '.') || (c < 33)); }) };
+	if (begin == std::rend(span))
+		begin = std::reverse_iterator(end);
 
 	std::for_each(std::execution::par_unseq, begin.base(), end, [](auto &&c) { c = 0; });
 

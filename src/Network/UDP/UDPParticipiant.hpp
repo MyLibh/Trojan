@@ -16,11 +16,11 @@ public:
 
 	UDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint);
 
-	void send(const CMPROTO *msg);
-	void recv(CMPROTO *msg);
+	void send(const std::shared_ptr<CMPROTO> &msg);
+	void recv(const std::shared_ptr<CMPROTO> &msg);
 
-	void send(const IMPROTO *msg);
-	void recv(IMPROTO *msg);
+	void send(const std::shared_ptr<IMPROTO> &msg);
+	void recv(const std::shared_ptr<IMPROTO> &msg);
 
 protected:
 	boost::asio::ip::udp::socket   m_socket;

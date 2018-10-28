@@ -14,21 +14,23 @@ UDPClient::UDPClient(boost::asio::io_context &io_context, const boost::asio::ip:
 	m_endpoint{ *endpoint }
 { }
 
-void UDPClient::send(const CMPROTO *msg)
+void UDPClient::send(const std::shared_ptr<CMPROTO> &msg)
 {
 	std::thread t(
 		[this, &msg]()
-		{
-			UDPParticipiant client(m_io, m_endpoint);
-			client.send(msg);
+		{		
+			std::unique_ptr<UDPParticipiant> client{ std::make_unique<UDPParticipiant>(m_io, m_endpoint) };
+			client->send(msg);
+
+			std::shared_ptr<IMPROTO> imsg{ std::make_shared<IMPROTO>() };
 			while (true)
 			{
-				IMPROTO *imsg = new IMPROTO;
-				client.recv(imsg);
-				$info std::cout << "[THREAD " << std::this_thread::get_id() << "] Recieved " << imsg->get_body_length() << " bytes\n";
+				imsg->clear_data();
 
-				std::copy(imsg->get_body(), imsg->get_body() + imsg->get_body_length(), std::ostream_iterator<char>(std::cout, ""));
-				delete imsg;
+				client->recv(imsg);
+				$info std::cout << "[THREAD " << std::this_thread::get_id() << "] Recieved " << imsg->get_data_length() << " bytes\n";
+
+				std::cout.write(imsg->get_data().data(), imsg->get_data_length());
 			}
 		});
 

