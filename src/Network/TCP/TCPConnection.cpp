@@ -6,6 +6,7 @@
 #include "TCPConnection.hpp"
 #include "..\Protocols\CommandMessageProtocol.hpp"
 #include "..\..\Service\Debugger.hpp"
+#include "..\..\Service\Log.hpp"
 
 TCPConnection::TCPConnection(boost::asio::io_context & io_context) :
 	m_io{ io_context },
@@ -20,6 +21,8 @@ void TCPConnection::write(const std::shared_ptr<CMPROTO> &msg)
 	boost::asio::post(m_io,
 		[this, &msg]()
 		{
+			LOG(info) << "Sending via TCP: (" << m_read_msg->get_body().data() << ")";
+
 			const bool write_in_progress = !m_write_msgs.empty();
 			m_write_msgs.push_back(msg);
 			if (!write_in_progress)

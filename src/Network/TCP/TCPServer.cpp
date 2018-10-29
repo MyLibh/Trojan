@@ -59,7 +59,7 @@ void TCPServer::read_body()
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body().data(), m_read_msg->get_body_length()),
 		[this](const boost::system::error_code &ec, [[maybe_unused]] size_t length)
 		{
-			LOG(info) << "Recieved via TCP: " << length << " bytes";
+			LOG(info) << "Recieved via TCP: " << length << " bytes(" << m_read_msg->get_body().data() << ")";
 
 			if (!ec)
 			{

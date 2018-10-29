@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __APPLICATION_HPP_INCLUDED__
-#define __APPLICATION_HPP_INCLUDED__
+#ifndef __CLIENT_HPP_INCLUDED__
+#define __CLIENT_HPP_INCLUDED__
 
 #include "..\Service\NeedPostInit.hpp"
 
@@ -39,4 +39,4 @@ std::shared_ptr<Client> Client::create(Args... args)
 	return NeedPostInit::create<Client, Args...>(args...);
 }
 
-#endif /* __APPLICATION_HPP_INCLUDED__ */
+#endif /* __CLIENT_HPP_INCLUDED__ */
