@@ -44,7 +44,7 @@ void Server::run()
 	{
 		std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
 		msg->set_body_length(std::strlen(line));
-		std::memcpy(msg->get_body().data(), line, msg->get_body_length());
+		std::memcpy(msg->get_body(), line, msg->get_body_length());
 		msg->encode_header();
 
 		// m_tcp_server->write(&msg);

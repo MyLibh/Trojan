@@ -38,7 +38,7 @@ void TCPServer::accept()
 
 void TCPServer::read_header()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data().data(), CMPROTO::HEADER_LENGTH),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), CMPROTO::HEADER_LENGTH),
 		[this](const boost::system::error_code &ec, [[maybe_unused]] size_t length)
 		{
 			LOG(info) << "Recieved via TCP: " << length << " bytes";
@@ -56,10 +56,10 @@ void TCPServer::read_header()
 
 void TCPServer::read_body()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body().data(), m_read_msg->get_body_length()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body(), m_read_msg->get_body_length()),
 		[this](const boost::system::error_code &ec, [[maybe_unused]] size_t length)
 		{
-			LOG(info) << "Recieved via TCP: " << length << " bytes(" << m_read_msg->get_body().data() << ")";
+			LOG(info) << "Recieved via TCP: " << length << " bytes(" << m_read_msg->get_body() << ")";
 
 			if (!ec)
 			{

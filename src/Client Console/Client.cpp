@@ -44,41 +44,40 @@ void Client::run()
 
 void Client::send_command(std::string_view command)
 {
-	std::size_t separator_pos = command.find_first_of(' ');
+	std::size_t separator_pos{ command.find_first_of(' ') };
 	if (separator_pos == std::string::npos)
 		separator_pos = command.length();
 
-	auto cmd_line = command.substr(0, separator_pos);
-	auto args     = command.substr(separator_pos);
+	auto cmd_line{ command.substr(0, separator_pos) };
+	auto args    { command.substr(separator_pos) };
 
-#pragma warning(suppress : 26486)
-	// Don't pass a pointer that may be invalid to a function (lifetime.1).
-	if(!args.empty() && cmd_line.compare(args))
-		args = "";
-
-	std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
+	std::unique_ptr<CMPROTO> msg{ std::make_unique<CMPROTO>() };
 	msg->set_body_length(CMPROTO::COMMAND_LENGTH + (args.empty() ? 0 : CMPROTO::SPACE_LENGTH + args.length()));
 	if (auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [&cmd_line](const auto &prop) { return (cmd_line == std::get<1>(prop.command)); }); iter != std::end(COMMAND_PROPERTIES))
-	{	
+	{
 		// Translate command
-		char buff[CMPROTO::COMMAND_LENGTH + 1]{ };
-		const int cmd = static_cast<int>(std::get<Commands>(iter->command));
+		char      buff[CMPROTO::COMMAND_LENGTH + 1]{ };                                                     // buffer which contains translated command
+		const int cmd                              { static_cast<int>(std::get<Commands>(iter->command)) }; // translated command
+
 		sprintf_s(buff, "%2d", cmd);
 
 		// Copy full command 
-		memcpy_s(msg->get_body().data(), CMPROTO::MAX_BODY_LENGTH,        buff, CMPROTO::COMMAND_LENGTH);
-		memcpy_s(msg->get_args().data(), CMPROTO::MAX_ARGS_LENGTH, args.data(), CMPROTO::MAX_ARGS_LENGTH);
+		std::copy_n(std::begin(buff), CMPROTO::COMMAND_LENGTH, msg->get_body());
+		std::copy(std::begin(args), std::end(args), msg->get_args());
 
 		msg->encode_header();
 
 		if (iter->exec_func.index() == 0)
-			m_tcp_client->write(msg);
-		else
-			m_udp_client->send(msg);
+			m_tcp_client->write(std::move(msg));
+		//else
+			//m_udp_client->send(msg);
 	}
 	else
 		LOG(error) << "Wrong Command: '" << command.data() << "'";
 }
+
+// =IMPORTRANGE("https://docs.google.com/spreadsheets/d/1AYy515x2Pt2CRVlqi_BPxtULZZVNRlaQhXFjEwm1BtQ/edit";"Лист1!A1:CC1")
+// =IMPORTRANGE("https://docs.google.com/spreadsheets/d/1AYy515x2Pt2CRVlqi_BPxtULZZVNRlaQhXFjEwm1BtQ/edit";"Лист1!A1:CC1")
 
 void Client::close()
 {

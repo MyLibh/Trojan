@@ -22,7 +22,7 @@ bool CommandManager::execute_command(const std::shared_ptr<CMPROTO> &msg, boost:
 	auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [cmd](const auto &cmd_prop) { return (cmd == std::get<0>(cmd_prop.command)); });
 	if (iter != std::end(COMMAND_PROPERTIES))
 	{
-		if (auto args{ parse_args(msg->get_args().data()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
+		if (auto args{ parse_args(msg->get_args()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
 			return std::get<0>(iter->exec_func)(args);
 		else // CommandProperties::threaded_exec_func_t
 		{

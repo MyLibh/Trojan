@@ -6,14 +6,14 @@
 class CommandMessageProtocol;
 using CMPROTO = CommandMessageProtocol;
 
-using msg_queue_t = std::deque<std::shared_ptr<CMPROTO>>;
+using msg_queue_t = std::deque<std::unique_ptr<CMPROTO>>;
 
 class TCPConnection : private boost::noncopyable
 {
 public:
 	TCPConnection(boost::asio::io_context &io_context);
 
-	virtual void write(const std::shared_ptr<CMPROTO> &msg);
+	virtual void write(std::unique_ptr<CMPROTO> &&msg);
 	virtual void close();
 
 protected:
@@ -29,7 +29,7 @@ protected:
 	boost::asio::io_context      &m_io;
 	boost::asio::ip::tcp::socket  m_socket;
 	bool                          m_connected;
-	std::shared_ptr<CMPROTO>      m_read_msg;
+	std::unique_ptr<CMPROTO>      m_read_msg;
 	msg_queue_t                   m_write_msgs;
 };
 

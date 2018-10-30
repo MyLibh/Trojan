@@ -13,19 +13,16 @@ public:
 	inline static constexpr std::size_t MAX_BODY_LENGTH = COMMAND_LENGTH + SPACE_LENGTH + MAX_ARGS_LENGTH;
 	inline static constexpr std::size_t MAX_LENGTH      = HEADER_LENGTH + MAX_BODY_LENGTH;
 
-	using  span = gsl::span<      char, MAX_LENGTH>;
-	using cspan = gsl::span<const char, MAX_LENGTH>;
-
 public:
-	CommandMessageProtocol() noexcept;
+	CommandMessageProtocol() noexcept = default;
 	 
-	[[nodiscard]] inline       auto  get_data()              noexcept { return ( span(m_data)); }
-	[[nodiscard]] inline const auto  get_data()        const noexcept { return (cspan(m_data)); }
-	[[nodiscard]] inline       auto  get_body()              noexcept { return ( span(m_data).subspan(HEADER_LENGTH)); }
-	[[nodiscard]] inline const auto  get_body()        const noexcept { return (cspan(m_data).subspan(HEADER_LENGTH)); }
-	[[nodiscard]] inline       int   get_command()     const noexcept { return (std::atoi(cspan(m_data).subspan(HEADER_LENGTH).data())); }
-	[[nodiscard]] inline       auto  get_args()              noexcept { return ( span(m_data).subspan(HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH)); };
-	[[nodiscard]] inline const auto  get_args()        const noexcept { return (cspan(m_data).subspan(HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH)); };
+	[[nodiscard]] inline       auto  get_data()              noexcept { return (m_data); }
+	[[nodiscard]] inline const auto  get_data()        const noexcept { return (m_data); }
+	[[nodiscard]] inline       auto  get_body()              noexcept { return (m_data + HEADER_LENGTH); }
+	[[nodiscard]] inline const auto  get_body()        const noexcept { return (m_data + HEADER_LENGTH); }
+	[[nodiscard]] inline       int   get_command()     const noexcept { return (std::atoi(m_data + HEADER_LENGTH)); }
+	[[nodiscard]] inline       auto  get_args()              noexcept { return (m_data + HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH); };
+	[[nodiscard]] inline const auto  get_args()        const noexcept { return (m_data + HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH); };
 	[[nodiscard]] inline std::size_t get_length()      const noexcept { return (HEADER_LENGTH + m_body_length); }
 	[[nodiscard]] inline std::size_t get_body_length() const noexcept { return (m_body_length); };
 

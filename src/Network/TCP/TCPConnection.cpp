@@ -16,12 +16,12 @@ TCPConnection::TCPConnection(boost::asio::io_context & io_context) :
 	m_write_msgs{ }
 { }
 
-void TCPConnection::write(const std::shared_ptr<CMPROTO> &msg)
+void TCPConnection::write(std::unique_ptr<CMPROTO> &&msg)
 {
 	boost::asio::post(m_io,
 		[this, &msg]()
 		{
-			LOG(info) << "Sending via TCP: (" << m_read_msg->get_body().data() << ")";
+			LOG(info) << "Sending via TCP: (" << m_read_msg->get_body() << ")";
 
 			const bool write_in_progress = !m_write_msgs.empty();
 			m_write_msgs.push_back(msg);
@@ -44,7 +44,7 @@ void TCPConnection::close()
 
 void TCPConnection::read_header()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data().data(), CMPROTO::HEADER_LENGTH),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data(), CMPROTO::HEADER_LENGTH),
 		[this](const boost::system::error_code &ec, std::size_t /* length */)
 		{
 			if (!ec && m_read_msg->decode_header())
@@ -60,13 +60,13 @@ void TCPConnection::read_header()
 
 void TCPConnection::read_body()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body().data(), m_read_msg->get_body_length()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body(), m_read_msg->get_body_length()),
 		[this](const boost::system::error_code &ec, std::size_t /* length */)
 		{
 			if (!ec)
 			{
 				std::cout << "========================RECEIVED MESSAGE========================" << std::endl;
-				std::cout.write(m_read_msg->get_body().data(), m_read_msg->get_body_length());
+				std::cout.write(m_read_msg->get_body(), m_read_msg->get_body_length());
 				std::cout << "\n================================================================\n";
 
 				m_read_msg->clear_data();
@@ -84,7 +84,7 @@ void TCPConnection::read_body()
 
 void TCPConnection::write()
 {
-	boost::asio::async_write(m_socket, boost::asio::buffer(m_write_msgs.front()->get_data().data(), m_write_msgs.front()->get_length()),
+	boost::asio::async_write(m_socket, boost::asio::buffer(m_write_msgs.front()->get_data(), m_write_msgs.front()->get_length()),
 		[this](const boost::system::error_code &ec, std::size_t /* length */)
 		{
 			if (m_connected)

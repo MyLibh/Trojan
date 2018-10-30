@@ -14,7 +14,7 @@ namespace detail
 
 		std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
 		msg->set_body_length(success.length());
-		std::copy(std::cbegin(success), std::cend(success), std::begin(msg->get_body()));
+		std::copy(std::cbegin(success), std::cend(success), msg->get_body());
 		msg->encode_header();
 
 		return msg;
@@ -27,7 +27,7 @@ namespace detail
 
 		std::shared_ptr<CMPROTO> msg{ std::make_shared<CMPROTO>() };
 		msg->set_body_length(failure.length());
-		std::copy(std::cbegin(failure), std::cend(failure), std::begin(msg->get_body()));
+		std::copy(std::cbegin(failure), std::cend(failure), msg->get_body());
 		msg->encode_header();
 
 		return msg;
@@ -40,11 +40,6 @@ namespace detail
 const std::shared_ptr<CMPROTO> CMPROTO_RESULT_SUCCESS = detail::make_success_msg();
 const std::shared_ptr<CMPROTO> CMPROTO_RESULT_FAILURE = detail::make_failure_msg();
 #pragma warning(pop)
-
-CommandMessageProtocol::CommandMessageProtocol() noexcept :
-	m_body_length{ },
-	m_data{ }
-{ }
 
 void CommandMessageProtocol::encode_header() 
 {
