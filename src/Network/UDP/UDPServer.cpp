@@ -9,6 +9,7 @@
 #include "..\..\Server\CommandManager.hpp"
 #include "..\..\Service\Log.hpp"
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UDPServer::UDPServer(boost::asio::io_context &io_context, unsigned short port) :
 	m_socket  { io_context, { boost::asio::ip::udp::v4(), port } },
 	m_endpoint{ },
@@ -19,11 +20,13 @@ UDPServer::UDPServer(boost::asio::io_context &io_context, unsigned short port) :
 	setup_new_connection();
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UDPServer::~UDPServer() noexcept = default;
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void UDPServer::setup_new_connection()
 {
-	m_socket.async_receive_from(boost::asio::buffer(m_msg->get_data(), m_msg->get_length()), m_endpoint,
+	m_socket.async_receive_from(boost::asio::buffer(m_msg->get_data().data(), m_msg->get_length()), m_endpoint,
 		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t bytes_transferred)
 		{
 			if (!ec)

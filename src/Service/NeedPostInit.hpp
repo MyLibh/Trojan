@@ -20,7 +20,7 @@ namespace
 	class Deleter
 	{
 	public:
-		void operator()(T *ptr)
+		void operator()(T *ptr) noexcept
 		{
 			static_assert(has_release_func_v<T>);
 
@@ -43,7 +43,7 @@ namespace
 class NeedPostInit 
 {
 protected:
-	~NeedPostInit() = default;
+	~NeedPostInit() noexcept = default;
 
 public:
 	template<typename T, typename... Args>
@@ -53,6 +53,7 @@ public:
 	static std::shared_ptr<T> create_with_deleter(Args... args);
 };
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 template<typename T, typename... Args>
 std::shared_ptr<T> NeedPostInit::create(Args... args)
 {
@@ -62,6 +63,7 @@ std::shared_ptr<T> NeedPostInit::create(Args... args)
 	return ptr;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 template<typename T, typename... Args>
 std::shared_ptr<T> NeedPostInit::create_with_deleter(Args... args)
 {

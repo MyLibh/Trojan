@@ -3,6 +3,9 @@
 #ifndef __PCH_HPP_INCLUDED__
 #define __PCH_HPP_INCLUDED__
 
+// Preprocessor
+#define _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING // Hide warnings from boost
+
 // C RunTime Header Files
 #include <stdlib.h> 
 #include <stdio.h>  
@@ -49,24 +52,18 @@
 // Additional Libraries Header Files
 #pragma region boost
 	#pragma warning(push)
-	#pragma warning(disable : 6001 6031 6255 6258 6326 6330 6387 6388 26110 26135 26400 26401 26402 26409 26415 26418 26426 26429 26430 26432 26433 26434 26436 26439 26440 26443 26444 26446 26447 26451 26455 26456 26460 26461 26462 26465 26466 26471 26472 26473 26474 26475 26476 26477 26481 26482 26485 26486 26487 26489 26490 26491 26492 26493 26494 26495 26496 26497 26498 28251)
+	#pragma warning(disable : 6001 6031 6255 6258 6326 6330 6387 6388 26110 26135 26400 26401 26402 26409 26415 26418 26426 26429 26430 26432 26433 26434 26436 26438 26439 26440 26443 26444 26446 26447 26451 26455 26456 26460 26461 26462 26465 26466 26471 26472 26473 26474 26475 26476 26477 26481 26482 26485 26486 26487 26489 26490 26491 26492 26493 26494 26495 26496 26497 26498 28251)
 		#include <boost\asio.hpp> 
 		#include <boost\core\noncopyable.hpp>
+		#include <boost\format.hpp>
 
-		#include <boost\shared_ptr.hpp>
-		#include <boost\date_time\posix_time\posix_time_types.hpp>
 		#include <boost\log\trivial.hpp>
-		#include <boost\log\core.hpp>
 		#include <boost\log\expressions.hpp>
 		#include <boost\log\sources\logger.hpp>
 		#include <boost\log\utility\setup\file.hpp>
 		#include <boost\log\utility\setup\console.hpp>
 		#include <boost\log\utility\setup\common_attributes.hpp>
 		#include <boost\log\support\date_time.hpp>
-		#include <boost\log\sinks\sync_frontend.hpp>
-		#include <boost\log\sinks\text_file_backend.hpp>
-		#include <boost\log\sinks\text_ostream_backend.hpp>
-		#include <boost\log\attributes\named_scope.hpp>
 	#pragma warning(pop)
 #pragma endregion
 

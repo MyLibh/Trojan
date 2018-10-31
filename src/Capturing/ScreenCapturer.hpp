@@ -13,7 +13,7 @@ private:
 	public:
 		bool init() noexcept;
 
-		void release();
+		void release() noexcept;
 
 	public:
 		IDirect3D9        *m_pD3D9; //-V122
@@ -27,7 +27,7 @@ private:
 	public:
 		bool init() noexcept;
 
-		void release();
+		void release() noexcept;
 
 	public:
 		IWICImagingFactory    *m_pFactory; //-V122

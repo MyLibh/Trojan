@@ -16,11 +16,10 @@ public:
 	// warning C26432: If you define or delete any default operation in the type 'class Client', define or delete them all (c.21).
 	~Client() noexcept;
 
-	void init();
 	void init(std::string_view ip, std::string_view port);
 
-	template<typename... Args>
-	inline static std::shared_ptr<Client> create(Args... args);
+	template<typename... Types>
+	inline static std::shared_ptr<Client> create(Types... args);
 
 	void run();
 	void send_command(std::string_view command);
@@ -33,10 +32,10 @@ private:
 	std::thread                m_thread;
 };
 
-template<typename... Args>
-std::shared_ptr<Client> Client::create(Args... args)
+template<typename... Types>
+std::shared_ptr<Client> Client::create(Types... args)
 {
-	return NeedPostInit::create<Client, Args...>(args...);
+	return NeedPostInit::create<Client, Types...>(args...);
 }
 
 #endif /* __CLIENT_HPP_INCLUDED__ */

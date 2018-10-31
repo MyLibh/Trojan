@@ -6,23 +6,37 @@
 #include "TCPClient.hpp"
 #include "..\Protocols\CommandMessageProtocol.hpp"
 #include "..\..\Service\Debugger.hpp"
+#include "..\..\Service\Log.hpp"
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 TCPClient::TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoint) :
-	TCPConnection(io_context)
-{
-	connect(endpoint);
+	TCPConnection{ io_context },
+	m_endpoint   { endpoint }
+{ }
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void TCPClient::connect()
+{ 
+	boost::system::error_code ec;
+
+	this->m_socket.connect(*m_endpoint, ec); 
+	if (ec)
+		PrintBoostError(ec);
 }
 
-void TCPClient::connect(const boost::asio::ip::tcp::resolver::results_type &endpoint)
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void TCPClient::async_connect()
 {
-	boost::asio::async_connect(m_socket, endpoint,
-		[this](boost::system::error_code ec, boost::asio::ip::tcp::endpoint /* endpoint */)
+	boost::asio::async_connect(this->m_socket, m_endpoint,
+		[this](const boost::system::error_code &ec, [[maybe_unused]] const boost::asio::ip::tcp::endpoint &endpoint)
 		{
 			if (!ec)
 			{
-				m_connected = true;
+				LOG(info) << "Connected via TCP: " << endpoint;
 
-				read_header();
+				this->m_connected = true;
+
+				this->read_header();
 			}
 			else
 				PrintBoostError(ec);

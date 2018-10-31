@@ -9,7 +9,7 @@
 #include "..\..\Service\Debugger.hpp"
 
 UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint) :
-	m_socket{ io_context, endpoint },
+	m_socket  { io_context, endpoint },
 	m_endpoint{ endpoint }
 {
 	// m_socket.set_option(boost::asio::socket_base::broadcast(true));
@@ -22,7 +22,7 @@ void UDPParticipiant::send(const std::shared_ptr<CMPROTO> &msg)
 {
 	assert(msg);
 
-	while(m_socket.send_to(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint) != msg->get_length());
+	while(m_socket.send_to(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 }
 
 #pragma warning(suppress : 26415 26418)
@@ -32,7 +32,7 @@ void UDPParticipiant::recv(const std::shared_ptr<CMPROTO> &msg)
 {
 	assert(msg);
 
-	while(m_socket.receive_from(boost::asio::buffer(msg->get_data(), msg->get_length()), m_endpoint) != msg->get_length());
+	while(m_socket.receive_from(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 
 	msg->decode_header();
 }

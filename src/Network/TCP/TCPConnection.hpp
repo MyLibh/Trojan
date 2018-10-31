@@ -12,15 +12,14 @@ class TCPConnection : private boost::noncopyable
 {
 public:
 	TCPConnection(boost::asio::io_context &io_context);
+#pragma warning(suppress : 26432)
+	// warning C26432: If you define or delete any default operation in the type 'class TCPConnection', define or delete them all (c.21).
+	virtual ~TCPConnection() noexcept;
 
 	virtual void write(std::unique_ptr<CMPROTO> &&msg);
 	virtual void close();
 
 protected:
-#pragma warning(suppress : 26432)
-	// warning C26432: If you define or delete any default operation in the type 'class TCPConnection', define or delete them all (c.21).
-	~TCPConnection() noexcept = default;
-
 	virtual void read_header();
 	virtual void read_body();
 	virtual void write();

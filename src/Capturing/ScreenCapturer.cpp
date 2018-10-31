@@ -20,8 +20,10 @@ namespace detail
 	template<typename T>
 	constexpr bool has_Release_func_v = has_Release_func<T>::value;
 
+
+	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	template<typename T>
-	void SafeRelease(T *ptr) 
+	void SafeRelease(T *ptr) noexcept
 	{
 		if constexpr (has_Release_func_v<T>)
 		{
@@ -34,8 +36,10 @@ namespace detail
 		}
 
 	}
+
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool ScreenCapturer::DirectXImpl::init() noexcept
 {
 	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION); //-V2001
@@ -61,20 +65,22 @@ bool ScreenCapturer::DirectXImpl::init() noexcept
 	return true;
 }
 
-void ScreenCapturer::DirectXImpl::release()
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void ScreenCapturer::DirectXImpl::release() noexcept
 {
 	detail::SafeRelease(m_pSurface);
 	detail::SafeRelease(m_pDevice);
 	detail::SafeRelease(m_pD3D9);
 }
 
-
-bool ScreenCapturer::WinCodec::init() noexcept
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+inline bool ScreenCapturer::WinCodec::init() noexcept
 {
 	return (CoInitializeEx(nullptr, COINIT_MULTITHREADED) == S_OK);	
 }
 
-void ScreenCapturer::WinCodec::release()
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void ScreenCapturer::WinCodec::release() noexcept
 {
 	detail::SafeRelease(m_pStream);
 	detail::SafeRelease(m_pFrame);
@@ -84,13 +90,13 @@ void ScreenCapturer::WinCodec::release()
 	CoUninitialize();
 }
 
-
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void ScreenCapturer::init() 
 {
 	m_dxImpl = ScreenCapturer::DirectXImpl::create_with_deleter<DirectXImpl>();
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool ScreenCapturer::capture()
 {
 	UINT           pitch{ };
@@ -123,6 +129,7 @@ bool ScreenCapturer::capture()
 	return true;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool ScreenCapturer::save2png(const std::filesystem::path &path)
 {
 	std::shared_ptr<WinCodec> pWC     { ScreenCapturer::WinCodec::create_with_deleter<WinCodec>() };
