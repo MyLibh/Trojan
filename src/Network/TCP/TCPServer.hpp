@@ -5,9 +5,7 @@
 
 #include "TCPConnection.hpp"
 
-class CommandManager;
-
-class TCPServer final : public TCPConnection
+class TCPServer : public TCPConnection
 {
 public:
 	TCPServer(boost::asio::io_context &io_context, unsigned short port);

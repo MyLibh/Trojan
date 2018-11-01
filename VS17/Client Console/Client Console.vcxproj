@@ -41,8 +41,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Network\Protocols\CommandMessageProtocol.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp" />
+    <ClCompile Include="..\..\src\Network\Protocols\ImageMessageProtocol.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="..\..\src\Network\TCP\TCPClient.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
@@ -57,8 +61,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp" />
+    <ClCompile Include="..\..\src\Network\UDP\UDPParticipiant.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Service\pch.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="..\..\src\Server\CommandProperties.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Service\pch.hpp</PrecompiledHeaderFile>
@@ -179,7 +187,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>..\Service\pch.hpp</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>D:\lib\boost_1_68_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnablePREfast>false</EnablePREfast>
@@ -217,9 +225,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>..\..\Service\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>..\Service\pch.hpp</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnablePREfast>true</EnablePREfast>
       <AdditionalIncludeDirectories>D:\lib\boost_1_68_0;D:\lib\GSL\GSL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

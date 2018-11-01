@@ -27,15 +27,15 @@ public:
 public:
 	inline constexpr CommandMessageProtocol() noexcept;
 	 
-	[[nodiscard]] inline       auto   get_data()              noexcept { return gsl::span{ m_data }; }
-	[[nodiscard]] inline const auto   get_data()        const noexcept { return gsl::span{ m_data }; }
-	[[nodiscard]] inline       auto   get_body()              noexcept { return gsl::span{ m_data }.subspan(HEADER_LENGTH); }
-	[[nodiscard]] inline const auto   get_body()        const noexcept { return gsl::span{ m_data }.subspan(HEADER_LENGTH); }
-	[[nodiscard]] inline       int    get_command()     const noexcept { return std::atoi(gsl::span{ m_data }.subspan(HEADER_LENGTH).data()); }
-	[[nodiscard]] inline       auto   get_args()              noexcept { return gsl::span{ m_data }.subspan(HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH); };
-	[[nodiscard]] inline const auto   get_args()        const noexcept { return gsl::span{ m_data }.subspan(HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH); };
+	[[nodiscard]] inline       auto   get_data()              noexcept { return (gsl::span{ m_data }); }
+	[[nodiscard]] inline const auto   get_data()        const noexcept { return (gsl::span{ m_data }); }
+	[[nodiscard]] inline       auto   get_body()              noexcept { return (gsl::span{ m_data }.subspan<HEADER_LENGTH>()); }
+	[[nodiscard]] inline const auto   get_body()        const noexcept { return (gsl::span{ m_data }.subspan<HEADER_LENGTH>()); }
+	[[nodiscard]] inline       auto   get_command()     const noexcept { return (gsl::narrow_cast<std::size_t>(std::atoll(gsl::span{ m_data }.subspan<HEADER_LENGTH>().data()))); }
+	[[nodiscard]] inline       auto   get_args()              noexcept { return (gsl::span{ m_data }.subspan<HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH>()); };
+	[[nodiscard]] inline const auto   get_args()        const noexcept { return (gsl::span{ m_data }.subspan<HEADER_LENGTH + COMMAND_LENGTH + SPACE_LENGTH>()); };
 	[[nodiscard]] inline std::size_t  get_length()      const noexcept { return (HEADER_LENGTH + m_body_length); }
-	[[nodiscard]] inline std::size_t  get_body_length() const noexcept { return m_body_length; };
+	[[nodiscard]] inline std::size_t  get_body_length() const noexcept { return (m_body_length); };
 
 	inline constexpr void set_body_length(std::size_t new_length) noexcept { m_body_length = std::min(new_length, MAX_BODY_LENGTH); }
 
@@ -51,7 +51,10 @@ private:
 
 using CMPROTO = CommandMessageProtocol;
 
-extern const std::shared_ptr<CMPROTO> CMPROTO_RESULT_SUCCESS; 
-extern const std::shared_ptr<CMPROTO> CMPROTO_RESULT_FAILURE;
+[[nodiscard]]
+std::unique_ptr<CMPROTO> make_success_msg();
+
+[[nodiscard]]
+std::unique_ptr<CMPROTO> make_failure_msg();
 
 #endif /* __COMMANDMESSAGEPROTOCOL_HPP_INCLUDED__ */

@@ -20,7 +20,6 @@ namespace detail
 	template<typename T>
 	constexpr bool has_Release_func_v = has_Release_func<T>::value;
 
-
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	template<typename T>
 	void SafeRelease(T *ptr) noexcept

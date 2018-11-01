@@ -20,8 +20,6 @@ UDPParticipiant::UDPParticipiant(boost::asio::io_context &io_context, const boos
 // warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
 void UDPParticipiant::send(const std::shared_ptr<CMPROTO> &msg)
 {
-	assert(msg);
-
 	while(m_socket.send_to(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 }
 
@@ -30,8 +28,6 @@ void UDPParticipiant::send(const std::shared_ptr<CMPROTO> &msg)
 // warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
 void UDPParticipiant::recv(const std::shared_ptr<CMPROTO> &msg)
 {
-	assert(msg);
-
 	while(m_socket.receive_from(boost::asio::buffer(msg->get_data().data(), msg->get_length()), m_endpoint) != msg->get_length());
 
 	msg->decode_header();
@@ -42,8 +38,6 @@ void UDPParticipiant::recv(const std::shared_ptr<CMPROTO> &msg)
 // warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
 void UDPParticipiant::send(const std::shared_ptr<IMPROTO> &msg)
 {
-	assert(msg);
-
 	bool send_ok{ };
 	for (std::size_t i{ }; i < msg->get_chunk_num();)
 	{
@@ -68,8 +62,6 @@ void UDPParticipiant::send(const std::shared_ptr<IMPROTO> &msg)
 // warning C26418: Shared pointer parameter 'msg' is not copied or moved. Use T* or T& instead (r.36).
 void UDPParticipiant::recv(const std::shared_ptr<IMPROTO> &msg)
 {
-	assert(msg);
-
 	m_socket.receive_from(boost::asio::buffer(msg->get_chunk(0), msg->get_chunk_size(0)), m_endpoint);
 	msg->decode_header(0);
 	m_socket.send_to(boost::asio::buffer(OK_MESSAGE, OK_MESSAGE.length()), m_endpoint);

@@ -26,7 +26,7 @@ void InitLog(const std::filesystem::path &filename)
 	consoleSink->set_formatter(logFmt);
 
 	auto fsSink{ boost::log::add_file_log(
-					boost::log::keywords::file_name      = "Client_%Y-%m-%d_%H-%M-%S.%N.log",
+					boost::log::keywords::file_name      = "LOG_%Y-%m-%d_%H-%M-%S.%N.log",
 					boost::log::keywords::rotation_size  = 10 * 1024 * 1024,
 					boost::log::keywords::min_free_space = 30 * 1024 * 1024,
 					boost::log::keywords::open_mode      = std::ios_base::app) };

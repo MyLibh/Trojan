@@ -4,7 +4,13 @@
 #define __PCH_HPP_INCLUDED__
 
 // Preprocessor
-#define _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING // Hide warnings from boost
+#define _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING	// Hide warnings from boost
+
+#ifdef _DEBUG
+	#define _ITERATOR_DEBUG_LEVEL	2
+#else /* ifdef NDEBUG */
+	#define _ITERATOR_DEBUG_LEVEL	1
+#endif /* ifdef _DEBUG */
 
 // C RunTime Header Files
 #include <stdlib.h> 

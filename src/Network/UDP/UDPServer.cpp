@@ -34,11 +34,10 @@ void UDPServer::setup_new_connection()
 				LOG(info) << "New connection via UDP: " << m_endpoint;
 
 				m_msg->decode_header();
-				CommandManager::execute_command(m_msg, m_socket.get_io_context(), m_endpoint);
+				// TODO: push to queue
+				///CommandManager::execute_command(m_msg, m_socket.get_io_context(), m_endpoint);
 			}
 			else
 				PrintBoostError(ec);
-
-			setup_new_connection();
 		});
 }

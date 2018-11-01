@@ -14,7 +14,6 @@ public:
 	Server() noexcept;
 	~Server() noexcept;
 
-	void init();
 	void init(std::string_view port);
 
 	template<typename... Args>
@@ -31,6 +30,7 @@ private:
                                m_save_thread;
 };
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 template<typename... Args>
 std::shared_ptr<Server> Server::create(Args... args)
 {

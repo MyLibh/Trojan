@@ -108,7 +108,7 @@ void PrintError(CONST PTCHAR func, INT error)
 
 void PrintBoostError(const boost::system::error_code &ec)
 {
-	$error std::cerr << "[ERROR](BOOST): " << ec.message() << std::endl;
+	$error std::cerr << "(BOOST): " << ec.message() << std::endl;
 }
 	
 VOID ClearConsole()

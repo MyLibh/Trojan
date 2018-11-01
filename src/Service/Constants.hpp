@@ -3,14 +3,14 @@
 #ifndef __CONSTANTS_H_INCLUDED__
 #define __CONSTANTS_H_INCLUDED__
 
-#define TEXTH(str) (PTCHAR)TEXT(str)
-
-#define SMALL_BUFFER_LENGTH     256
-
-#define SERVER_IP          "127.0.0.1" 
-#define DEFAULT_PORT       "20000"
-
+#define TEXTH(str)         (PTCHAR)TEXT(str)
 #define TROJAN_APP_NAME    TEXTH("Trojan.exe")
+
+inline static constexpr std::size_t SMALL_BUFFER_LENGTH{ 256 };
+
+inline static constexpr std::string_view SERVER_IP{ "127.0.0.1" };
+
+inline static constexpr std::string_view DEFAULT_PORT{ "20000" };
 
 // Client constants
 inline static constexpr std::string_view CLIENT_LOG_FMT_FILENAME{ "client%N.log" };
@@ -18,25 +18,8 @@ inline static constexpr std::string_view CLIENT_LOG_FMT_FILENAME{ "client%N.log"
 // Server constants
 inline static constexpr std::string_view SERVER_LOG_FMT_FILENAME{ "server%N.log" };
 
-// Commands defines
-
-#define TASK_SUCCESSP       TEXTH("Success")
-#define TASK_SUCCESSW       L"Success"
-#define TASK_SUCCESSA        "Success"
-#define TASK_SUCCESS_LENGTH 7
-
-#define TASK_FAILUREP       TEXTH("Failure")
-#define TASK_FAILUREW       L"Failure"
-#define TASK_FAILUREA        "Failure"
-#define TASK_FAILURE_LENGTH 7
-
-#define UNDEFINEDP          TEXTH("Undefined")
-#define UNDEFINEDW          L"Undefined"
-#define UNDEFINEDA           "Undefined"
-#define UNDEFINED_LENGTH    9
-
 // Injector defines
-#define PATH_LENGTH 256
+inline static constexpr std::size_t PATH_LENGTH{ 256 };
 
 // Keylogger defines
 #define KEYLOGGER_APP_NAME      TEXT("Keylogger.exe")

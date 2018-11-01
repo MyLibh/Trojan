@@ -9,9 +9,12 @@
 
 cip_t CommandManager::m_in_progress{ 0 };
 
-bool CommandManager::execute_command(const std::shared_ptr<CMPROTO> &msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint)
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool CommandManager::execute_command(std::weak_ptr<CMPROTO> msg, boost::asio::io_context &io_context, const boost::asio::ip::udp::endpoint &endpoint)
 {
-	Commands cmd = static_cast<Commands>(msg->get_command()); // TODO: enum overrage set check
+	auto _msg = msg.lock();
+
+	Commands cmd{ static_cast<Commands>(_msg->get_command()) }; // TODO: enum overrage set check
 	if (cmd == Commands::UNDEFINED_COMMAND || cmd >= Commands::NUMBER_OF_COMMANDS)
 	{
 		$ERROR("Wrong command: %llu\n", static_cast<size_t>(cmd))
@@ -22,7 +25,7 @@ bool CommandManager::execute_command(const std::shared_ptr<CMPROTO> &msg, boost:
 	auto iter = std::find_if(std::begin(COMMAND_PROPERTIES), std::end(COMMAND_PROPERTIES), [cmd](const auto &cmd_prop) { return (cmd == std::get<0>(cmd_prop.command)); });
 	if (iter != std::end(COMMAND_PROPERTIES))
 	{
-		if (auto args{ parse_args(msg->get_args().data()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
+		if (auto args{ parse_args(_msg->get_args().data()) }; iter->exec_func.index() == 0) // CommandProperties::exec_func_t
 			return std::get<0>(iter->exec_func)(args);
 		else // CommandProperties::threaded_exec_func_t
 		{
@@ -46,11 +49,13 @@ bool CommandManager::execute_command(const std::shared_ptr<CMPROTO> &msg, boost:
 	return true;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 std::vector<std::string> CommandManager::parse_args(const char *args)
 {
 	return { { args } };
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CIP_BITS CommandManager::get_bit(Commands command)
 {
 	switch (command) // Don't check 'UNDEFINED_COMMAND' & 'NUMBER_OF_COMMANDS', becuase it is checked in 'execute_command'
@@ -68,6 +73,7 @@ CIP_BITS CommandManager::get_bit(Commands command)
 	}
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CommandManager::get_bit_new_value(Commands command)
 {
 	switch (command)

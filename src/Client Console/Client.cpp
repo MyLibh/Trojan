@@ -5,12 +5,12 @@
 
 #include "Client.hpp"
 #include "..\Network\TCP\TCPClient.hpp"
-#include "..\Network\Protocols\CommandMessageProtocol.hpp"
-#include "..\Server\CommandProperties.hpp"
-#include "..\Service\Debugger.hpp"
 #include "..\Network\UDP\UDPClient.hpp"
+#include "..\Network\Protocols\CommandMessageProtocol.hpp"
+#include "..\Service\Debugger.hpp"
 #include "..\Service\Constants.hpp"
 #include "..\Service\Log.hpp"
+#include "..\Server\CommandProperties.hpp"
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Client::Client() noexcept :
@@ -27,14 +27,14 @@ Client::~Client() noexcept = default;
 void Client::init(std::string_view ip, std::string_view port)
 {
 	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port));
-	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port));
+	///m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port));
 	m_thread     = std::thread{ [this]() { m_io.run(); } };
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void Client::run()
 {
-	m_tcp_client->connect();
+	m_tcp_client->async_connect();
 
 	std::string command;
 	while (std::getline(std::cin, command))
@@ -51,7 +51,13 @@ void Client::send_command(std::string_view command)
 		separator_pos = command.length();
 
 	const auto cmd_line{ command.substr(0, separator_pos) };
-	const auto args    { command.substr(separator_pos) };
+	      auto args    { command.substr(separator_pos) };
+		  if (const auto length = args.length(); length >= CMPROTO::MAX_ARGS_LENGTH)
+		  {
+			  LOG(warning) << "The command argument is very long. Data clipping";
+
+			  args.remove_suffix(length - CMPROTO::MAX_ARGS_LENGTH);
+		  }
 
 	std::unique_ptr<CMPROTO> msg{ std::make_unique<CMPROTO>() };
 	msg->set_body_length(CMPROTO::COMMAND_LENGTH + (args.empty() ? 0ull : CMPROTO::SPACE_LENGTH + args.length()));
@@ -67,8 +73,8 @@ void Client::send_command(std::string_view command)
 
 		if (iter->exec_func.index() == 0ull)
 			m_tcp_client->write(std::move(msg));
-		//else
-			//m_udp_client->send(msg);
+		///else
+			///m_udp_client->send(msg);
 	}
 	else
 		LOG(error) << "Wrong Command: '" << command.data() << "'";

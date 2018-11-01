@@ -20,7 +20,15 @@ void TCPClient::connect()
 	boost::system::error_code ec;
 
 	this->m_socket.connect(*m_endpoint, ec); 
-	if (ec)
+	if (!ec)
+	{
+		LOG(info) << "Connected via TCP: " << this->m_socket.remote_endpoint();
+
+		this->m_connected = true;
+
+		this->read_header();
+	}
+	else
 		PrintBoostError(ec);
 }
 

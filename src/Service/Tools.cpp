@@ -7,7 +7,7 @@
 #include "Debugger.hpp"
 #include "Constants.hpp"
 
-BOOL Copy2Sysdir(CONST PTCHAR appname)
+BOOL Copy2Sysdir(CONST PTCHAR appname) //-V2009
 {
 	HMODULE hModule = NULL;
 	if(!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, NULL, &hModule))
@@ -62,7 +62,7 @@ BOOL Copy2Sysdir(CONST PTCHAR appname)
 	return TRUE;
 }
 
-BOOL SaveInReg(CONST PTCHAR appname)
+BOOL SaveInReg(CONST PTCHAR appname) //-V2009
 {
 	TCHAR filename[SMALL_BUFFER_LENGTH] = TEXT("\\");
 	errno_t code = _tcscat_s(filename, SMALL_BUFFER_LENGTH, appname);

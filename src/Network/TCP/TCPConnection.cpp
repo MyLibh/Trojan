@@ -9,11 +9,11 @@
 #include "..\..\Service\Log.hpp"
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-TCPConnection::TCPConnection(boost::asio::io_context & io_context) :
+TCPConnection::TCPConnection(boost::asio::io_context &io_context) :
 	m_io        { io_context },
 	m_socket    { m_io },
 	m_connected { },
-	m_read_msg  { nullptr },
+	m_read_msg  { std::make_unique<CMPROTO>() },
 	m_write_msgs{ }
 { }
 
@@ -23,13 +23,15 @@ TCPConnection::~TCPConnection() noexcept = default;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void TCPConnection::write(std::unique_ptr<CMPROTO> &&msg)
 {
-	boost::asio::post(m_io,
-		[this, &msg]()
-		{
-			LOG(info) << "Sending via TCP: (" << m_read_msg->get_body().data() << ")";
+	std::cout << '1' << '(' << msg->get_data().data() << ')' << std::endl;
 
+	boost::asio::post(m_io,
+		[this, msg{ std::move(msg) }]() mutable
+		{
+		std::cout << '2' << '(' << msg->get_data().data() << ')' << std::endl;
 			const bool write_in_progress{ !m_write_msgs.empty() };
 			m_write_msgs.push_back(std::move(msg));
+		std::cout << '3' << '(' << m_write_msgs.front()->get_data().data() << ')' << std::endl;
 			if (!write_in_progress)
 				write();
 		});
@@ -41,6 +43,8 @@ void TCPConnection::close()
 	boost::asio::post(m_io,
 		[this]()
 		{
+			LOG(info) << "Closing socket";
+
 			m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 			m_socket.close();
 
@@ -52,11 +56,14 @@ void TCPConnection::close()
 void TCPConnection::read_header()
 {
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_data().data(), CMPROTO::HEADER_LENGTH),
-		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t /* length */)
+		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t length)
 		{
-			if (!ec && m_read_msg->decode_header())
+			if (!ec)
 			{
-				read_body();
+				LOG(trace) << "Recieved header via TCP(" << length << "): '" << m_read_msg->get_data().data() << '\'';
+
+				if (m_read_msg->decode_header())
+					read_body();
 			}
 			else
 			{
@@ -71,10 +78,12 @@ void TCPConnection::read_header()
 void TCPConnection::read_body()
 {
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_read_msg->get_body().data(), CMPROTO::MAX_BODY_LENGTH),
-		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t /* length */)
+		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t length)
 		{
 			if (!ec)
 			{
+				LOG(trace) << "Recieved body via TCP(" << length << "): '" << m_read_msg->get_body().data() << '\'';
+
 				std::cout << "========================RECEIVED MESSAGE========================" << std::endl;
 				std::copy(std::cbegin(m_read_msg->get_body()), std::cend(m_read_msg->get_body()), std::ostream_iterator<char>(std::cout, ""));
 				std::cout << "\n================================================================\n";
@@ -96,12 +105,14 @@ void TCPConnection::read_body()
 void TCPConnection::write()
 {
 	boost::asio::async_write(m_socket, boost::asio::buffer(m_write_msgs.front()->get_data().data(), m_write_msgs.front()->get_length()),
-		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t /* length */)
+		[this](const boost::system::error_code &ec, [[maybe_unused]] std::size_t length)
 		{
 			if (m_connected)
 			{
 				if (!ec)
 				{
+					LOG(trace) << "Sending via TCP(" << length << "): '" << m_write_msgs.front()->get_data().data() << '\'';
+
 					m_write_msgs.pop_front();
 					if (!m_write_msgs.empty())
 						write();
