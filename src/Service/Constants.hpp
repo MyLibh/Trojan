@@ -8,8 +8,7 @@
 
 inline static constexpr std::size_t SMALL_BUFFER_LENGTH{ 256 };
 
-inline static constexpr std::string_view SERVER_IP{ "127.0.0.1" };
-
+inline static constexpr std::string_view SERVER_IP   { "127.0.0.1" };
 inline static constexpr std::string_view DEFAULT_PORT{ "20000" };
 
 // Client constants
