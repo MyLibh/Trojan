@@ -9,19 +9,20 @@
 #include "..\Protocols\ImageMessageProtocol.hpp"
 #include "..\..\Service\Debugger.hpp"
 
+/*************************************************************************************************************************************************************************************************************/
 UDPClient::UDPClient(boost::asio::io_context &io_context, const boost::asio::ip::udp::resolver::results_type &endpoint) :
 	m_io      { io_context },
 	m_endpoint{ *endpoint }
 { }
 
-
-void UDPClient::send(const std::shared_ptr<CMPROTO> &msg)
+/*************************************************************************************************************************************************************************************************************/
+void UDPClient::start(std::unique_ptr<CMPROTO> &&msg)
 {
 	std::thread t(
-		[this, &msg]()
+		[this, msg{ std::move(msg) }]()
 		{		
 			std::unique_ptr<UDPParticipiant> client{ std::make_unique<UDPParticipiant>(m_io, m_endpoint) };
-			client->send(msg);
+			//client->send(std::move(msg));
 
 			std::shared_ptr<IMPROTO> imsg{ std::make_shared<IMPROTO>() };
 			while (true)

@@ -11,7 +11,7 @@
  *
  * \param[in]  filename  Formated string for the name of log file
  *
- * \exception  
+ * \exception  ???
  */
 void InitLog(const std::string_view filename);
 

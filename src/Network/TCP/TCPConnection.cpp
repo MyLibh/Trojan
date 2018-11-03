@@ -23,15 +23,11 @@ TCPConnection::~TCPConnection() noexcept = default;
 /*************************************************************************************************************************************************************************************************************/
 void TCPConnection::write(std::unique_ptr<CMPROTO> &&msg)
 {
-	std::cout << '1' << '(' << msg->get_data().data() << ')' << std::endl;
-
 	boost::asio::post(m_io,
 		[this, msg{ std::move(msg) }]() mutable
 		{
-		std::cout << '2' << '(' << msg->get_data().data() << ')' << std::endl;
 			const bool write_in_progress{ !m_write_msgs.empty() };
 			m_write_msgs.push_back(std::move(msg));
-		std::cout << '3' << '(' << m_write_msgs.front()->get_data().data() << ')' << std::endl;
 			if (!write_in_progress)
 				write();
 		});
