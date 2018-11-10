@@ -8,13 +8,13 @@
 class TCPClient : public TCPConnection 
 {
 public:
-	TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoint);
+	TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint);
 
 	void connect(); 
 	void async_connect();
 
 private:
-	boost::asio::ip::tcp::resolver::results_type m_endpoint;
+	boost::asio::ip::tcp::endpoint m_endpoint;
 };
 
 #endif /* __TCPCLIENT_HPP_INCLUDED__ */

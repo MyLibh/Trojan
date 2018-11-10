@@ -9,7 +9,7 @@
 #ifdef _DEBUG
 	#define _ITERATOR_DEBUG_LEVEL	2
 #else /* ifdef NDEBUG */
-	#define _ITERATOR_DEBUG_LEVEL	1
+	#define _ITERATOR_DEBUG_LEVEL	0
 #endif /* ifdef _DEBUG */
 
 // C RunTime Header Files

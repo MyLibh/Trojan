@@ -23,7 +23,7 @@
     <ProjectGuid>{5587BA36-4052-4CB3-AC4F-8AA0CC8E9356}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ServerTrojan</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

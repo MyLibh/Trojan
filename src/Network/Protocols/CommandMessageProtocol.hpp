@@ -27,7 +27,6 @@ public:
 public:
 	inline constexpr CommandMessageProtocol() noexcept;
 	 
-
 	[[nodiscard]] inline       auto   get_data()              noexcept { return (gsl::span{ m_data }); }
 	[[nodiscard]] inline const auto   get_data()        const noexcept { return (gsl::span{ m_data }); }
 	[[nodiscard]] inline       auto   get_body()              noexcept { return (gsl::span{ m_data }.subspan<HEADER_LENGTH>()); }

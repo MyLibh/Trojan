@@ -9,7 +9,7 @@
 #include "..\..\Service\Log.hpp"
 
 /*************************************************************************************************************************************************************************************************************/
-TCPClient::TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::resolver::results_type &endpoint) :
+TCPClient::TCPClient(boost::asio::io_context &io_context, const boost::asio::ip::tcp::endpoint &endpoint) :
 	TCPConnection{ io_context },
 	m_endpoint   { endpoint }
 { }
@@ -19,7 +19,7 @@ void TCPClient::connect()
 { 
 	boost::system::error_code ec;
 
-	this->m_socket.connect(*m_endpoint, ec); 
+	this->m_socket.connect(m_endpoint, ec); 
 	if (!ec)
 	{
 		LOG(info) << "Connected via TCP: " << this->m_socket.remote_endpoint();
@@ -35,8 +35,8 @@ void TCPClient::connect()
 /*************************************************************************************************************************************************************************************************************/
 void TCPClient::async_connect()
 {
-	boost::asio::async_connect(this->m_socket, m_endpoint,
-		[this](const boost::system::error_code &ec, [[maybe_unused]] const boost::asio::ip::tcp::endpoint &endpoint)
+	boost::asio::async_connect(this->m_socket, *m_endpoint,
+		[this](boost::system::error_code ec, boost::asio::ip::tcp::endpoint endpoint)
 		{
 			if (!ec)
 			{

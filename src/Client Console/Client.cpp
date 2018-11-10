@@ -26,7 +26,7 @@ Client::~Client() noexcept = default;
 /*************************************************************************************************************************************************************************************************************/
 void Client::init(std::string_view ip, std::string_view port)
 {
-	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::resolver(m_io).resolve(ip, port));
+	m_tcp_client = std::make_unique<TCPClient>(m_io, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address(ip), std::atoi(port.data())));
 	m_udp_client = std::make_unique<UDPClient>(m_io, boost::asio::ip::udp::resolver(m_io).resolve(ip, port));
 	m_thread     = std::thread{ [this]() { m_io.run(); } };
 }
